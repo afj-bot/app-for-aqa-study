@@ -1,0 +1,36 @@
+version: "3.4"
+services:
+  product-app:
+    container_name: product-app
+    image: product-app
+    ports:
+      - "80:80"
+    depends_on:
+      - mysqldb
+    environment:
+      - DATABASE_USERNAME=app
+      - DATABASE_PASSWORD=password123
+      - DATABASE_URL=jdbc:mysql://localhost:3307/app
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: "1024M"
+
+  mysqldb:
+    container_name: mysql_root
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    volumes:
+      - app:/var/lib/mysql
+      - ./local:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: "1024M"
+volumes:
+  app:
