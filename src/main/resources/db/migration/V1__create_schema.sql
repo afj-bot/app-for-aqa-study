@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS user
     phone_number            varchar(255)                        null,
     home_address            varchar(255)                        null,
     date_of_birth           datetime                            null,
+    authorities             varchar(255)                        null,
     account_non_expired     TINYINT(1),
     account_non_locked      TINYINT(1),
     credentials_non_expired TINYINT(1),
@@ -49,6 +50,12 @@ CREATE TABLE IF NOT EXISTS user_order
 
 ) engine = InnoDb;
 
+CREATE TABLE IF NOT EXISTS user_authorities
+(
+    user_id     BINARY(16) not null,
+    authorities tinyblob   null
+) engine = InnoDb;
+
 CREATE index FKf812pygec41i5jo6oduhrr0aw
     ON user_order (user_id);
 
@@ -57,3 +64,6 @@ CREATE index FKf812pygec41i5jo6oduhrr022
 
 CREATE index FKf812pygec41i5jo6oduhrr012
     ON product (image_id);
+
+create index FKmj13d0mnuj4cd8b6htotbf9mm
+    on user_authorities (user_id);
