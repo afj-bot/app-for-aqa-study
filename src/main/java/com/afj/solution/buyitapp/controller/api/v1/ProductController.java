@@ -72,7 +72,7 @@ public class ProductController {
             @ApiResponse(code = 404, message = "Image not found"),
             @ApiResponse(code = 500, message = "Internal server error"),
     })
-    @GetMapping(value = "/{id}/image", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = "/{id}/image", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
     public @ResponseBody
     byte[] getImage(@Valid @NotEmpty @PathVariable final UUID id) {
         log.info("Get an image for product {}", id);
