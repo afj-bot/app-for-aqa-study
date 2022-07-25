@@ -7,6 +7,8 @@ import com.afj.solution.buyitapp.model.Product;
 import com.afj.solution.buyitapp.payload.response.ImageResponse;
 import com.afj.solution.buyitapp.payload.response.ProductResponse;
 
+import static java.util.Objects.nonNull;
+
 /**
  * @author Tomash Gombosh
  */
@@ -19,12 +21,15 @@ public class ProductToResponseConverter implements Converter<Product, ProductRes
         return new ProductResponse(productResponse -> {
             productResponse.setId(product.getId().toString());
             productResponse.setName(product.getName());
-            productResponse.setPrice(product.getPrice());
-            productResponse.setImage(new ImageResponse(imageResponse -> {
-                imageResponse.setPicture(product.getImage().getPicture());
-                imageResponse.setName(product.getImage().getFileName());
+            productResponse.setPrice(String.format("%s %s", product.getPrice(), product.getCurrency()));
+            productResponse.setDescription(product.getDescription());
+            if (nonNull(product.getImage())) {
+                productResponse.setImage(new ImageResponse(imageResponse -> {
+                    imageResponse.setPicture(product.getImage().getPicture());
+                    imageResponse.setName(product.getImage().getFileName());
+                }
+                ));
             }
-            ));
         });
     }
 }

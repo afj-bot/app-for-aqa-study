@@ -43,12 +43,20 @@ public class ProductResponse implements Serializable {
     private String name;
 
     @ApiModelProperty(
+            name = "description",
+            dataType = "String",
+            value = "Product description",
+            example = "Beautiful red flower"
+    )
+    private String description;
+
+    @ApiModelProperty(
             name = "price",
             dataType = "float",
             value = "Product price",
-            example = "44$"
+            example = "44.4 USD"
     )
-    private float price;
+    private String price;
 
     @ApiModelProperty(
             name = "image",

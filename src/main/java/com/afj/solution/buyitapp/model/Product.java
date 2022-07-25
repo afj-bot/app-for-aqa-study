@@ -3,9 +3,13 @@ package com.afj.solution.buyitapp.model;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.UUID;
+import java.util.function.Consumer;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -17,10 +21,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.afj.solution.buyitapp.model.enums.Currency;
+
 import static com.afj.solution.buyitapp.common.Patterns.GSON;
+import static java.util.Objects.requireNonNull;
 
 /**
  * @author Tomash Gombosh
@@ -37,14 +45,23 @@ public class Product implements Serializable {
 
     @Id
     @Type(type = "uuid-binary")
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name = "name", unique = true)
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "description")
+    private String description;
 
     @Column(name = "price")
     private float price;
+
+    @Column(name = "currency", columnDefinition = "ENUM('USD', 'UAH', 'EUR')")
+    @Enumerated(EnumType.STRING)
+    private Currency currency;
 
     @Column(name = "created_at", updatable = false, nullable = false)
     @CreationTimestamp
@@ -58,6 +75,10 @@ public class Product implements Serializable {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn
     private Image image;
+
+    public Product(final Consumer<Product> builder) {
+        requireNonNull(builder).accept(this);
+    }
 
     @Override
     public String toString() {
