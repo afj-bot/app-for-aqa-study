@@ -1,13 +1,18 @@
 package com.afj.solution.buyitapp.service;
 
+import java.util.UUID;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.afj.solution.buyitapp.exception.EntityAlreadyExistsException;
+import com.afj.solution.buyitapp.exception.EntityNotFoundException;
 import com.afj.solution.buyitapp.model.User;
+import com.afj.solution.buyitapp.payload.response.UserResponse;
 import com.afj.solution.buyitapp.repository.UserRepository;
+import com.afj.solution.buyitapp.service.converters.UserToUserResponseConverter;
 
 /**
  * @author Tomash Gombosh
@@ -20,11 +25,15 @@ public class UserServiceImpl implements UserService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final UserToUserResponseConverter converter;
+
     @Autowired
     public UserServiceImpl(final UserRepository userRepository,
-                           final PasswordEncoder passwordEncoder) {
+                           final PasswordEncoder passwordEncoder,
+                           final UserToUserResponseConverter converter) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.converter = converter;
     }
 
     @Override
@@ -37,5 +46,14 @@ public class UserServiceImpl implements UserService {
         }
         throw new EntityAlreadyExistsException(User.class, String.format("%s %s",
                 user.getEmail(), user.getUsername()));
+    }
+
+    @Override
+    public UserResponse getMe(final UUID userId) {
+        final User user = userRepository
+                .findById(userId).orElseThrow(() -> new EntityNotFoundException(User.class, "id"));
+        log.info("Find user by id {}", user);
+
+        return converter.convert(user);
     }
 }

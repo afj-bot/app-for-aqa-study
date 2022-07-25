@@ -1,20 +1,24 @@
 version: "3.4"
+
 services:
-  product-app:
-    container_name: product-app
-    image: product-app
+  buy-it-app:
+    container_name: buy-it-api
+    image: buy-it-api
     ports:
       - "80:80"
+    networks:
+      local:
+        ipv4_address: 172.168.48.16
     depends_on:
       - mysqldb
     environment:
       - DATABASE_USERNAME=app
       - DATABASE_PASSWORD=password123
-      - DATABASE_URL=jdbc:mysql://localhost:3307/app
+      - DATABASE_URL=jdbc:mysql://172.168.48.15:3306/app
     deploy:
       resources:
         limits:
-          cpus: "2"
+          cpus: "1"
           memory: "1024M"
 
   mysqldb:
@@ -22,6 +26,9 @@ services:
     image: mysql:latest
     ports:
       - "3306:3306"
+    networks:
+      local:
+        ipv4_address: 172.168.48.15
     volumes:
       - app:/var/lib/mysql
       - ./local:/docker-entrypoint-initdb.d
@@ -32,5 +39,14 @@ services:
         limits:
           cpus: "2"
           memory: "1024M"
+
 volumes:
   app:
+
+networks:
+  local:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.168.48.0/16
+          gateway: 172.168.48.1

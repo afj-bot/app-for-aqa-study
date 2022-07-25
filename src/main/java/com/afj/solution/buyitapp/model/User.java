@@ -18,13 +18,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import static com.afj.solution.buyitapp.common.Patterns.GSON;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -36,7 +36,6 @@ import static java.util.Objects.requireNonNull;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = {"password"})
 public class User implements UserDetails, Serializable {
 
     private static final long serialVersionUID = -6302264803709958147L;
@@ -131,5 +130,10 @@ public class User implements UserDetails, Serializable {
     @Override
     public boolean isEnabled() {
         return this.enabled;
+    }
+
+    @Override
+    public String toString() {
+        return GSON.toJson(this);
     }
 }

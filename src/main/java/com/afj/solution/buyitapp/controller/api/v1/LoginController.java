@@ -24,15 +24,19 @@ import com.afj.solution.buyitapp.service.UserAuthServiceImpl;
 @RequestMapping(path = "/api/v1", produces = "application/json; charset=utf-8")
 @Slf4j
 public class LoginController {
+
+    private final UserAuthServiceImpl userAuthService;
+
     @Autowired
-    private UserAuthServiceImpl userAuthService;
+    public LoginController(final UserAuthServiceImpl userAuthService) {
+        this.userAuthService = userAuthService;
+    }
 
     @ApiOperation("Login user into the application")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Login was successfully"),
-            @ApiResponse(code = 403, message = "Invalid username/password supplied"),
+            @ApiResponse(code = 401, message = "Invalid username/password supplied"),
             @ApiResponse(code = 500, message = "Internal server error"),
-            @ApiResponse(code = 503, message = "Gateway timeout")
     })
     @PostMapping("/login")
     public @ResponseBody

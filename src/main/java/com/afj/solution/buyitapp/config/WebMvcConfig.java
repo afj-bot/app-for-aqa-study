@@ -37,19 +37,18 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .apiInfo(data())
                 .securitySchemes(Stream.of(apiKey()).collect(Collectors.toList()))
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.afj.solution.productApp.controller.api.v1"))
+                .apis(RequestHandlerSelectors.basePackage("com.afj.solution.buyitapp.controller.api.v1"))
                 .build()
                 .securitySchemes(Stream.of(apiKey()).collect(Collectors.toList()));
     }
 
     private ApiInfo data() {
-        final String projectVersion = System.getenv("VERSION");
         return new ApiInfoBuilder()
-                .title("E-commerce api")
+                .title("E-commerce API")
                 .description("E-commerce API for study automation")
                 .license("Apache License Version 2.0")
                 .licenseUrl("https://www.apache.org/licenses/LICENSE-2.0")
-                .version(projectVersion)
+                .version("1.1.0-1")
                 .build();
     }
 
