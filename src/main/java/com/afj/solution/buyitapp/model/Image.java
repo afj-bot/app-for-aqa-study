@@ -16,11 +16,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import static com.afj.solution.buyitapp.common.Patterns.GSON;
 import static java.util.Objects.requireNonNull;
 
 
@@ -34,7 +34,6 @@ import static java.util.Objects.requireNonNull;
 @Setter
 @Entity
 @Table(name = "image")
-@ToString
 public class Image implements Serializable {
 
     private static final long serialVersionUID = -3971169410727710315L;
@@ -63,9 +62,14 @@ public class Image implements Serializable {
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
 
-
     public Image(final Consumer<Image> builder) {
         requireNonNull(builder).accept(this);
+    }
+
+
+    @Override
+    public String toString() {
+        return GSON.toJson(this);
     }
 
 }

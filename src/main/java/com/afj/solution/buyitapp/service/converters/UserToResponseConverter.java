@@ -12,9 +12,9 @@ import com.afj.solution.buyitapp.payload.response.UserResponse;
 /**
  * @author Tomash Gombosh
  */
-@Component
 @Slf4j
-public class UserToUserResponseConverter implements Converter<User, UserResponse> {
+@Component
+public class UserToResponseConverter implements Converter<User, UserResponse> {
 
     @Override
     public UserResponse convert(final User user) {
