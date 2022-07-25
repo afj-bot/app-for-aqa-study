@@ -125,15 +125,13 @@
         <!-- Imports -->
         <module name="AvoidStarImport"/>
         <module name="CustomImportOrder">
-            <property name="specialImportsRegExp" value="com.doctor2me.qa.*"/>
+            <property name="specialImportsRegExp" value="com.afj.solution.*"/>
             <property name="customImportOrderRules"
                       value="STANDARD_JAVA_PACKAGE###THIRD_PARTY_PACKAGE###SPECIAL_IMPORTS###STATIC"/>
             <property name="sortImportsInGroupAlphabetically" value="true"/>
         </module>
         <module name="IllegalImport">
             <property name="illegalPkgs" value="java\.util"/>
-            <property name="illegalClasses"
-                      value="org.junit.Assert, com.google.inject.Inject, com.google.inject.name.Named, io.restassured.response.Response, org.openqa.selenium.WebElement"/>
         </module>
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
