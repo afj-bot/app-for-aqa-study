@@ -18,6 +18,9 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import com.afj.solution.buyitapp.common.Error;
+import com.afj.solution.buyitapp.common.Response;
+
 /**
  * @author Tomash Gombosh
  */
@@ -31,6 +34,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .useDefaultResponseMessages(false)
                 .ignoredParameterTypes(
                         Sort.class,
+                        Error.class,
+                        Response.Status.class,
                         JsonArray.class,
                         JsonObject.class,
                         JsonNull.class)

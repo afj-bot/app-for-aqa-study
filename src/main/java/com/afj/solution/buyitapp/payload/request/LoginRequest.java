@@ -1,5 +1,8 @@
 package com.afj.solution.buyitapp.payload.request;
 
+import javax.validation.constraints.NotEmpty;
+
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,6 +16,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ApiModel(value = "LoginRequest", description = "Login request model")
 public class LoginRequest {
 
     @ApiModelProperty(
@@ -22,6 +26,7 @@ public class LoginRequest {
             example = "black",
             required = true
     )
+    @NotEmpty
     private String username;
 
     @ApiModelProperty(
@@ -31,6 +36,7 @@ public class LoginRequest {
             example = "rest1234",
             required = true
     )
+    @NotEmpty
     private String password;
 
     @Override

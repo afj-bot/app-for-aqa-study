@@ -3,6 +3,7 @@ package com.afj.solution.buyitapp.security;
 import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -82,7 +83,7 @@ public class JwtTokenProvider {
         throw new CustomAuthenticationException("Not valid token provided in the request header");
     }
 
-    public String getRoleFromToken(final String token) {
+    public List<Map<String, String>> getRoleFromToken(final String token) {
         requireNonNull(tokenSecret, "Initialization of the Token Provider was incorrect use constructor or setter method");
 
         if (this.validateToken(token)) {
@@ -90,7 +91,7 @@ public class JwtTokenProvider {
                     .setSigningKey(tokenSecret)
                     .parseClaimsJws(token)
                     .getBody();
-            return (String) claims.get("role");
+            return (List<Map<String, String>>) claims.get("roles");
         }
         throw new CustomAuthenticationException("Not valid token provided in the request header");
     }
