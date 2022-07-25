@@ -1,5 +1,7 @@
 package com.afj.solution.buyitapp.service.product;
 
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,4 +16,6 @@ public interface ProductService {
     Page<ProductResponse> getProducts(Pageable pageable);
 
     Product save(CreateProductRequest createProductRequest);
+
+    Product findById(UUID id);
 }

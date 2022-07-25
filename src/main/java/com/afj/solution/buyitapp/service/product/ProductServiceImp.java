@@ -1,11 +1,14 @@
 package com.afj.solution.buyitapp.service.product;
 
+import java.util.UUID;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.afj.solution.buyitapp.exception.EntityNotFoundException;
 import com.afj.solution.buyitapp.model.Product;
 import com.afj.solution.buyitapp.payload.request.CreateProductRequest;
 import com.afj.solution.buyitapp.payload.response.ProductResponse;
@@ -44,6 +47,15 @@ public class ProductServiceImp implements ProductService {
             p.setDescription(createProductRequest.getDescription());
         }));
         log.info("Successfully create a product {}", product);
+        return product;
+    }
+
+    @Override
+    public Product findById(final UUID id) {
+        final Product product = this.productRepository
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Product.class, "id"));
+        log.info("Find Product {} by id({})", product, id);
         return product;
     }
 }

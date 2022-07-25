@@ -70,7 +70,6 @@ public class Image implements Serializable {
         requireNonNull(builder).accept(this);
     }
 
-
     @Override
     public String toString() {
         return GSON.toJson(this);
