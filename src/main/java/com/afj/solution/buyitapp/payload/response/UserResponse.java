@@ -1,5 +1,6 @@
 package com.afj.solution.buyitapp.payload.response;
 
+import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -25,7 +26,9 @@ import static java.util.Objects.requireNonNull;
 @Setter
 @ApiModel(value = "UserResponse", description = "Simple User response")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserResponse {
+public class UserResponse implements Serializable {
+
+    private static final long serialVersionUID = 5884159037589642451L;
 
     @ApiModelProperty(
             name = "id",

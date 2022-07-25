@@ -12,7 +12,7 @@ import com.afj.solution.buyitapp.exception.EntityNotFoundException;
 import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.payload.response.UserResponse;
 import com.afj.solution.buyitapp.repository.UserRepository;
-import com.afj.solution.buyitapp.service.converters.UserToUserResponseConverter;
+import com.afj.solution.buyitapp.service.converters.UserToResponseConverter;
 
 /**
  * @author Tomash Gombosh
@@ -25,12 +25,12 @@ public class UserServiceImpl implements UserService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final UserToUserResponseConverter converter;
+    private final UserToResponseConverter converter;
 
     @Autowired
     public UserServiceImpl(final UserRepository userRepository,
                            final PasswordEncoder passwordEncoder,
-                           final UserToUserResponseConverter converter) {
+                           final UserToResponseConverter converter) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.converter = converter;

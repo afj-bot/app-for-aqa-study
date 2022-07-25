@@ -16,10 +16,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import static com.afj.solution.buyitapp.common.Patterns.GSON;
 
 /**
  * @author Tomash Gombosh
@@ -30,7 +31,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Setter
 @Entity
 @Table(name = "product")
-@ToString
 public class Product implements Serializable {
 
     private static final long serialVersionUID = 1129189075285093051L;
@@ -44,7 +44,7 @@ public class Product implements Serializable {
     private String name;
 
     @Column(name = "price")
-    private Number price;
+    private float price;
 
     @Column(name = "created_at", updatable = false, nullable = false)
     @CreationTimestamp
@@ -58,4 +58,9 @@ public class Product implements Serializable {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn
     private Image image;
+
+    @Override
+    public String toString() {
+        return GSON.toJson(this);
+    }
 }
