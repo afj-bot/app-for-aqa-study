@@ -1,14 +1,10 @@
 package com.afj.solution.buyitapp.payload.response;
 
-import java.util.function.Consumer;
-
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * @author Tomash Gombosh
@@ -26,8 +22,4 @@ public class JwtResponse {
             required = true
     )
     private String token;
-
-    public JwtResponse(final Consumer<JwtResponse> builder) {
-        requireNonNull(builder).accept(this);
-    }
 }

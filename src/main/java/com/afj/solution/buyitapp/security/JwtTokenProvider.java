@@ -55,6 +55,7 @@ public class JwtTokenProvider {
         final Map<String, Object> claims = new ConcurrentHashMap<>();
         claims.put("id", user.getId());
         claims.put("roles", user.getAuthorities());
+        claims.put("username", user.getUsername());
         return this.createToken(claims);
     }
 

@@ -4,6 +4,7 @@ package com.afj.solution.buyitapp.common;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +22,9 @@ import static java.util.Objects.isNull;
  */
 @Slf4j
 public final class Patterns {
-    public static final Gson GSON = new GsonBuilder().create();
+    public static final Gson GSON = new GsonBuilder()
+            .registerTypeAdapter(ZonedDateTime.class, new Adapters.ZonedDateTimeAdapter())
+            .create();
 
     public static final String RESPONSE_SUCCESS = "Success";
     public static final String STATUS_FAILED = "Failed";
