@@ -1,10 +1,8 @@
 package com.afj.solution.buyitapp.payload.request;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
-
 import javax.validation.constraints.NotEmpty;
 
 import io.swagger.annotations.ApiModel;
@@ -28,10 +26,11 @@ public class CreateOrderRequest implements Serializable {
 
     @ApiModelProperty(
             name = "productIds",
-            dataType = "Set",
+            dataType = "Array",
             value = "Product ids",
             example = "['4b04d000-6738-4e6d-8d53-8dfb9e4f4761', '6901e91c-b229-4cc6-9889-0e0116077877']",
             required = true
     )
-    private Set<UUID> productIds = new HashSet<>();
+    @NotEmpty(message = "Can not create an order without products")
+    private List<UUID> productIds;
 }

@@ -6,10 +6,12 @@ import javax.validation.Valid;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -39,7 +41,7 @@ public class OrderController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @ApiOperation("Create a new order")
+    @ApiOperation(value = "Create a new order", notes = "Anonymous Role", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 201, message = "Order created successfully"),
             @ApiResponse(code = 500, message = "Internal server error"),
@@ -47,7 +49,7 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public @ResponseBody
-    OrderResponse createOrder(@Valid final CreateOrderRequest request) {
+    OrderResponse createOrder(@Valid @RequestBody final CreateOrderRequest request) {
         final UUID userId = jwtTokenProvider.getUuidFromToken(jwtTokenProvider.getToken().substring(7));
         log.info("Receive create order request for id -> {}", userId);
         return orderService.create(request, userId);

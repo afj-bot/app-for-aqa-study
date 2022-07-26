@@ -1,5 +1,6 @@
 package com.afj.solution.buyitapp.service.order;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -39,7 +40,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderResponse create(final CreateOrderRequest createOrderRequest,
                                 final UUID userId) {
-
         log.info("Create order for products {}", createOrderRequest.getProductIds());
         final Set<Product> products = createOrderRequest
                 .getProductIds()
@@ -50,7 +50,7 @@ public class OrderServiceImpl implements OrderService {
         final double total = products.stream().mapToDouble(Product::getPrice).sum();
         log.info("Count total price {}", total);
         final Order order = orderRepository.save(new Order(o -> {
-            o.setProductIds(createOrderRequest.getProductIds());
+            o.setProductIds(new HashSet<>(createOrderRequest.getProductIds()));
             o.setUserId(userId);
             o.setStatus(OrderStatus.PENDING);
             o.setTotal((float) total);

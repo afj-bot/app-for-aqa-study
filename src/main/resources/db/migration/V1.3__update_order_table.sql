@@ -24,8 +24,8 @@ CREATE INDEX FKbjreta8rasuberu69pig1ac75
 
 ALTER TABLE user_order
     DROP FOREIGN KEY user_order_ibfk_1;
-
-DROP INDEX FKf812pygec41i5jo6oduhrr022 ON user_order;
+ALTER TABLE user_order
+    DROP COLUMN product_id;
 
 
 
