@@ -22,7 +22,6 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import static com.afj.solution.buyitapp.common.Patterns.GSON;
 import static java.util.Objects.requireNonNull;
 
 
@@ -72,7 +71,11 @@ public class Image implements Serializable {
 
     @Override
     public String toString() {
-        return GSON.toJson(this);
+        return String.format("{ \"id\": \"%s\", \"fileName\": \"%s\", \"createdAt\": \"%s\", \"updated_at\": \"%s\" }",
+                this.getId(),
+                this.getFileName(),
+                this.getCreatedAt(),
+                this.getUpdatedAt());
     }
 
 }
