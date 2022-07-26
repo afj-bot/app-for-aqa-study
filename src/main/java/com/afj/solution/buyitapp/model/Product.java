@@ -27,7 +27,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.afj.solution.buyitapp.model.enums.Currency;
 
-import static com.afj.solution.buyitapp.common.Patterns.GSON;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -82,6 +81,15 @@ public class Product implements Serializable {
 
     @Override
     public String toString() {
-        return GSON.toJson(this);
+        return String.format("{ \"id\": \"%s\", \"name\": \"%s\", \"description\": \"%s\", \"price\": \"%s\", "
+                        + "\"currency\": \"%s\", \"image\": \"%s\", \"created_at\": \"%s\", \"updated_at\": \"%s\" }",
+                this.getId(),
+                this.getName(),
+                this.getDescription(),
+                this.getPrice(),
+                this.getCurrency(),
+                this.getImage(),
+                this.getCreatedAt(),
+                this.getUpdatedAt());
     }
 }

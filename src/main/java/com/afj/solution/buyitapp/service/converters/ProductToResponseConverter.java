@@ -25,7 +25,6 @@ public class ProductToResponseConverter implements Converter<Product, ProductRes
             productResponse.setDescription(product.getDescription());
             if (nonNull(product.getImage())) {
                 productResponse.setImage(new ImageResponse(imageResponse -> {
-                    imageResponse.setPicture(product.getImage().getPicture());
                     imageResponse.setName(product.getImage().getFileName());
                 }
                 ));
