@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,8 +23,8 @@ public class ErrorControllerAdvice {
 
     @ResponseBody
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler({CustomAuthenticationException.class, AuthenticationException.class})
-    public Response<String> customAuthenticationExceptionHandler(final AuthenticationException ex) {
+    @ExceptionHandler(CustomAuthenticationException.class)
+    public Response<String> customAuthenticationExceptionHandler(final CustomAuthenticationException ex) {
         return generateErrorResponse(ex, HttpStatus.UNAUTHORIZED);
     }
 

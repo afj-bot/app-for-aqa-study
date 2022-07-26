@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AnonymousAuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.afj.solution.buyitapp.security.ApplicationSecurityEntryPoint;
@@ -82,15 +84,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/actuator/**").permitAll()
                 .antMatchers("/swagger-ui/**", "/swagger-resources/**", "/v2/api-docs/**").permitAll()
                 .antMatchers("/api/v1/login").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v1/products").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v1/products/**/image").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/v1/orders").anonymous()
+                .antMatchers(HttpMethod.GET, "/api/v1/products").authenticated()
+                .antMatchers(HttpMethod.GET, "/api/v1/products").anonymous()
+                .antMatchers(HttpMethod.GET, "/api/v1/products/**/image").authenticated()
+                .antMatchers(HttpMethod.GET, "/api/v1/products/**/image").anonymous()
+
                 .antMatchers(HttpMethod.POST, "/api/v1/orders").authenticated()
-                .antMatchers("/api/v1/users/**").authenticated()
+                .antMatchers(HttpMethod.POST, "/api/v1/orders").anonymous()
+
+                .antMatchers("/api/v1/users/**").hasAnyRole("USER", "ADMIN")
+
                 .antMatchers(HttpMethod.POST, "/api/v1/products").hasRole("ADMIN")
+
+                .antMatchers(HttpMethod.POST, "/api/v1/auth/anonymous").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/auth/anonymous").permitAll()
                 .anyRequest()
                 .authenticated();
 
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(tokenAuthenticationFilter(), AnonymousAuthenticationFilter.class);
+        http.authenticationProvider(new AnonymousAuthenticationProvider("anonymous"));
     }
 }
