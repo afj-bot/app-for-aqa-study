@@ -53,7 +53,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .description("E-commerce API for study automation")
                 .license("Apache License Version 2.0")
                 .licenseUrl("https://www.apache.org/licenses/LICENSE-2.0")
-                .version("1.1.0-1")
+                .version(System.getProperty("project.version"))
                 .build();
     }
 
