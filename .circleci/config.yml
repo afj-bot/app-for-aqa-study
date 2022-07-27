@@ -32,7 +32,6 @@ jobs:
             docker tag buy-it-api:latest $IMAGE
             docker push $IMAGE
 
-
 workflows:
   version: 2
   build:
