@@ -30,7 +30,7 @@ jobs:
           docker_layer_caching: true
       - run:
           name: Login to the ERC
-          command: aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin $REPO
+          command: docker login -u AWS -p $(aws ecr get-login-password --region $AWS_REGION) $REPO
       - run:
           name: Build Docker image
           command: docker build -t buy-it-api .
@@ -46,6 +46,6 @@ workflows:
     jobs:
       - test
       - build:
-          filters:
-            branches:
-              only: master
+#          filters:
+#            branches:
+#              only: master
