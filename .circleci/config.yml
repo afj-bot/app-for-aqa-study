@@ -17,10 +17,15 @@ jobs:
           name: Run test
           command: mvn clean test
   build:
-    executor: docker-publisher
+    docker:
+      - image: cimg/openjdk:17.0.3
     steps:
       - checkout
-      - setup_remote_docker
+      - run:
+          name: Package application
+          command: mvn clean package
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Login to the ERC
           command: aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin $REPO
