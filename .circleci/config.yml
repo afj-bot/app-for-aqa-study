@@ -2,7 +2,8 @@ version: 2.1
 executors:
   docker-publisher:
     environment:
-      IMAGE: 738181112533.dkr.ecr.us-east-2.amazonaws.com/buy-it-api:latest
+      REPO: 738181112533.dkr.ecr.us-east-2.amazonaws.com
+      IMAGE: $REPO/buy-it-api:latest
     docker:
       - image: circleci/buildpack-deps:stretch
 
@@ -22,7 +23,7 @@ jobs:
       - setup_remote_docker
       - run:
           name: Login to the ERC
-          command: aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 738181112533.dkr.ecr.us-east-2.amazonaws.com
+          command: aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin $REPO
       - run:
           name: Build Docker image
           command: docker build -t buy-it-api .
