@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.afj.solution.buyitapp.common.Response;
 
-import static com.afj.solution.buyitapp.common.Patterns.generateErrorResponse;
+import static com.afj.solution.buyitapp.constans.Patterns.generateErrorResponse;
 
 /**
  * @author Tomash Gombosh

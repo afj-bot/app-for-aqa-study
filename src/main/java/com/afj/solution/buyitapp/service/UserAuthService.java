@@ -1,6 +1,7 @@
 package com.afj.solution.buyitapp.service;
 
 import java.util.UUID;
+import javax.servlet.http.Cookie;
 
 import org.springframework.http.ResponseCookie;
 
@@ -20,7 +21,7 @@ public interface UserAuthService {
 
     String loginAnonymous(String anonymousCookie, UUID userId);
 
-    void checkAnonymousCookie(String anonymousCookie);
+    Cookie checkAnonymousCookie(Cookie... cookies);
 
     ResponseCookie generateAnonymousCookie();
 }

@@ -2,7 +2,7 @@ package com.afj.solution.buyitapp.exception;
 
 import java.io.Serializable;
 
-import static com.afj.solution.buyitapp.common.Patterns.FAILED_BAD_REQUEST;
+import static com.afj.solution.buyitapp.constans.Patterns.FAILED_BAD_REQUEST;
 
 /**
  * @author Tomash Gombosh

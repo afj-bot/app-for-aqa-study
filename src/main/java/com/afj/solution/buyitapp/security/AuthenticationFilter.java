@@ -23,6 +23,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.afj.solution.buyitapp.service.AppUserDetailsService;
 
+import static com.afj.solution.buyitapp.constans.Redirects.USER_DISABLED_URL;
+import static com.afj.solution.buyitapp.constans.Redirects.USER_LOCKED_URL;
+
 /**
  * @author Tomash Gombosh
  */
@@ -48,13 +51,19 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                     .toList();
             final UUID id = jwtProvider.getUuidFromToken(jwt);
             final UserDetails userDetails = service.loadUserById(id);
-            if (userDetails.isAccountNonLocked() && userDetails.isEnabled()) {
-                final AbstractAuthenticationToken authentication
-                        = getAuth(roles, id, userDetails);
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (!userDetails.isEnabled() || !userDetails.isAccountNonLocked()) {
+                final String redirectUrl = !userDetails.isAccountNonLocked()
+                        ? USER_LOCKED_URL
+                        : USER_DISABLED_URL;
+                response.setStatus(302);
+                response.sendRedirect(redirectUrl);
             }
-
+            final AbstractAuthenticationToken authentication
+                    = getAuth(roles, id, userDetails);
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            log.info("Do internal filtering of the request for {}(enabled -> {}, locked -> {})",
+                    id, userDetails.isEnabled(), userDetails.isAccountNonLocked());
         }
         filterChain.doFilter(request, response);
     }
@@ -62,11 +71,13 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     private AbstractAuthenticationToken getAuth(final Collection<? extends GrantedAuthority> roles,
                                                 final UUID id,
                                                 final UserDetails userDetails) {
-        if (roles.stream().anyMatch(r -> r.getAuthority().equals("ROLE_ANONYMOUS"))) {
+        if (roles.stream().anyMatch(r -> "ROLE_ANONYMOUS".equals(r.getAuthority()))) {
+            log.info("User is anonymous");
             return new AnonymousAuthenticationToken("anonymous",
                     id,
                     roles);
         }
+        log.info("User is authenticated");
         return new UsernamePasswordAuthenticationToken(userDetails,
                 id,
                 roles);

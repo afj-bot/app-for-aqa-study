@@ -1,5 +1,8 @@
 package com.afj.solution.buyitapp.controller.api.v1;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -7,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,9 +25,10 @@ import com.afj.solution.buyitapp.service.UserServiceImpl;
 /**
  * @author Tomash Gombosh
  */
+@Slf4j
+@CrossOrigin(originPatterns = {"http://localhost", ".afj-solution.com"}, allowCredentials = "true")
 @RestController
 @RequestMapping(path = "/api/v1/auth", produces = "application/json; charset=utf-8")
-@Slf4j
 public class AuthController {
 
     private final UserAuthServiceImpl userAuthService;
@@ -60,11 +64,11 @@ public class AuthController {
     })
     @PostMapping("/anonymous")
     public @ResponseBody
-    JwtResponse authAnonymous(@CookieValue(name = "anonymous") final String anonymous) {
+    JwtResponse authAnonymous(final HttpServletRequest request) {
         log.info("Create anonymous token for user");
-        userAuthService.checkAnonymousCookie(anonymous);
+        final Cookie anonymousCookie = userAuthService.checkAnonymousCookie(request.getCookies());
         final User anonymousUser = userService.saveAnonymous();
-        return new JwtResponse(userAuthService.loginAnonymous(anonymous, anonymousUser.getId()));
+        return new JwtResponse(userAuthService.loginAnonymous(anonymousCookie.getValue(), anonymousUser.getId()));
     }
 
 }

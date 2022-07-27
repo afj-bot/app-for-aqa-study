@@ -19,7 +19,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import static com.afj.solution.buyitapp.common.Patterns.GSON;
+import static com.afj.solution.buyitapp.constans.Patterns.GSON;
 import static java.util.Objects.requireNonNull;
 
 

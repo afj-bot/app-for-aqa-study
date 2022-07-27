@@ -15,7 +15,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.afj.solution.buyitapp.security.ApplicationSecurityEntryPoint;
@@ -84,13 +83,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/actuator/**").permitAll()
                 .antMatchers("/swagger-ui/**", "/swagger-resources/**", "/v2/api-docs/**").permitAll()
                 .antMatchers("/api/v1/login").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v1/products").authenticated()
-                .antMatchers(HttpMethod.GET, "/api/v1/products").anonymous()
-                .antMatchers(HttpMethod.GET, "/api/v1/products/**/image").authenticated()
-                .antMatchers(HttpMethod.GET, "/api/v1/products/**/image").anonymous()
+                .antMatchers(HttpMethod.GET, "/api/v1/products")
+                    .hasAnyRole("ANONYMOUS", "USER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/v1/products/**/image")
+                    .hasAnyRole("ANONYMOUS", "USER", "ADMIN")
 
-                .antMatchers(HttpMethod.POST, "/api/v1/orders").authenticated()
-                .antMatchers(HttpMethod.POST, "/api/v1/orders").anonymous()
+                .antMatchers(HttpMethod.POST, "/api/v1/orders")
+                    .hasAnyRole("ANONYMOUS", "USER", "ADMIN")
 
                 .antMatchers("/api/v1/users/**").hasAnyRole("USER", "ADMIN")
 
@@ -102,7 +101,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated();
 
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(tokenAuthenticationFilter(), AnonymousAuthenticationFilter.class);
         http.authenticationProvider(new AnonymousAuthenticationProvider("anonymous"));
     }
 }

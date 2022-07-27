@@ -2,6 +2,7 @@ package com.afj.solution.buyitapp.service;
 
 import java.util.Base64;
 import java.util.UUID;
+import javax.servlet.http.Cookie;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,17 +17,20 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class AnonymousCookieService {
 
-    public UUID decodeAnonymousCookie(final String cookie) {
-        log.info("Decode anonymous cookie {}", cookie);
-        return UUID.fromString(decode(cookie));
+    public UUID decodeAnonymousCookie(final Cookie cookie) {
+        log.info("Decode anonymous cookie {}={}", cookie.getName(), cookie.getValue());
+        return UUID.fromString(decode(cookie.getValue()));
     }
 
     public ResponseCookie generateAnonymousCookie(final UUID temporaryToken) {
+        final String domain = System.getenv("APP_DOMAIN");
+        log.info("Cookie domain is {}", domain);
         final ResponseCookie anonymousCookie = ResponseCookie
                 .from("anonymous", this.encode(temporaryToken.toString()))
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
+                .domain(domain)
                 .maxAge(1800)
                 .build();
         log.info("Generate anonymous cookie {}", anonymousCookie);

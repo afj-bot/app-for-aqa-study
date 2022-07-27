@@ -1,9 +1,11 @@
 package com.afj.solution.buyitapp.service;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.servlet.http.Cookie;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseCookie;
@@ -20,6 +22,8 @@ import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.payload.request.LoginRequest;
 import com.afj.solution.buyitapp.repository.UserRepository;
 import com.afj.solution.buyitapp.security.JwtTokenProvider;
+
+import static java.util.Objects.isNull;
 
 /**
  * @author Tomash Gombosh
@@ -88,11 +92,19 @@ public class UserAuthServiceImpl implements UserAuthService {
     }
 
     @Override
-    public void checkAnonymousCookie(final String anonymousCookie) {
-        final UUID decodeToken = anonymousCookieService.decodeAnonymousCookie(anonymousCookie);
+    public Cookie checkAnonymousCookie(final Cookie[] cookies) {
+        if (isNull(cookies) || cookies.length == 0) {
+            throw new CustomAuthenticationException("Invalid cookie provided");
+        }
+        final Cookie cookie = Arrays.stream(cookies)
+                .filter(c -> "anonymous".equals(c.getName()))
+                .findFirst()
+                .orElseThrow(() -> new CustomAuthenticationException("Invalid cookie provided"));
+        final UUID decodeToken = anonymousCookieService.decodeAnonymousCookie(cookie);
         if (!temporaryTokenService.isTokenExist(decodeToken)) {
             throw new CustomAuthenticationException("Invalid cookie provided");
         }
+        return cookie;
     }
 
     @Override

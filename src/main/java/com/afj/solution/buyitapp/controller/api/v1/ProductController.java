@@ -33,7 +33,7 @@ import com.afj.solution.buyitapp.payload.response.ProductResponse;
 import com.afj.solution.buyitapp.security.JwtTokenProvider;
 import com.afj.solution.buyitapp.service.product.ProductServiceImp;
 
-import static com.afj.solution.buyitapp.common.Patterns.generateSuccessResponse;
+import static com.afj.solution.buyitapp.constans.Patterns.generateSuccessResponse;
 
 /**
  * @author Tomash Gombosh
