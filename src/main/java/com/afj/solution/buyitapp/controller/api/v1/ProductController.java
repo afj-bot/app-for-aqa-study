@@ -33,7 +33,7 @@ import com.afj.solution.buyitapp.payload.response.ProductResponse;
 import com.afj.solution.buyitapp.security.JwtTokenProvider;
 import com.afj.solution.buyitapp.service.product.ProductServiceImp;
 
-import static com.afj.solution.buyitapp.common.Patterns.generateSuccessResponse;
+import static com.afj.solution.buyitapp.constans.Patterns.generateSuccessResponse;
 
 /**
  * @author Tomash Gombosh
@@ -54,7 +54,7 @@ public class ProductController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @ApiOperation("Get products")
+    @ApiOperation(value = "Get products", notes = "Anonymous, User Role", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 200, message = "Products returned successfully"),
             @ApiResponse(code = 500, message = "Internal server error"),
@@ -62,11 +62,13 @@ public class ProductController {
     @GetMapping
     public @ResponseBody
     Page<ProductResponse> getProducts(final Pageable pageable) {
+        final UUID userId = jwtTokenProvider.getUuidFromToken(jwtTokenProvider.getToken().substring(7));
+        log.info("Get products request for id -> {}", userId);
         log.info("Get products by {}", pageable);
         return productService.getProducts(pageable);
     }
 
-    @ApiOperation("Get product image")
+    @ApiOperation(value = "Get product image", notes = "Anonymous, User Role", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 200, message = "Image successfully find"),
             @ApiResponse(code = 404, message = "Image not found"),
@@ -75,11 +77,13 @@ public class ProductController {
     @GetMapping(value = "/{id}/image", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
     public @ResponseBody
     byte[] getImage(@Valid @NotEmpty @PathVariable final UUID id) {
+        final UUID userId = jwtTokenProvider.getUuidFromToken(jwtTokenProvider.getToken().substring(7));
+        log.info("Get an image request for id -> {}", userId);
         log.info("Get an image for product {}", id);
         return productService.getImageByProductId(id);
     }
 
-    @ApiOperation(value = "Create a new product", notes = "ROLE_ADMIN", authorizations = {@Authorization("Bearer")})
+    @ApiOperation(value = "Create a new product", notes = "Admin role", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 201, message = "Product created successfully"),
             @ApiResponse(code = 403, message = "Access denied"),
@@ -87,7 +91,6 @@ public class ProductController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public @ResponseBody
     Response<String> createProduct(@Valid final CreateProductRequest request) {
         final String username = jwtTokenProvider.getUsernameFromToken(jwtTokenProvider.getToken().substring(7));

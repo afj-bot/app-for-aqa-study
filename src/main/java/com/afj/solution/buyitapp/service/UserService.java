@@ -12,5 +12,7 @@ public interface UserService {
 
     User save(User user);
 
+    User saveAnonymous();
+
     UserResponse getMe(UUID userId);
 }

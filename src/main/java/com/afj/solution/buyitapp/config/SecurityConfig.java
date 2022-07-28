@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AnonymousAuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -82,15 +83,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/actuator/**").permitAll()
                 .antMatchers("/swagger-ui/**", "/swagger-resources/**", "/v2/api-docs/**").permitAll()
                 .antMatchers("/api/v1/login").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v1/products").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v1/products/**/image").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/v1/orders").anonymous()
-                .antMatchers(HttpMethod.POST, "/api/v1/orders").authenticated()
-                .antMatchers("/api/v1/users/**").authenticated()
+                .antMatchers(HttpMethod.GET, "/api/v1/products")
+                    .hasAnyRole("ANONYMOUS", "USER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/v1/products/**/image")
+                    .hasAnyRole("ANONYMOUS", "USER", "ADMIN")
+
+                .antMatchers(HttpMethod.POST, "/api/v1/orders")
+                    .hasAnyRole("ANONYMOUS", "USER", "ADMIN")
+
+                .antMatchers("/api/v1/users/**").hasAnyRole("USER", "ADMIN")
+
                 .antMatchers(HttpMethod.POST, "/api/v1/products").hasRole("ADMIN")
+
+                .antMatchers(HttpMethod.POST, "/api/v1/auth/anonymous").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/auth/anonymous").permitAll()
                 .anyRequest()
                 .authenticated();
 
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.authenticationProvider(new AnonymousAuthenticationProvider("anonymous"));
     }
 }

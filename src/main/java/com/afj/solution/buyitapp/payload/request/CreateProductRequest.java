@@ -14,7 +14,7 @@ import lombok.Setter;
 
 import com.afj.solution.buyitapp.model.enums.Currency;
 
-import static com.afj.solution.buyitapp.common.Patterns.GSON;
+import static com.afj.solution.buyitapp.constans.Patterns.GSON;
 
 /**
  * @author Tomash Gombosh

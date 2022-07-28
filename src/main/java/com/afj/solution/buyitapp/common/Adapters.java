@@ -21,11 +21,11 @@ import static java.util.Objects.isNull;
  * @author Tomash Gombosh
  */
 @Slf4j
-class Adapters {
+public class Adapters {
     /**
      * @author Tomash Gombosh
      */
-    static class ZonedDateTimeAdapter extends TypeAdapter<ZonedDateTime> {
+    public static class ZonedDateTimeAdapter extends TypeAdapter<ZonedDateTime> {
         private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
 
         @Override
