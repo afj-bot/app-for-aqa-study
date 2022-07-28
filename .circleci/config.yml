@@ -33,11 +33,6 @@ jobs:
       - aws-cli/setup:
           profile-name: default
       - run:
-          name: Login to the ERC
-          command: |
-            echo $AWS_ACCESS_KEY_ID
-            aws ecr list-images --repository-name buy-it-api
-      - run:
           name: Build Docker image
           command: docker build -t buy-it-api .
       - run:
