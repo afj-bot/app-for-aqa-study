@@ -34,7 +34,9 @@ jobs:
           profile-name: default
       - run:
           name: Build Docker image
-          command: docker build -t buy-it-api .
+          command: | 
+            docker build -t buy-it-api:latest .
+            docker build -t buy-it-api:${CIRCLE_BUILD_NUM} .
       - run:
           name: Publish Docker image
           command: |
