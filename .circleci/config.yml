@@ -7,7 +7,7 @@ executors:
     docker:
       - image: circleci/buildpack-deps:stretch
 orbs:
-  aws-cli: circleci/aws-cli@3.1
+  aws-cli: circleci/aws-cli@3.1.1
 
 jobs:
   test:
@@ -29,9 +29,8 @@ jobs:
           command: mvn clean package -Dproject.version=1.1.0-${CIRCLE_BUILD_NUM}
       - setup_remote_docker:
           docker_layer_caching: true
-      - run:
-          name: Install AWS CLI
-          command: apt-get update && apt-get install awscli
+      - aws-cli/setup:
+          profile-name: default
       - run:
           name: Login to the ERC
           command: aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $REPO
