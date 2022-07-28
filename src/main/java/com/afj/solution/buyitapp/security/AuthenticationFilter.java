@@ -2,6 +2,7 @@ package com.afj.solution.buyitapp.security;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.UUID;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,6 +22,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.afj.solution.buyitapp.service.AppUserDetailsService;
+
+import static com.afj.solution.buyitapp.constans.Redirects.USER_DISABLED_URL;
+import static com.afj.solution.buyitapp.constans.Redirects.USER_LOCKED_URL;
 
 /**
  * @author Tomash Gombosh
@@ -32,6 +38,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private AppUserDetailsService service;
 
+
     @Override
     protected void doFilterInternal(final HttpServletRequest request,
                                     final HttpServletResponse response,
@@ -42,18 +49,37 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                     .stream()
                     .map(r -> new SimpleGrantedAuthority(r.get("authority")))
                     .toList();
-            final String username = jwtProvider.getUsernameFromToken(jwt);
-            final UserDetails userDetails = service.loadUserByUsername(username);
-            if (userDetails.isAccountNonLocked() && userDetails.isEnabled()) {
-                final UsernamePasswordAuthenticationToken authentication
-                        = new UsernamePasswordAuthenticationToken(userDetails,
-                        null,
-                        roles);
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            final UUID id = jwtProvider.getUuidFromToken(jwt);
+            final UserDetails userDetails = service.loadUserById(id);
+            if (!userDetails.isEnabled() || !userDetails.isAccountNonLocked()) {
+                final String redirectUrl = !userDetails.isAccountNonLocked()
+                        ? USER_LOCKED_URL
+                        : USER_DISABLED_URL;
+                response.setStatus(302);
+                response.sendRedirect(redirectUrl);
             }
+            final AbstractAuthenticationToken authentication
+                    = getAuth(roles, id, userDetails);
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            log.info("Do internal filtering of the request for {}(enabled -> {}, locked -> {})",
+                    id, userDetails.isEnabled(), userDetails.isAccountNonLocked());
         }
-
         filterChain.doFilter(request, response);
+    }
+
+    private AbstractAuthenticationToken getAuth(final Collection<? extends GrantedAuthority> roles,
+                                                final UUID id,
+                                                final UserDetails userDetails) {
+        if (roles.stream().anyMatch(r -> "ROLE_ANONYMOUS".equals(r.getAuthority()))) {
+            log.info("User is anonymous");
+            return new AnonymousAuthenticationToken("anonymous",
+                    id,
+                    roles);
+        }
+        log.info("User is authenticated");
+        return new UsernamePasswordAuthenticationToken(userDetails,
+                id,
+                roles);
     }
 }

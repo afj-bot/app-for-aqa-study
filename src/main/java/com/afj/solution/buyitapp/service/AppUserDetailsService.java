@@ -1,5 +1,7 @@
 package com.afj.solution.buyitapp.service;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,5 +23,9 @@ public class AppUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(final String username) {
         return userAuthService.findByUsername(username);
+    }
+
+    public UserDetails loadUserById(final UUID id) {
+        return userAuthService.findById(id);
     }
 }

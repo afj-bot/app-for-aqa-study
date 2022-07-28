@@ -73,7 +73,7 @@ public class JwtTokenProvider {
     public String getUsernameFromToken(final String token) {
         requireNonNull(tokenSecret, "Initialization of the Token Provider was incorrect use constructor or setter method");
 
-        if (this.validateToken(token)) {
+        if (!token.isEmpty() && this.validateToken(token)) {
             final Claims claims = Jwts.parser()
                     .setSigningKey(tokenSecret)
                     .parseClaimsJws(token)
@@ -86,7 +86,7 @@ public class JwtTokenProvider {
     public List<Map<String, String>> getRoleFromToken(final String token) {
         requireNonNull(tokenSecret, "Initialization of the Token Provider was incorrect use constructor or setter method");
 
-        if (this.validateToken(token)) {
+        if (!token.isEmpty() && this.validateToken(token)) {
             final Claims claims = Jwts.parser()
                     .setSigningKey(tokenSecret)
                     .parseClaimsJws(token)
@@ -99,7 +99,7 @@ public class JwtTokenProvider {
     public UUID getUuidFromToken(final String token) {
         requireNonNull(tokenSecret, "Initialization of the Token Provider was incorrect use constructor or setter method");
 
-        if (this.validateToken(token)) {
+        if (!token.isEmpty() && this.validateToken(token)) {
             final Claims claims = Jwts.parser()
                     .setSigningKey(tokenSecret)
                     .parseClaimsJws(token)
@@ -148,7 +148,7 @@ public class JwtTokenProvider {
                 return token;
             }
         }
-        return "";
+        return "Bearer ";
     }
 
     public String getUserUuid() {
