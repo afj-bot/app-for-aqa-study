@@ -3,7 +3,6 @@ package com.afj.solution.buyitapp.payload.request;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 import io.swagger.annotations.ApiModel;

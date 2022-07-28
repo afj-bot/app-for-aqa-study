@@ -2,24 +2,22 @@ package com.afj.solution.buyitapp.service;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
-import com.afj.solution.buyitapp.common.Response;
-import com.afj.solution.buyitapp.payload.request.CreateUserRequest;
-import com.afj.solution.buyitapp.service.converters.CreateUserRequestToUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.afj.solution.buyitapp.common.Response;
 import com.afj.solution.buyitapp.exception.EntityAlreadyExistsException;
 import com.afj.solution.buyitapp.exception.EntityNotFoundException;
 import com.afj.solution.buyitapp.model.User;
+import com.afj.solution.buyitapp.payload.request.CreateUserRequest;
 import com.afj.solution.buyitapp.payload.response.UserResponse;
 import com.afj.solution.buyitapp.repository.UserRepository;
+import com.afj.solution.buyitapp.service.converters.CreateUserRequestToUser;
 import com.afj.solution.buyitapp.service.converters.UserToResponseConverter;
 
 import static com.afj.solution.buyitapp.constans.Patterns.generateSuccessResponse;
