@@ -6,7 +6,6 @@ import javax.validation.Valid;
 
 import com.afj.solution.buyitapp.common.Response;
 import com.afj.solution.buyitapp.payload.request.CreateUserRequest;
-import com.afj.solution.buyitapp.service.converters.CreateUserRequestToUser;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -33,15 +32,12 @@ public class UserController {
     private final UserServiceImpl userService;
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final CreateUserRequestToUser createUserRequestToUser;
 
     @Autowired
     public UserController(final UserServiceImpl userService,
-                          final JwtTokenProvider jwtTokenProvider,
-                          final CreateUserRequestToUser createUserRequestToUser) {
+                          final JwtTokenProvider jwtTokenProvider) {
         this.userService = userService;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.createUserRequestToUser = createUserRequestToUser;
     }
 
     @ApiOperation(value = "Get my account data", notes = "Anonymous, User Role", authorizations = {@Authorization("Bearer")})

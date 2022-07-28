@@ -1,6 +1,7 @@
 package com.afj.solution.buyitapp.service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -67,7 +68,7 @@ public class UserServiceImpl implements UserService {
             user.setAccountNonLocked(true);
             user.setEnabled(true);
             user.setCredentialsNonExpired(true);
-            user.setAuthorities(Set.of(new SimpleGrantedAuthority("ROLE_ANONYMOUS")));
+            user.setAuthorities(new HashSet<>(List.of(new SimpleGrantedAuthority("ROLE_ANONYMOUS"))));
         }));
     }
 

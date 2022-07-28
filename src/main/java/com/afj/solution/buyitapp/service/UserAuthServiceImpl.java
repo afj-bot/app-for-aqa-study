@@ -1,6 +1,8 @@
 package com.afj.solution.buyitapp.service;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -80,7 +82,7 @@ public class UserAuthServiceImpl implements UserAuthService {
 
     @Override
     public String loginAnonymous(final String anonymousCookie, final UUID userId) {
-        final Set<GrantedAuthority> roles = Set.of(new SimpleGrantedAuthority("ROLE_ANONYMOUS"));
+        final Set<GrantedAuthority> roles = new HashSet<>(List.of(new SimpleGrantedAuthority("ROLE_ANONYMOUS")));
         final AnonymousAuthenticationToken authenticationToken = new AnonymousAuthenticationToken("anonymous", userId.toString(), roles);
         authenticationManager.authenticate(authenticationToken);
 

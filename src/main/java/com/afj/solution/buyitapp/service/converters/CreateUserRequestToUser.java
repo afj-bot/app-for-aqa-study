@@ -1,15 +1,14 @@
 package com.afj.solution.buyitapp.service.converters;
 
-import java.util.Set;
+import java.util.HashSet;
+import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Service;
 
 import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.payload.request.CreateUserRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 /**
  * @author Kristian Gombosh
@@ -33,7 +32,7 @@ public class CreateUserRequestToUser implements Converter<CreateUserRequest, Use
             user.setAccountNonLocked(true);
             user.setEnabled(true);
             user.setCredentialsNonExpired(true);
-            user.setAuthorities(Set.of(new SimpleGrantedAuthority("ROLE_USER")));
+            user.setAuthorities(new HashSet<>(List.of(new SimpleGrantedAuthority("ROLE_ANONYMOUS"))));
         });
     }
 }
