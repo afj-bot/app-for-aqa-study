@@ -1,4 +1,4 @@
-package com.afj.solution.buyitapp.common;
+package com.afj.solution.buyitapp.constans;
 
 
 import java.io.IOException;
@@ -14,6 +14,10 @@ import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+
+import com.afj.solution.buyitapp.common.Adapters;
+import com.afj.solution.buyitapp.common.Error;
+import com.afj.solution.buyitapp.common.Response;
 
 import static java.util.Objects.isNull;
 
@@ -98,7 +102,13 @@ public final class Patterns {
     public static String generateUnAuthorizedErrorResponse() {
         log.error("Status -> 401, message -> Un Authorized, identify -> AuthenticationException");
 
-        final Error error = new Error("Authentication required", "AuthenticationException");
+        return generateUnAuthorizedErrorResponse("Authentication required");
+    }
+
+    public static String generateUnAuthorizedErrorResponse(final String message) {
+        log.error("Status -> 401, message -> {}, identify -> AuthenticationException", message);
+
+        final Error error = new Error(message, "AuthenticationException");
         final Response.Status status = new Response.Status(HttpStatus.UNAUTHORIZED.name(), Collections.singletonList(error));
         final Response<String> response = new Response<>(STATUS_FAILED, status, HttpStatus.UNAUTHORIZED);
         return GSON.toJson(response);

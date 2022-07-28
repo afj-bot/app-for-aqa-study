@@ -49,6 +49,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User saveAnonymous() {
+        return userRepository.save(new User(user -> {
+            user.setAccountNonExpired(true);
+            user.setAccountNonLocked(true);
+            user.setEnabled(true);
+            user.setCredentialsNonExpired(true);
+        }));
+    }
+
+    @Override
     public UserResponse getMe(final UUID userId) {
         final User user = userRepository
                 .findById(userId).orElseThrow(() -> new EntityNotFoundException(User.class, "id"));

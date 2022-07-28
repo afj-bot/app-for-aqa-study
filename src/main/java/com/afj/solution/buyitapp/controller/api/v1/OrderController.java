@@ -41,7 +41,7 @@ public class OrderController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @ApiOperation(value = "Create a new order", notes = "Anonymous Role", authorizations = {@Authorization("Bearer")})
+    @ApiOperation(value = "Create a new order", notes = "Anonymous, User Role", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 201, message = "Order created successfully"),
             @ApiResponse(code = 500, message = "Internal server error"),

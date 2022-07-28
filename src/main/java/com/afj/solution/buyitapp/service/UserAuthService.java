@@ -1,5 +1,10 @@
 package com.afj.solution.buyitapp.service;
 
+import java.util.UUID;
+import javax.servlet.http.Cookie;
+
+import org.springframework.http.ResponseCookie;
+
 import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.payload.request.LoginRequest;
 
@@ -10,5 +15,13 @@ public interface UserAuthService {
 
     User findByUsername(String username);
 
+    User findById(UUID id);
+
     String login(LoginRequest loginRequest);
+
+    String loginAnonymous(String anonymousCookie, UUID userId);
+
+    Cookie checkAnonymousCookie(Cookie... cookies);
+
+    ResponseCookie generateAnonymousCookie();
 }

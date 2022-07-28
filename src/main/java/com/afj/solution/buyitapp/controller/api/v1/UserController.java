@@ -44,7 +44,7 @@ public class UserController {
         this.createUserRequestToUser = createUserRequestToUser;
     }
 
-    @ApiOperation(value = "Get my account data", authorizations = {@Authorization("Bearer")})
+    @ApiOperation(value = "Get my account data", notes = "Anonymous, User Role", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 200, message = "Request was successfully"),
             @ApiResponse(code = 401, message = "Invalid username/password supplied"),

@@ -10,8 +10,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
-import static com.afj.solution.buyitapp.common.Patterns.generateAccessDeniedErrorResponse;
-import static com.afj.solution.buyitapp.common.Patterns.generateUnAuthorizedErrorResponse;
+import static com.afj.solution.buyitapp.constans.Patterns.generateAccessDeniedErrorResponse;
+import static com.afj.solution.buyitapp.constans.Patterns.generateUnAuthorizedErrorResponse;
 
 /**
  * @author Tomash Gombosh
@@ -25,8 +25,8 @@ public class ApplicationSecurityEntryPoint implements AuthenticationEntryPoint, 
                          final AuthenticationException exception) throws IOException {
         httpServletResponse.setContentType("application/json;charset=UTF-8");
         httpServletResponse.setStatus(401);
-        httpServletResponse.getWriter().write(generateUnAuthorizedErrorResponse());
-
+        httpServletResponse.getWriter().write(generateUnAuthorizedErrorResponse(exception.getMessage()));
+        log.error("Authentication entry point commence method return an exception {}", exception.getMessage());
     }
 
     @Override
@@ -37,6 +37,7 @@ public class ApplicationSecurityEntryPoint implements AuthenticationEntryPoint, 
         httpServletResponse.setContentType("application/json;charset=UTF-8");
         httpServletResponse.setStatus(403);
         httpServletResponse.getWriter().write(generateAccessDeniedErrorResponse());
+        log.error("Access denied handler handle method return an exception {}", exception.getMessage());
     }
 
 }
