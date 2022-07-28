@@ -4,6 +4,7 @@ executors:
     environment:
       REPO: 738181112533.dkr.ecr.us-east-2.amazonaws.com
       IMAGE: $REPO/buy-it-api:latest
+      IMAGE_NUM: $REPO/buy-it-api:${CIRCLE_BUILD_NUM}
     docker:
       - image: circleci/buildpack-deps:stretch
 orbs:
@@ -33,15 +34,17 @@ jobs:
           profile-name: default
       - run:
           name: Login to the ERC
-          command: aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $REPO
+          command: aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${REPO}
       - run:
           name: Build Docker image
           command: docker build -t buy-it-api .
       - run:
           name: Publish Docker image
           command: |
-            docker tag buy-it-api:latest $IMAGE
-            docker push $IMAGE
+            docker tag buy-it-api:latest ${IMAGE}
+            docker tag buy-it-api:${CIRCLE_BUILD_NUM} ${IMAGE_NUM}
+            docker push ${IMAGE}
+            docker push ${IMAGE_NUM}
 
 workflows:
   version: 2
