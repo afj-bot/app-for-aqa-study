@@ -40,6 +40,8 @@ jobs:
       - run:
           name: Publish Docker image
           command: |
+            echo ${IMAGE}
+            echo ${IMAGE_NUM}
             docker tag buy-it-api:latest ${IMAGE}
             docker tag buy-it-api:${CIRCLE_BUILD_NUM} ${IMAGE_NUM}
             docker push ${IMAGE}
