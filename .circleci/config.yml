@@ -3,8 +3,8 @@ executors:
   docker-publisher:
     environment:
       REPO: 738181112533.dkr.ecr.us-east-2.amazonaws.com
-      IMAGE: ${REPO}/buy-it-api:latest
-      IMAGE_NUM: ${REPO}/buy-it-api:${CIRCLE_BUILD_NUM}
+      IMAGE: 738181112533.dkr.ecr.us-east-2.amazonaws.com/buy-it-api:latest
+      IMAGE_NUM: 738181112533.dkr.ecr.us-east-2.amazonaws.com/buy-it-api:${CIRCLE_BUILD_NUM}
     docker:
       - image: circleci/buildpack-deps:stretch
 orbs:
@@ -40,8 +40,8 @@ jobs:
       - run:
           name: Publish Docker image
           command: |
-            echo ${IMAGE}
-            echo ${IMAGE_NUM}
+            echo $IMAGE
+            echo $IMAGE_NUM
             docker tag buy-it-api:latest ${IMAGE}
             docker tag buy-it-api:${CIRCLE_BUILD_NUM} ${IMAGE_NUM}
             docker push ${IMAGE}
