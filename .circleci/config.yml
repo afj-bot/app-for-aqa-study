@@ -18,7 +18,7 @@ jobs:
   build:
     environment:
       IMAGE: 738181112533.dkr.ecr.us-east-2.amazonaws.com/buy-it-api:latest
-      IMAGE_NUM: 738181112533.dkr.ecr.us-east-2.amazonaws.com/buy-it-api:${CIRCLE_BUILD_NUM}
+      IMAGE_NUM: 738181112533.dkr.ecr.us-east-2.amazonaws.com/buy-it-api
     resource_class: medium
     docker:
       - image: cimg/openjdk:17.0.3
@@ -42,9 +42,9 @@ jobs:
             echo ${IMAGE}
             echo ${IMAGE_NUM}
             docker tag buy-it-api:latest ${IMAGE}
-            docker tag buy-it-api:${CIRCLE_BUILD_NUM} ${IMAGE_NUM}
+            docker tag buy-it-api:${CIRCLE_BUILD_NUM} ${IMAGE_NUM}:${CIRCLE_BUILD_NUM}
             docker push ${IMAGE}
-            docker push ${IMAGE_NUM}
+            docker push ${IMAGE_NUM}:${CIRCLE_BUILD_NUM}
 
 workflows:
   version: 2
