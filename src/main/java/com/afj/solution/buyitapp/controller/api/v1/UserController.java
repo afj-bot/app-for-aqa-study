@@ -20,7 +20,7 @@ import com.afj.solution.buyitapp.payload.response.UserResponse;
 import com.afj.solution.buyitapp.security.JwtTokenProvider;
 import com.afj.solution.buyitapp.service.UserServiceImpl;
 
-import static com.afj.solution.buyitapp.common.Patterns.generateSuccessResponse;
+import static com.afj.solution.buyitapp.constans.Patterns.generateSuccessResponse;
 
 /**
  * @author Tomash Gombosh
@@ -60,7 +60,7 @@ public class UserController {
         return userService.getMe(userId);
     }
 
-    @ApiOperation("Create New User")
+    @ApiOperation(value = "Create New User", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 201, message = "User created"),
             @ApiResponse(code = 409, message = "User Already exists"),
@@ -70,7 +70,9 @@ public class UserController {
     @PostMapping
     public @ResponseBody
     Response<String> create(@Valid @RequestBody final CreateUserRequest createUserRequest) {
-        userService.save(createUserRequestToUser.convert(createUserRequest));
+        final String token = jwtTokenProvider.getToken().substring(7);
+        final UUID userId = jwtTokenProvider.getUuidFromToken(token);
+        userService.createUser(createUserRequest, userId);
         return generateSuccessResponse();
     }
 

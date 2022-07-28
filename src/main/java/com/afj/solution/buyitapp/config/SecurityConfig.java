@@ -91,7 +91,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/v1/orders")
                     .hasAnyRole("ANONYMOUS", "USER", "ADMIN")
 
-                .antMatchers("/api/v1/users/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/api/v1/users/**").permitAll()
 
                 .antMatchers(HttpMethod.POST, "/api/v1/products").hasRole("ADMIN")
 

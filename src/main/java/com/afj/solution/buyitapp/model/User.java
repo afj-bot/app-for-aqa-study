@@ -27,6 +27,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import static com.afj.solution.buyitapp.constans.Patterns.GSON;
+import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -139,5 +140,29 @@ public class User implements UserDetails, Serializable {
     @Override
     public String toString() {
         return GSON.toJson(this);
+    }
+
+    public User update(final User newUser, final User currentUser) {
+        final String username = isNull(newUser.username) ? this.username : newUser.username;
+        final String email = isNull(newUser.email) ? this.email : newUser.email;
+        final String firstName = isNull(newUser.firstName) ? this.firstName : newUser.firstName;
+        final String lastName = isNull(newUser.lastName) ? this.lastName : newUser.lastName;
+        final String phoneNumber = isNull(newUser.phoneNumber) ? this.phoneNumber : newUser.phoneNumber;
+        final String homeAddress = isNull(newUser.homeAddress) ? this.homeAddress : newUser.homeAddress;
+        final ZonedDateTime dateOfBirth = isNull(newUser.dateOfBirth) ? this.dateOfBirth : newUser.dateOfBirth;
+        final Set<GrantedAuthority> authorities = isNull(newUser.authorities) ? this.authorities : newUser.authorities;
+        currentUser.setFirstName(firstName);
+        currentUser.setLastName(lastName);
+        currentUser.setEmail(email);
+        currentUser.setUsername(username);
+        currentUser.setPhoneNumber(phoneNumber);
+        currentUser.setHomeAddress(homeAddress);
+        currentUser.setDateOfBirth(dateOfBirth);
+        currentUser.setAccountNonExpired(accountNonExpired);
+        currentUser.setAccountNonLocked(accountNonLocked);
+        currentUser.setCredentialsNonExpired(credentialsNonExpired);
+        currentUser.setEnabled(enabled);
+        currentUser.setAuthorities(authorities);
+        return currentUser;
     }
 }

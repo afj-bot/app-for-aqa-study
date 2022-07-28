@@ -1,15 +1,21 @@
 package com.afj.solution.buyitapp.service.converters;
 
+import java.util.Set;
+
 import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.payload.request.CreateUserRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Kristian Gombosh
  */
 @Slf4j
-@Component
+@Service
 public class CreateUserRequestToUser implements Converter<CreateUserRequest, User> {
 
     @Override
@@ -23,6 +29,11 @@ public class CreateUserRequestToUser implements Converter<CreateUserRequest, Use
             user.setDateOfBirth(createUserRequest.getDateOfBirth());
             user.setHomeAddress(createUserRequest.getHomeAddress());
             user.setPassword(createUserRequest.getPassword());
+            user.setAccountNonExpired(true);
+            user.setAccountNonLocked(true);
+            user.setEnabled(true);
+            user.setCredentialsNonExpired(true);
+            user.setAuthorities(Set.of(new SimpleGrantedAuthority("ROLE_USER")));
         });
     }
 }

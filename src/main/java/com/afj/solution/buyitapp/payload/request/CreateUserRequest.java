@@ -13,8 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
-import static com.afj.solution.buyitapp.common.Patterns.GSON;
+import static com.afj.solution.buyitapp.constans.Patterns.GSON;
 
 /**
  * @author Kristian Gombosh
