@@ -3,8 +3,8 @@ executors:
   docker-publisher:
     environment:
       REPO: 738181112533.dkr.ecr.us-east-2.amazonaws.com
-      IMAGE: $REPO/buy-it-api:latest
-      IMAGE_NUM: $REPO/buy-it-api:${CIRCLE_BUILD_NUM}
+      IMAGE: ${REPO}/buy-it-api:latest
+      IMAGE_NUM: ${REPO}/buy-it-api:${CIRCLE_BUILD_NUM}
     docker:
       - image: circleci/buildpack-deps:stretch
 orbs:
