@@ -17,9 +17,8 @@ jobs:
           command: mvn clean test
   build:
     environment:
-      REPO: 738181112533.dkr.ecr.us-east-2.amazonaws.com
-      IMAGE: $REPO/buy-it-api:latest
-      IMAGE_NUM: $REPO/buy-it-api:${CIRCLE_BUILD_NUM}
+      IMAGE: 738181112533.dkr.ecr.us-east-2.amazonaws.com/buy-it-api:latest
+      IMAGE_NUM: 738181112533.dkr.ecr.us-east-2.amazonaws.com/buy-it-api:${CIRCLE_BUILD_NUM}
     resource_class: medium
     docker:
       - image: cimg/openjdk:17.0.3
