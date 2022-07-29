@@ -1,6 +1,8 @@
 package com.afj.solution.buyitapp.service.product;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -20,9 +22,19 @@ public interface ProductService {
 
     Product save(CreateProductRequest createProductRequest);
 
+    Product save(Product product);
+
     ProductResponse addImageToProduct(UUID id, MultipartFile file) throws IOException;
 
     byte[] getImageByProductId(UUID id);
 
     Product findById(UUID id);
+
+    List<Product> productsWithEmptyQuantity(List<UUID> productIds);
+
+    Set<Product> getProductsById(List<UUID> productIds);
+
+    void decreaseProductQuantity(UUID productId, int quantity);
+
+    void increaseProductQuantity(UUID productId, int quantity);
 }

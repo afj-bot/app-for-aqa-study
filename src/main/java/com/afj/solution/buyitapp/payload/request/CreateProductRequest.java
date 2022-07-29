@@ -2,6 +2,8 @@ package com.afj.solution.buyitapp.payload.request;
 
 import java.io.Serializable;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -36,7 +38,7 @@ public class CreateProductRequest implements Serializable {
             required = true
     )
     @NotEmpty
-    @Size(max = 255)
+    @Size(max = 255, message = "error.value.string.max")
     private String name;
 
     @ApiModelProperty(
@@ -46,8 +48,19 @@ public class CreateProductRequest implements Serializable {
             example = "44.4",
             required = true
     )
-    @Digits(fraction = 2, integer = 10)
+    @Digits(fraction = 2, integer = 10, message = "error.value.float")
     private float price;
+
+    @ApiModelProperty(
+            name = "quantity",
+            dataType = "int",
+            value = "Quantity of the product",
+            example = "5",
+            required = true
+    )
+    @Min(value = 1, message = "error.value.non-zero")
+    @Max(value = 8_388_607, message = "error.value.max")
+    private int quantity;
 
     @ApiModelProperty(
             name = "currency",
@@ -63,7 +76,7 @@ public class CreateProductRequest implements Serializable {
             value = "Product description",
             example = "Beautiful red flower"
     )
-    @Size(max = 255)
+    @Size(max = 255, message = "error.value.string.max")
     private String description;
 
     @Override

@@ -1,7 +1,11 @@
 package com.afj.solution.buyitapp.service.product;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +21,7 @@ import com.afj.solution.buyitapp.model.Product;
 import com.afj.solution.buyitapp.payload.request.CreateProductRequest;
 import com.afj.solution.buyitapp.payload.response.ProductResponse;
 import com.afj.solution.buyitapp.repository.ProductRepository;
+import com.afj.solution.buyitapp.service.converters.ProductRequestToProductConverter;
 import com.afj.solution.buyitapp.service.converters.ProductToResponseConverter;
 
 import static java.util.Objects.nonNull;
@@ -29,31 +34,35 @@ import static java.util.Objects.nonNull;
 public class ProductServiceImp implements ProductService {
 
     private final ProductRepository productRepository;
-    private final ProductToResponseConverter converter;
+    private final ProductToResponseConverter productToResponseConverter;
+    private final ProductRequestToProductConverter productRequestToProductConverter;
 
     @Autowired
     public ProductServiceImp(final ProductRepository productRepository,
-                             final ProductToResponseConverter converter) {
+                             final ProductToResponseConverter productToResponseConverter,
+                             final ProductRequestToProductConverter productRequestToProductConverter) {
         this.productRepository = productRepository;
-        this.converter = converter;
+        this.productToResponseConverter = productToResponseConverter;
+        this.productRequestToProductConverter = productRequestToProductConverter;
     }
 
     @Override
     public Page<ProductResponse> getProducts(final Pageable pageable) {
-        return productRepository.findAll(pageable).map(converter::convert);
+        return productRepository.findAll(pageable).map(productToResponseConverter::convert);
     }
 
     @Override
     public Product save(final CreateProductRequest createProductRequest) {
         log.info("Create product {} from request", createProductRequest);
-        final Product product = productRepository.save(new Product(p -> {
-            p.setName(createProductRequest.getName());
-            p.setPrice(createProductRequest.getPrice());
-            p.setCurrency(createProductRequest.getCurrency());
-            p.setDescription(createProductRequest.getDescription());
-        }));
+        final Product product = this.save(productRequestToProductConverter.convert(createProductRequest));
         log.info("Successfully create a product {}", product);
         return product;
+    }
+
+    @Override
+    public Product save(final Product product) {
+        log.info("Save the product with name {} and id {}", product.getName(), product.getId());
+        return productRepository.save(product);
     }
 
     @Override
@@ -69,7 +78,7 @@ public class ProductServiceImp implements ProductService {
             }));
             productRepository.save(product);
             log.info("Product {} saved successfully to database", product.getId());
-            return converter.convert(product);
+            return productToResponseConverter.convert(product);
         }
         throw new BadRequestException(String.format("File extension is incorrect %s", file.getOriginalFilename()));
     }
@@ -87,5 +96,38 @@ public class ProductServiceImp implements ProductService {
                 .orElseThrow(() -> new EntityNotFoundException(Product.class, "id"));
         log.info("Find Product {} by id({})", product, id);
         return product;
+    }
+
+    @Override
+    public List<Product> productsWithEmptyQuantity(final List<UUID> productIds) {
+        return productRepository
+                .findAllById(productIds)
+                .stream()
+                .filter(p -> p.getQuantity() <= 0)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Set<Product> getProductsById(final List<UUID> productIds) {
+        log.info("Get products by id {}", productIds);
+        return new HashSet<>(productRepository.findAllById(productIds));
+    }
+
+    @Override
+    public void decreaseProductQuantity(final UUID productId, final int quantity) {
+        final Product product = this.findById(productId);
+        product.setQuantity(product.getQuantity() - quantity);
+        this.save(product);
+        log.info("Decrease the product {}-{} quantity to {}",
+                product.getId(), product.getName(), product.getQuantity() - quantity);
+    }
+
+    @Override
+    public void increaseProductQuantity(final UUID productId, final int quantity) {
+        final Product product = this.findById(productId);
+        product.setQuantity(product.getQuantity() + quantity);
+        this.save(product);
+        log.info("Decrease the product {}-{} quantity to {}",
+                product.getId(), product.getName(), product.getQuantity());
     }
 }

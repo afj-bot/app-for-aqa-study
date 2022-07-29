@@ -57,7 +57,13 @@ public class ProductResponse implements Serializable {
             example = "44.4 USD"
     )
     private String price;
-
+    @ApiModelProperty(
+            name = "quantity",
+            dataType = "int",
+            value = "Quantity of the product",
+            example = "5"
+    )
+    private int quantity;
     @ApiModelProperty(
             name = "image",
             dataType = "Object",

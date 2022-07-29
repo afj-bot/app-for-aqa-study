@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -92,10 +94,26 @@ public class ProductController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public @ResponseBody
-    Response<String> createProduct(@Valid final CreateProductRequest request) {
+    Response<String> createProduct(@Valid @RequestBody final CreateProductRequest createProductRequest) {
         final String username = jwtTokenProvider.getUsernameFromToken(jwtTokenProvider.getToken().substring(7));
         log.info("Receive create request from username -> {}", username);
-        productService.save(request);
+        productService.save(createProductRequest);
+        return generateSuccessResponse();
+    }
+
+    @ApiOperation(value = "Update the product quantity", notes = "Admin role", authorizations = {@Authorization("Bearer")})
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Product quantity updated successfully"),
+            @ApiResponse(code = 403, message = "Access denied"),
+            @ApiResponse(code = 500, message = "Internal server error"),
+    })
+    @PutMapping("/{id}/quantity")
+    public @ResponseBody
+    Response<String> updateProductQuantity(@Valid @NotEmpty @PathVariable final UUID id,
+                                           @RequestParam("count") final int count) {
+        final String username = jwtTokenProvider.getUsernameFromToken(jwtTokenProvider.getToken().substring(7));
+        log.info("Receive update quantity of product {} request from username -> {}", id, username);
+        productService.increaseProductQuantity(id, count);
         return generateSuccessResponse();
     }
 

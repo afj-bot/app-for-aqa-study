@@ -49,10 +49,10 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public @ResponseBody
-    OrderResponse createOrder(@Valid @RequestBody final CreateOrderRequest request) {
+    OrderResponse createOrder(@Valid @RequestBody final CreateOrderRequest createOrderRequest) {
         final UUID userId = jwtTokenProvider.getUuidFromToken(jwtTokenProvider.getToken().substring(7));
         log.info("Receive create order request for id -> {}", userId);
-        return orderService.create(request, userId);
+        return orderService.create(createOrderRequest, userId);
     }
 
 }

@@ -58,6 +58,9 @@ public class Product implements Serializable {
     @Column(name = "price")
     private float price;
 
+    @Column(name = "quantity")
+    private int quantity;
+
     @Column(name = "currency", columnDefinition = "ENUM('USD', 'UAH', 'EUR')")
     @Enumerated(EnumType.STRING)
     private Currency currency;

@@ -1,6 +1,7 @@
 package com.afj.solution.buyitapp.service.order;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.afj.solution.buyitapp.exception.BadRequestException;
 import com.afj.solution.buyitapp.model.Order;
 import com.afj.solution.buyitapp.model.Product;
 import com.afj.solution.buyitapp.model.enums.OrderStatus;
@@ -41,14 +43,19 @@ public class OrderServiceImpl implements OrderService {
     public OrderResponse create(final CreateOrderRequest createOrderRequest,
                                 final UUID userId) {
         log.info("Create order for products {}", createOrderRequest.getProductIds());
-        final Set<Product> products = createOrderRequest
-                .getProductIds()
-                .stream()
-                .map(productService::findById)
-                .collect(Collectors.toSet());
+        final List<Product> outOfStockProducts = productService
+                .productsWithEmptyQuantity(createOrderRequest.getProductIds());
+        if (!outOfStockProducts.isEmpty()) {
+            log.info("The products is out of the quantity {}", outOfStockProducts);
+            throw new BadRequestException(String.format("error.outOfStock.products %s",
+                    outOfStockProducts.stream().map(Product::getName).collect(Collectors.toList())));
+        }
+        final Set<Product> products = productService.getProductsById(createOrderRequest.getProductIds());
         log.info("Get products from database {}", products);
+
         final double total = products.stream().mapToDouble(Product::getPrice).sum();
         log.info("Count total price {}", total);
+
         final Order order = orderRepository.save(new Order(o -> {
             o.setProductIds(new HashSet<>(createOrderRequest.getProductIds()));
             o.setUserId(userId);
@@ -56,6 +63,8 @@ public class OrderServiceImpl implements OrderService {
             o.setTotal((float) total);
         }));
         log.info("Save order to the database {}", order);
+
+        products.forEach(p -> productService.decreaseProductQuantity(p.getId(), 1));
         final OrderResponse orderResponse = converter.convert(order);
         orderResponse.setProducts(products);
         return orderResponse;

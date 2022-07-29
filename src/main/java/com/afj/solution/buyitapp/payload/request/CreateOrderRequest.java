@@ -19,7 +19,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "CreateProductRequest", description = "Create product request model")
+@ApiModel(value = "CreateOrderRequest", description = "Create product request model")
 public class CreateOrderRequest implements Serializable {
 
     private static final long serialVersionUID = 2968630540737468996L;

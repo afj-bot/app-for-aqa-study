@@ -23,6 +23,7 @@ public class ProductToResponseConverter implements Converter<Product, ProductRes
             productResponse.setName(product.getName());
             productResponse.setPrice(String.format("%s %s", product.getPrice(), product.getCurrency()));
             productResponse.setDescription(product.getDescription());
+            productResponse.setQuantity(product.getQuantity());
             if (nonNull(product.getImage())) {
                 productResponse.setImage(new ImageResponse(imageResponse -> {
                     imageResponse.setName(product.getImage().getFileName());
