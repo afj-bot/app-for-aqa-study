@@ -19,10 +19,12 @@ import com.afj.solution.buyitapp.exception.EntityNotFoundException;
 import com.afj.solution.buyitapp.model.Image;
 import com.afj.solution.buyitapp.model.Product;
 import com.afj.solution.buyitapp.payload.request.CreateProductRequest;
+import com.afj.solution.buyitapp.payload.request.UpdateCharacteristicRequest;
 import com.afj.solution.buyitapp.payload.response.ProductResponse;
 import com.afj.solution.buyitapp.repository.ProductRepository;
 import com.afj.solution.buyitapp.service.converters.ProductRequestToProductConverter;
 import com.afj.solution.buyitapp.service.converters.ProductToResponseConverter;
+import com.afj.solution.buyitapp.service.converters.UpdateCharacteristicRequestToCharacteristicConverter;
 
 import static java.util.Objects.nonNull;
 
@@ -36,14 +38,17 @@ public class ProductServiceImp implements ProductService {
     private final ProductRepository productRepository;
     private final ProductToResponseConverter productToResponseConverter;
     private final ProductRequestToProductConverter productRequestToProductConverter;
+    private final UpdateCharacteristicRequestToCharacteristicConverter converter;
 
     @Autowired
     public ProductServiceImp(final ProductRepository productRepository,
                              final ProductToResponseConverter productToResponseConverter,
-                             final ProductRequestToProductConverter productRequestToProductConverter) {
+                             final ProductRequestToProductConverter productRequestToProductConverter,
+                             final UpdateCharacteristicRequestToCharacteristicConverter converter) {
         this.productRepository = productRepository;
         this.productToResponseConverter = productToResponseConverter;
         this.productRequestToProductConverter = productRequestToProductConverter;
+        this.converter = converter;
     }
 
     @Override
@@ -76,11 +81,23 @@ public class ProductServiceImp implements ProductService {
                 i.setFileName(file.getOriginalFilename());
                 i.setPicture(fileBytes);
             }));
-            productRepository.save(product);
+            this.save(product);
             log.info("Product {} saved successfully to database", product.getId());
             return productToResponseConverter.convert(product);
         }
         throw new BadRequestException(String.format("File extension is incorrect %s", file.getOriginalFilename()));
+    }
+
+    @Override
+    public ProductResponse updateCharacteristicToProduct(final UUID id, final UpdateCharacteristicRequest request) {
+        if (request.getColor().isEmpty() && request.getSize().isEmpty() && request.getAdditionalParams().isEmpty()) {
+            throw new BadRequestException("error.empty.model.provided");
+        }
+        log.info("Add characteristic {} to the product {}", request, id);
+        final Product product = this.findById(id);
+        product.setCharacteristic(converter.convert(request));
+        this.save(product);
+        return productToResponseConverter.convert(product);
     }
 
     @Override

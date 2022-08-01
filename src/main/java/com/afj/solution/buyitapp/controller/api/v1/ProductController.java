@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.afj.solution.buyitapp.common.Response;
 import com.afj.solution.buyitapp.payload.request.CreateProductRequest;
+import com.afj.solution.buyitapp.payload.request.UpdateCharacteristicRequest;
 import com.afj.solution.buyitapp.payload.response.ProductResponse;
 import com.afj.solution.buyitapp.security.JwtTokenProvider;
 import com.afj.solution.buyitapp.service.product.ProductServiceImp;
@@ -116,6 +117,23 @@ public class ProductController {
         productService.increaseProductQuantity(id, count);
         return generateSuccessResponse();
     }
+
+    @ApiOperation(value = "Update the product characteristic", notes = "Admin role", authorizations = {@Authorization("Bearer")})
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Product characteristic updated successfully"),
+            @ApiResponse(code = 403, message = "Access denied"),
+            @ApiResponse(code = 500, message = "Internal server error"),
+    })
+    @PutMapping("/{id}/characteristic")
+    public @ResponseBody
+    Response<String> updateProductCharacteristic(@Valid @NotEmpty @PathVariable final UUID id,
+                                                 @RequestBody final UpdateCharacteristicRequest updateCharacteristicRequest) {
+        final String username = jwtTokenProvider.getUsernameFromToken(jwtTokenProvider.getToken().substring(7));
+        log.info("Receive update characteristic of product {} request from username -> {}", id, username);
+        productService.updateCharacteristicToProduct(id, updateCharacteristicRequest);
+        return generateSuccessResponse();
+    }
+
 
     @ApiOperation(value = "Create a new product", notes = "ROLE_ADMIN", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
