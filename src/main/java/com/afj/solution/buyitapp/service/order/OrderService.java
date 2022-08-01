@@ -11,4 +11,6 @@ import com.afj.solution.buyitapp.payload.response.OrderResponse;
 public interface OrderService {
 
     OrderResponse create(CreateOrderRequest createOrderRequest, UUID userId);
+
+    void cancelOrder(UUID orderId);
 }
