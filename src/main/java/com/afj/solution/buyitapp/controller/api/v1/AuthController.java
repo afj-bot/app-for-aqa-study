@@ -48,7 +48,7 @@ public class AuthController {
     })
     @GetMapping("/anonymous")
     public @ResponseBody
-    ResponseEntity<Void> authAnonymous() {
+    ResponseEntity<?> authAnonymous() {
         log.info("Set cookie to generate anonymous token");
         return ResponseEntity
                 .ok()

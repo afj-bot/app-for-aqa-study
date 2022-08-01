@@ -9,7 +9,10 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,6 +56,20 @@ public class OrderController {
         final UUID userId = jwtTokenProvider.getUuidFromToken(jwtTokenProvider.getToken().substring(7));
         log.info("Receive create order request for id -> {}", userId);
         return orderService.create(createOrderRequest, userId);
+    }
+
+    @ApiOperation(value = "Get my orders", notes = "Anonymous, User Role", authorizations = {@Authorization("Bearer")})
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Order created successfully"),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 500, message = "Internal server error"),
+    })
+    @GetMapping("/my")
+    public @ResponseBody
+    Page<OrderResponse> getMyOrders(final Pageable pageable) {
+        final UUID userId = jwtTokenProvider.getUuidFromToken(jwtTokenProvider.getToken().substring(7));
+        log.info("Receive get my orders request for id -> {}", userId);
+        return orderService.getMyOrders(pageable, userId);
     }
 
 }
