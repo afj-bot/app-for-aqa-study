@@ -64,7 +64,7 @@ public class UserController {
     @ApiOperation(value = "Create New User", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 201, message = "User created"),
-            @ApiResponse(code = 409, message = "User Already exists"),
+            @ApiResponse(code = 400, message = "User Already exists"),
             @ApiResponse(code = 500, message = "Internal server error"),
     })
     @ResponseStatus(HttpStatus.CREATED)
