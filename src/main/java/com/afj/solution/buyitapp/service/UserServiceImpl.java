@@ -10,7 +10,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.afj.solution.buyitapp.common.Response;
 import com.afj.solution.buyitapp.exception.EntityAlreadyExistsException;
 import com.afj.solution.buyitapp.exception.EntityNotFoundException;
 import com.afj.solution.buyitapp.model.User;
@@ -19,8 +18,6 @@ import com.afj.solution.buyitapp.payload.response.UserResponse;
 import com.afj.solution.buyitapp.repository.UserRepository;
 import com.afj.solution.buyitapp.service.converters.CreateUserRequestToUser;
 import com.afj.solution.buyitapp.service.converters.UserToResponseConverter;
-
-import static com.afj.solution.buyitapp.constans.Patterns.generateSuccessResponse;
 
 /**
  * @author Tomash Gombosh
