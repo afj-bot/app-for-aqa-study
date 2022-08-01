@@ -158,10 +158,6 @@ public class User implements UserDetails, Serializable {
         currentUser.setPhoneNumber(phoneNumber);
         currentUser.setHomeAddress(homeAddress);
         currentUser.setDateOfBirth(dateOfBirth);
-        currentUser.setAccountNonExpired(accountNonExpired);
-        currentUser.setAccountNonLocked(accountNonLocked);
-        currentUser.setCredentialsNonExpired(credentialsNonExpired);
-        currentUser.setEnabled(enabled);
         currentUser.setAuthorities(authorities);
         return currentUser;
     }

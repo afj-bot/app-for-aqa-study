@@ -18,5 +18,5 @@ public interface UserService {
 
     UserResponse getMe(UUID userId);
 
-    Response<String> createUser(CreateUserRequest createUserRequest, UUID userId);
+   void createUser(CreateUserRequest createUserRequest, UUID userId);
 }

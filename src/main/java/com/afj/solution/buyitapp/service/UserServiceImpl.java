@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Response<String> createUser(final CreateUserRequest createUserRequest, final UUID userId) {
+    public void createUser(final CreateUserRequest createUserRequest, final UUID userId) {
         final User existingUser = userRepository
                 .findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(User.class, "id"));
@@ -88,6 +88,5 @@ public class UserServiceImpl implements UserService {
         existingUser.update(newUser, existingUser);
         existingUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         userRepository.save(existingUser);
-        return generateSuccessResponse();
     }
 }

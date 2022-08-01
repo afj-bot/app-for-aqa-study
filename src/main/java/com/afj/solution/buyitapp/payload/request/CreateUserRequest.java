@@ -73,7 +73,6 @@ public class CreateUserRequest implements Serializable {
             example = "NewPassword!",
             required = true
     )
-    //@Password
     private String password;
 
     @ApiModelProperty(
@@ -82,6 +81,7 @@ public class CreateUserRequest implements Serializable {
             value = "User phone number",
             example = "0975255207"
     )
+    @Size(max = 12)
     private String phoneNumber;
 
     @ApiModelProperty(
