@@ -1,17 +1,22 @@
 package com.afj.solution.buyitapp.service;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.afj.solution.buyitapp.exception.EntityAlreadyExistsException;
 import com.afj.solution.buyitapp.exception.EntityNotFoundException;
 import com.afj.solution.buyitapp.model.User;
+import com.afj.solution.buyitapp.payload.request.CreateUserRequest;
 import com.afj.solution.buyitapp.payload.response.UserResponse;
 import com.afj.solution.buyitapp.repository.UserRepository;
+import com.afj.solution.buyitapp.service.converters.CreateUserRequestToUser;
 import com.afj.solution.buyitapp.service.converters.UserToResponseConverter;
 
 /**
@@ -26,14 +31,17 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final UserToResponseConverter converter;
+    private final CreateUserRequestToUser createUserRequestToUser;
 
     @Autowired
     public UserServiceImpl(final UserRepository userRepository,
                            final PasswordEncoder passwordEncoder,
-                           final UserToResponseConverter converter) {
+                           final UserToResponseConverter converter,
+                           final CreateUserRequestToUser createUserRequestToUser) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.converter = converter;
+        this.createUserRequestToUser = createUserRequestToUser;
     }
 
     @Override
@@ -55,6 +63,7 @@ public class UserServiceImpl implements UserService {
             user.setAccountNonLocked(true);
             user.setEnabled(true);
             user.setCredentialsNonExpired(true);
+            user.setAuthorities(new HashSet<>(List.of(new SimpleGrantedAuthority("ROLE_ANONYMOUS"))));
         }));
     }
 
@@ -65,5 +74,16 @@ public class UserServiceImpl implements UserService {
         log.info("Find user by id {}", user);
 
         return converter.convert(user);
+    }
+
+    @Override
+    public void createUser(final CreateUserRequest createUserRequest, final UUID userId) {
+        final User existingUser = userRepository
+                .findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(User.class, "id"));
+        final User newUser = createUserRequestToUser.convert(createUserRequest);
+        existingUser.update(newUser, existingUser);
+        existingUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+        userRepository.save(existingUser);
     }
 }
