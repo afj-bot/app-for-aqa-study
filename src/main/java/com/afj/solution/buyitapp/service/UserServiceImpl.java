@@ -32,16 +32,19 @@ public class UserServiceImpl implements UserService {
 
     private final UserToResponseConverter converter;
     private final CreateUserRequestToUser createUserRequestToUser;
+    private final UserLoginServiceImpl userLoginService;
 
     @Autowired
     public UserServiceImpl(final UserRepository userRepository,
                            final PasswordEncoder passwordEncoder,
                            final UserToResponseConverter converter,
-                           final CreateUserRequestToUser createUserRequestToUser) {
+                           final CreateUserRequestToUser createUserRequestToUser,
+                           final UserLoginServiceImpl userLoginService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.converter = converter;
         this.createUserRequestToUser = createUserRequestToUser;
+        this.userLoginService = userLoginService;
     }
 
     @Override
@@ -85,5 +88,6 @@ public class UserServiceImpl implements UserService {
         existingUser.update(newUser, existingUser);
         existingUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         userRepository.save(existingUser);
+        userLoginService.save(existingUser);
     }
 }
