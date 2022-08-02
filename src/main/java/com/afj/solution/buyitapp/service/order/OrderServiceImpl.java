@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.afj.solution.buyitapp.exception.BadRequestException;
@@ -68,5 +70,10 @@ public class OrderServiceImpl implements OrderService {
         final OrderResponse orderResponse = converter.convert(order);
         orderResponse.setProducts(products);
         return orderResponse;
+    }
+
+    @Override
+    public Page<OrderResponse> getMyOrders(final Pageable pageable, final UUID userId) {
+        return orderRepository.findAllByUserId(pageable, userId).map(converter::convert);
     }
 }
