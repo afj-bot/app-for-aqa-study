@@ -78,6 +78,11 @@ public class Product implements Serializable {
     @JoinColumn
     private Image image;
 
+    @JsonManagedReference
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn
+    private Characteristic characteristic;
+
     public Product(final Consumer<Product> builder) {
         requireNonNull(builder).accept(this);
     }
@@ -85,13 +90,15 @@ public class Product implements Serializable {
     @Override
     public String toString() {
         return String.format("{ \"id\": \"%s\", \"name\": \"%s\", \"description\": \"%s\", \"price\": \"%s\", "
-                        + "\"currency\": \"%s\", \"image\": \"%s\", \"created_at\": \"%s\", \"updated_at\": \"%s\" }",
+                        + "\"currency\": \"%s\", \"image\": \"%s\", \"characteristic\": \"%s\","
+                        + " \"created_at\": \"%s\", \"updated_at\": \"%s\" }",
                 this.getId(),
                 this.getName(),
                 this.getDescription(),
                 this.getPrice(),
                 this.getCurrency(),
                 this.getImage(),
+                this.getCharacteristic(),
                 this.getCreatedAt(),
                 this.getUpdatedAt());
     }

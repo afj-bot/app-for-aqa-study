@@ -8,7 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -24,7 +23,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import static java.util.Objects.requireNonNull;
 
-
 /**
  * @author Tommash Gombosh
  */
@@ -33,10 +31,10 @@ import static java.util.Objects.requireNonNull;
 @Getter
 @Setter
 @Entity
-@Table(name = "image")
-public class Image implements Serializable {
+@Table(name = "characteristic")
+public class Characteristic implements Serializable {
 
-    private static final long serialVersionUID = -3971169410727710315L;
+    private static final long serialVersionUID = -4683961545022122749L;
 
     @Id
     @Type(type = "uuid-binary")
@@ -45,15 +43,17 @@ public class Image implements Serializable {
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name = "file_name")
-    private String fileName;
+    @Column(name = "size")
+    private String size;
 
-    @Lob
-    @Column(name = "picture")
-    private byte[] picture;
+    @Column(name = "color")
+    private String color;
+
+    @Column(name = "additional_params")
+    private String additionalParams;
 
     @JsonBackReference
-    @OneToOne(mappedBy = "image")
+    @OneToOne(mappedBy = "characteristic")
     private Product product;
 
     @Column(name = "created_at", updatable = false, nullable = false)
@@ -64,15 +64,18 @@ public class Image implements Serializable {
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
 
-    public Image(final Consumer<Image> builder) {
+    public Characteristic(final Consumer<Characteristic> builder) {
         requireNonNull(builder).accept(this);
     }
 
     @Override
     public String toString() {
-        return String.format("{ \"id\": \"%s\", \"fileName\": \"%s\", \"createdAt\": \"%s\", \"updated_at\": \"%s\" }",
+        return String.format("{ \"id\": \"%s\", \"size\": \"%s\", \"color\": \"%s\", \"additionalParams\": \"%s\", "
+                        + "\"createdAt\": \"%s\", \"updatedAt\": \"%s\" }",
                 this.getId(),
-                this.getFileName(),
+                this.getSize(),
+                this.getColor(),
+                this.getAdditionalParams(),
                 this.getCreatedAt(),
                 this.getUpdatedAt());
     }

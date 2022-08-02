@@ -72,6 +72,14 @@ public class ProductResponse implements Serializable {
     )
     private ImageResponse image;
 
+    @ApiModelProperty(
+            name = "characteristic",
+            dataType = "Object",
+            value = "Product characteristic",
+            example = "{ 'size': 'S', 'color': 'black' }"
+    )
+    private CharacteristicResponse characteristic;
+
     public ProductResponse(final Consumer<ProductResponse> builder) {
         requireNonNull(builder).accept(this);
     }

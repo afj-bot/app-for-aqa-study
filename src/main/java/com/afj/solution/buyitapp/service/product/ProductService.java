@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.afj.solution.buyitapp.model.Product;
 import com.afj.solution.buyitapp.payload.request.CreateProductRequest;
+import com.afj.solution.buyitapp.payload.request.UpdateCharacteristicRequest;
 import com.afj.solution.buyitapp.payload.response.ProductResponse;
 
 /**
@@ -25,6 +26,8 @@ public interface ProductService {
     Product save(Product product);
 
     ProductResponse addImageToProduct(UUID id, MultipartFile file) throws IOException;
+
+    ProductResponse updateCharacteristicToProduct(UUID id, UpdateCharacteristicRequest request);
 
     byte[] getImageByProductId(UUID id);
 

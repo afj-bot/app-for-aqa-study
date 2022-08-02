@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import com.afj.solution.buyitapp.model.Product;
+import com.afj.solution.buyitapp.payload.response.CharacteristicResponse;
 import com.afj.solution.buyitapp.payload.response.ImageResponse;
 import com.afj.solution.buyitapp.payload.response.ProductResponse;
 
@@ -29,6 +30,13 @@ public class ProductToResponseConverter implements Converter<Product, ProductRes
                     imageResponse.setName(product.getImage().getFileName());
                 }
                 ));
+            }
+            if (nonNull(product.getCharacteristic())) {
+                productResponse.setCharacteristic(new CharacteristicResponse(characteristicResponse -> {
+                    characteristicResponse.setColor(product.getCharacteristic().getColor());
+                    characteristicResponse.setSize(product.getCharacteristic().getSize());
+                    characteristicResponse.setAdditionalParams(product.getCharacteristic().getAdditionalParams());
+                }));
             }
         });
     }
