@@ -80,7 +80,7 @@ public class JwtTokenProvider {
                     .getBody();
             return (String) claims.get("username");
         }
-        throw new CustomAuthenticationException("Not valid token provided in the request header");
+        throw new CustomAuthenticationException("error.token.invalid");
     }
 
     public List<Map<String, String>> getRoleFromToken(final String token) {
@@ -93,7 +93,7 @@ public class JwtTokenProvider {
                     .getBody();
             return (List<Map<String, String>>) claims.get("roles");
         }
-        throw new CustomAuthenticationException("Not valid token provided in the request header");
+        throw new CustomAuthenticationException("error.token.invalid");
     }
 
     public UUID getUuidFromToken(final String token) {
@@ -106,7 +106,7 @@ public class JwtTokenProvider {
                     .getBody();
             return UUID.fromString((String) claims.get("id"));
         }
-        throw new CustomAuthenticationException("Not valid token provided in the request header");
+        throw new CustomAuthenticationException("error.token.invalid");
     }
 
 

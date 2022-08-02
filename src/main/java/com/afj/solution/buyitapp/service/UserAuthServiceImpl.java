@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -43,31 +44,35 @@ public class UserAuthServiceImpl implements UserAuthService {
 
     private final TemporaryTokenServiceImpl temporaryTokenService;
 
+    private final UserLoginService userLoginService;
+
     @Autowired
     public UserAuthServiceImpl(final UserRepository userRepository,
                                final JwtTokenProvider jwtTokenProvider,
                                final AuthenticationManager authenticationManager,
                                final AnonymousCookieService anonymousCookieService,
-                               final TemporaryTokenServiceImpl temporaryTokenService) {
+                               final TemporaryTokenServiceImpl temporaryTokenService,
+                               final UserLoginService userLoginService) {
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.authenticationManager = authenticationManager;
         this.anonymousCookieService = anonymousCookieService;
         this.temporaryTokenService = temporaryTokenService;
+        this.userLoginService = userLoginService;
     }
 
     @Override
     public User findByUsername(final String username) {
         return userRepository
                 .findByUsername(username)
-                .orElseThrow(() -> new CustomAuthenticationException("Invalid username/password provided"));
+                .orElseThrow(() -> new CustomAuthenticationException("error.username-password.invalid"));
     }
 
     @Override
     public User findById(final UUID id) {
         return userRepository
                 .findById(id)
-                .orElseThrow(() -> new CustomAuthenticationException("Invalid username/password provided"));
+                .orElseThrow(() -> new CustomAuthenticationException("error.username-password.invalid"));
     }
 
     @Override
@@ -75,8 +80,13 @@ public class UserAuthServiceImpl implements UserAuthService {
         final String username = loginRequest.getUsername();
         final User user = this
                 .findByUsername(loginRequest.getUsername());
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username,
-                loginRequest.getPassword(), user.getAuthorities()));
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username,
+                    loginRequest.getPassword(), user.getAuthorities()));
+            userLoginService.save(user);
+        } catch (BadCredentialsException ex) {
+            userLoginService.checkLoginAttempts(user);
+        }
         return jwtTokenProvider.createToken(user);
     }
 
@@ -96,15 +106,15 @@ public class UserAuthServiceImpl implements UserAuthService {
     @Override
     public Cookie checkAnonymousCookie(final Cookie[] cookies) {
         if (isNull(cookies) || cookies.length == 0) {
-            throw new CustomAuthenticationException("Invalid cookie provided");
+            throw new CustomAuthenticationException("error.cookie.invalid");
         }
         final Cookie cookie = Arrays.stream(cookies)
                 .filter(c -> "anonymous".equals(c.getName()))
                 .findFirst()
-                .orElseThrow(() -> new CustomAuthenticationException("Invalid cookie provided"));
+                .orElseThrow(() -> new CustomAuthenticationException("error.cookie.invalid"));
         final UUID decodeToken = anonymousCookieService.decodeAnonymousCookie(cookie);
         if (!temporaryTokenService.isTokenExist(decodeToken)) {
-            throw new CustomAuthenticationException("Invalid cookie provided");
+            throw new CustomAuthenticationException("error.cookie.invalid");
         }
         return cookie;
     }

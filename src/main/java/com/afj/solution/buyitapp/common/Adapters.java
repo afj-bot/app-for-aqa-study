@@ -52,7 +52,7 @@ public class Adapters {
                 return parsed;
 
             }
-            throw new BadRequestException(String.format("Not valid date provide %s", element));
+            throw new BadRequestException(String.format("error.invalid.date.%s", element));
         }
     }
 }

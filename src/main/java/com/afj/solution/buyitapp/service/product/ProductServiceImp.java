@@ -85,7 +85,7 @@ public class ProductServiceImp implements ProductService {
             log.info("Product {} saved successfully to database", product.getId());
             return productToResponseConverter.convert(product);
         }
-        throw new BadRequestException(String.format("File extension is incorrect %s", file.getOriginalFilename()));
+        throw new BadRequestException(String.format("error.file.unsupported.%s", file.getOriginalFilename()));
     }
 
     @Override
