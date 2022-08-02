@@ -26,18 +26,23 @@ public class EntityAlreadyExistsException extends RuntimeException implements Se
     }
 
     public EntityAlreadyExistsException(final Class<?> clazz) {
-        this(String.format("%s entity already exists", clazz.getSimpleName()));
+        this(String.format("error.%s.exits", clazz.getSimpleName().toLowerCase()));
     }
 
     public EntityAlreadyExistsException(final Class<?> clazz, final String field) {
-        this(String.format("%s entity with field %s already exists", clazz.getSimpleName(), field));
+        this(String.format("error.%s.exits.%s",
+                clazz.getSimpleName().toLowerCase(),
+                field.toLowerCase()));
     }
 
     public EntityAlreadyExistsException(final Class<?> clazz, final Throwable cause) {
-        this(String.format("%s entity already exists", clazz.getSimpleName()), cause);
+        this(String.format("error.%s.exits", clazz.getSimpleName()), cause);
     }
 
     public EntityAlreadyExistsException(final Class<?> clazz, final String field, final Throwable cause) {
-        this(String.format("%s entity with field %s already exists", clazz.getSimpleName(), field), cause);
+        this(String.format("error.%s.exits.%s",
+                        clazz.getSimpleName().toLowerCase(),
+                        field.toLowerCase()),
+                cause);
     }
 }

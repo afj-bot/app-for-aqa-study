@@ -28,18 +28,18 @@ public class EntityNotFoundException extends RuntimeException implements Seriali
     }
 
     public EntityNotFoundException(final Class<?> clazz) {
-        this(String.format("%s entity not found", clazz.getSimpleName()));
+        this(String.format("error.%s.not-found", clazz.getSimpleName().toLowerCase()));
     }
 
     public EntityNotFoundException(final Class<?> clazz, final String field) {
-        this(String.format("%s entity with field %s not found", clazz.getSimpleName(), field));
+        this(String.format("error.%s.not-found.%s", clazz.getSimpleName().toLowerCase(), field));
     }
 
     public EntityNotFoundException(final Class<?> clazz, final Throwable cause) {
-        this(String.format("%s entity not found", clazz.getSimpleName()), cause);
+        this(String.format("error.%s.not-found", clazz.getSimpleName().toLowerCase()), cause);
     }
 
     public EntityNotFoundException(final Class<?> clazz, final String field, final Throwable cause) {
-        this(String.format("%s entity with field %s not found", clazz.getSimpleName(), field), cause);
+        this(String.format("error.%s.not-found.%s", clazz.getSimpleName().toLowerCase(), field), cause);
     }
 }

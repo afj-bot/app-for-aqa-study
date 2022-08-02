@@ -65,14 +65,14 @@ public class UserAuthServiceImpl implements UserAuthService {
     public User findByUsername(final String username) {
         return userRepository
                 .findByUsername(username)
-                .orElseThrow(() -> new CustomAuthenticationException("Invalid username/password provided"));
+                .orElseThrow(() -> new CustomAuthenticationException("error.username-password.invalid"));
     }
 
     @Override
     public User findById(final UUID id) {
         return userRepository
                 .findById(id)
-                .orElseThrow(() -> new CustomAuthenticationException("Invalid username/password provided"));
+                .orElseThrow(() -> new CustomAuthenticationException("error.username-password.invalid"));
     }
 
     @Override
@@ -106,15 +106,15 @@ public class UserAuthServiceImpl implements UserAuthService {
     @Override
     public Cookie checkAnonymousCookie(final Cookie[] cookies) {
         if (isNull(cookies) || cookies.length == 0) {
-            throw new CustomAuthenticationException("Invalid cookie provided");
+            throw new CustomAuthenticationException("error.cookie.invalid");
         }
         final Cookie cookie = Arrays.stream(cookies)
                 .filter(c -> "anonymous".equals(c.getName()))
                 .findFirst()
-                .orElseThrow(() -> new CustomAuthenticationException("Invalid cookie provided"));
+                .orElseThrow(() -> new CustomAuthenticationException("error.cookie.invalid"));
         final UUID decodeToken = anonymousCookieService.decodeAnonymousCookie(cookie);
         if (!temporaryTokenService.isTokenExist(decodeToken)) {
-            throw new CustomAuthenticationException("Invalid cookie provided");
+            throw new CustomAuthenticationException("error.cookie.invalid");
         }
         return cookie;
     }
