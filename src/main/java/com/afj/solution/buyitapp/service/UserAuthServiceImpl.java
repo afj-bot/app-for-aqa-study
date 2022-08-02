@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -43,17 +44,21 @@ public class UserAuthServiceImpl implements UserAuthService {
 
     private final TemporaryTokenServiceImpl temporaryTokenService;
 
+    private final UserLoginService userLoginService;
+
     @Autowired
     public UserAuthServiceImpl(final UserRepository userRepository,
                                final JwtTokenProvider jwtTokenProvider,
                                final AuthenticationManager authenticationManager,
                                final AnonymousCookieService anonymousCookieService,
-                               final TemporaryTokenServiceImpl temporaryTokenService) {
+                               final TemporaryTokenServiceImpl temporaryTokenService,
+                               final UserLoginService userLoginService) {
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.authenticationManager = authenticationManager;
         this.anonymousCookieService = anonymousCookieService;
         this.temporaryTokenService = temporaryTokenService;
+        this.userLoginService = userLoginService;
     }
 
     @Override
@@ -75,8 +80,13 @@ public class UserAuthServiceImpl implements UserAuthService {
         final String username = loginRequest.getUsername();
         final User user = this
                 .findByUsername(loginRequest.getUsername());
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username,
-                loginRequest.getPassword(), user.getAuthorities()));
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username,
+                    loginRequest.getPassword(), user.getAuthorities()));
+            userLoginService.save(user);
+        } catch (BadCredentialsException ex) {
+            userLoginService.checkLoginAttempts(user);
+        }
         return jwtTokenProvider.createToken(user);
     }
 
