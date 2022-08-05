@@ -1,8 +1,6 @@
 package com.afj.solution.buyitapp.payload.response;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 

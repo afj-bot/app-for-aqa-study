@@ -99,7 +99,7 @@ public class User implements UserDetails, Serializable {
     @Column(name = "authorities")
     private Set<GrantedAuthority> authorities = new HashSet<>();
 
-    @OneToMany(mappedBy="user")
+    @OneToMany(mappedBy = "user")
     private Set<Product> products = new HashSet<>();
 
     public User(final Consumer<User> builder) {
