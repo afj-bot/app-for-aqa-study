@@ -21,7 +21,7 @@ public interface ProductService {
 
     Page<ProductResponse> getProducts(Pageable pageable);
 
-    Product save(CreateProductRequest createProductRequest);
+    Product save(CreateProductRequest createProductRequest, UUID userId);
 
     Product save(Product product);
 

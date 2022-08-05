@@ -11,6 +11,8 @@ import com.afj.solution.buyitapp.payload.response.UserResponse;
  */
 public interface UserService {
 
+    User findById(UUID userId);
+
     User save(User user);
 
     User saveAnonymous();

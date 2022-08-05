@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -97,6 +98,9 @@ public class User implements UserDetails, Serializable {
     @ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "authorities")
     private Set<GrantedAuthority> authorities = new HashSet<>();
+
+    @OneToMany(mappedBy="user")
+    private Set<Product> products = new HashSet<>();
 
     public User(final Consumer<User> builder) {
         requireNonNull(builder).accept(this);
