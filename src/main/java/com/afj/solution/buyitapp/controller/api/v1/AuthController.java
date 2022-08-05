@@ -26,7 +26,6 @@ import com.afj.solution.buyitapp.service.UserServiceImpl;
  * @author Tomash Gombosh
  */
 @Slf4j
-@CrossOrigin(originPatterns = {"http://localhost", ".afj-solution.com"}, allowCredentials = "true")
 @RestController
 @RequestMapping(path = "/api/v1/auth", produces = "application/json; charset=utf-8")
 public class AuthController {

@@ -82,22 +82,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/actuator/**").permitAll()
                 .antMatchers("/swagger-ui/**", "/swagger-resources/**", "/v2/api-docs/**").permitAll()
-                .antMatchers("/api/v1/login").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v1/products")
-                .hasAnyRole("ANONYMOUS", "USER", "ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/v1/products/**/image")
-                .hasAnyRole("ANONYMOUS", "USER", "ADMIN")
 
-                .antMatchers(HttpMethod.POST, "/api/v1/orders")
-                .hasAnyRole("ANONYMOUS", "USER", "ADMIN")
+                // Auth controller
+                .antMatchers(HttpMethod.POST, "/api/v1/auth/anonymous").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/auth/anonymous").permitAll()
 
+                // Login controller
+                .antMatchers(HttpMethod.POST, "/api/v1/login").permitAll()
+
+                //Order controller
+                .antMatchers(HttpMethod.POST, "/api/v1/orders").hasAnyRole("ANONYMOUS", "USER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/v1/orders/**").hasAnyRole("ANONYMOUS", "USER", "ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/v1/orders/**").hasAnyRole("ANONYMOUS", "USER", "ADMIN")
+
+                //Product controller
+                .antMatchers(HttpMethod.GET, "/api/v1/products").hasAnyRole("ANONYMOUS", "USER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/v1/products/**/image").hasAnyRole("ANONYMOUS", "USER", "ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/v1/products").hasAnyRole("USER", "ADMIN")
+
+                //User controller
                 .antMatchers(HttpMethod.POST, "/api/v1/users").hasAnyRole("ANONYMOUS")
                 .antMatchers(HttpMethod.GET, "/api/v1/users/**").hasAnyRole("USER", "ADMIN")
 
-                .antMatchers(HttpMethod.POST, "/api/v1/products").hasRole("ADMIN")
-
-                .antMatchers(HttpMethod.POST, "/api/v1/auth/anonymous").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v1/auth/anonymous").permitAll()
                 .anyRequest()
                 .authenticated();
 
