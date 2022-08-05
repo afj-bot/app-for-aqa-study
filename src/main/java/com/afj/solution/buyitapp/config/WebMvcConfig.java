@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -27,6 +28,15 @@ import com.afj.solution.buyitapp.common.Response;
 @EnableSwagger2
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addCorsMappings(final CorsRegistry registry) {
+        registry
+                .addMapping("/**")
+                .allowCredentials(true)
+                .allowedOrigins("http://localhost:3000", "https://dev.buy-it.afj-solution.com")
+                .maxAge(3600);
+    }
 
     @Bean
     public Docket productApi() {
