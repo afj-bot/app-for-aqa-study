@@ -83,7 +83,7 @@ public class UserAuthServiceImpl implements UserAuthService {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username,
                     loginRequest.getPassword(), user.getAuthorities()));
-            userLoginService.save(user);
+            userLoginService.updateLoginAttempts(user);
         } catch (BadCredentialsException ex) {
             userLoginService.checkLoginAttempts(user);
         }

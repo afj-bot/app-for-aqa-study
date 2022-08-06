@@ -12,4 +12,6 @@ public interface UserLoginService {
     void decreaseLoginAttempts(User user);
 
     void checkLoginAttempts(User user);
+
+    void updateLoginAttempts(User user);
 }
