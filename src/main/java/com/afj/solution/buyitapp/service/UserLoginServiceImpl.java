@@ -60,10 +60,11 @@ public class UserLoginServiceImpl implements UserLoginService {
     }
 
     @Override
-    public void updateLoginAttempts(User user) {
+    public void updateLoginAttempts(final User user) {
         final UserLogin userLogin = userLoginRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new EntityNotFoundException(User.class, "id"));
-        if (userLogin.getTotal() != 10) {
+        final int successLoginNumber = 10;
+        if (userLogin.getTotal() != successLoginNumber) {
             userLogin.setTotal(10);
             userLoginRepository.save(userLogin);
         }
