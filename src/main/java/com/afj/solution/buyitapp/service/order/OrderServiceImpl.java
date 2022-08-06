@@ -21,7 +21,7 @@ import com.afj.solution.buyitapp.model.enums.OrderStatus;
 import com.afj.solution.buyitapp.payload.request.CreateOrderRequest;
 import com.afj.solution.buyitapp.payload.response.OrderResponse;
 import com.afj.solution.buyitapp.repository.OrderRepository;
-import com.afj.solution.buyitapp.service.converters.OrderToResponseConverter;
+import com.afj.solution.buyitapp.service.converters.order.OrderToResponseConverter;
 import com.afj.solution.buyitapp.service.product.ProductService;
 
 import static com.afj.solution.buyitapp.model.enums.OrderStatus.CANCEL;

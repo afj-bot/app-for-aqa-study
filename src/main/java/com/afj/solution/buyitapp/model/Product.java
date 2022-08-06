@@ -12,6 +12,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -52,18 +53,18 @@ public class Product implements Serializable {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "description")
-    private String description;
-
     @Column(name = "price")
     private float price;
 
-    @Column(name = "quantity")
-    private int quantity;
+    @Column(name = "description")
+    private String description;
 
     @Column(name = "currency", columnDefinition = "ENUM('USD', 'UAH', 'EUR')")
     @Enumerated(EnumType.STRING)
     private Currency currency;
+
+    @Column(name = "quantity")
+    private int quantity;
 
     @Column(name = "created_at", updatable = false, nullable = false)
     @CreationTimestamp
@@ -83,6 +84,11 @@ public class Product implements Serializable {
     @JoinColumn
     private Characteristic characteristic;
 
+    @JsonManagedReference
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "created_user_id", nullable = false)
+    private User user;
+
     public Product(final Consumer<Product> builder) {
         requireNonNull(builder).accept(this);
     }
@@ -90,7 +96,7 @@ public class Product implements Serializable {
     @Override
     public String toString() {
         return String.format("{ \"id\": \"%s\", \"name\": \"%s\", \"description\": \"%s\", \"price\": \"%s\", "
-                        + "\"currency\": \"%s\", \"image\": \"%s\", \"characteristic\": \"%s\","
+                        + "\"currency\": \"%s\", \"image\": \"%s\", \"characteristic\": \"%s\", \"user\": \"%s\","
                         + " \"created_at\": \"%s\", \"updated_at\": \"%s\" }",
                 this.getId(),
                 this.getName(),
@@ -99,6 +105,7 @@ public class Product implements Serializable {
                 this.getCurrency(),
                 this.getImage(),
                 this.getCharacteristic(),
+                this.getUser(),
                 this.getCreatedAt(),
                 this.getUpdatedAt());
     }

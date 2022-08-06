@@ -97,8 +97,9 @@ public class ProductController {
     public @ResponseBody
     Response<String> createProduct(@Valid @RequestBody final CreateProductRequest createProductRequest) {
         final String username = jwtTokenProvider.getUsernameFromToken(jwtTokenProvider.getToken().substring(7));
+        final UUID userId = jwtTokenProvider.getUuidFromToken(jwtTokenProvider.getToken().substring(7));
         log.info("Receive create request from username -> {}", username);
-        productService.save(createProductRequest);
+        productService.save(createProductRequest, userId);
         return generateSuccessResponse();
     }
 

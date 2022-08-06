@@ -1,10 +1,11 @@
-package com.afj.solution.buyitapp.service.converters;
+package com.afj.solution.buyitapp.service.converters.product;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import com.afj.solution.buyitapp.model.Product;
 import com.afj.solution.buyitapp.payload.request.CreateProductRequest;
+import com.afj.solution.buyitapp.service.converters.Converter;
 
 /**
  * @author Tomash Gombosh

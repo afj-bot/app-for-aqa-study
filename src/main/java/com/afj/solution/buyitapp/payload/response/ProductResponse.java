@@ -80,6 +80,14 @@ public class ProductResponse implements Serializable {
     )
     private CharacteristicResponse characteristic;
 
+    @ApiModelProperty(
+            name = "createdBy",
+            dataType = "Object",
+            value = "User that created that product",
+            example = "{ 'email': 'S@mail.com', 'firstName': 'black' }"
+    )
+    private CreatedByResponse createdBy;
+
     public ProductResponse(final Consumer<ProductResponse> builder) {
         requireNonNull(builder).accept(this);
     }

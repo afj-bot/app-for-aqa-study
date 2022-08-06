@@ -1,4 +1,4 @@
-package com.afj.solution.buyitapp.service.converters;
+package com.afj.solution.buyitapp.service.converters.user;
 
 import java.util.HashSet;
 import java.util.List;
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.payload.request.CreateUserRequest;
+import com.afj.solution.buyitapp.service.converters.Converter;
 
 /**
  * @author Kristian Gombosh

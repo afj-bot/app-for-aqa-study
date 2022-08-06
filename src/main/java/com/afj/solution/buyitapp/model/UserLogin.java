@@ -14,12 +14,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import static com.afj.solution.buyitapp.constans.Patterns.GSON;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -31,9 +31,7 @@ import static java.util.Objects.requireNonNull;
 @Setter
 @Entity
 @Table(name = "user_login_events")
-@ToString
 public class UserLogin implements Serializable {
-
 
     private static final long serialVersionUID = 823455214883555928L;
 
@@ -63,4 +61,8 @@ public class UserLogin implements Serializable {
         requireNonNull(builder).accept(this);
     }
 
+    @Override
+    public String toString() {
+        return GSON.toJson(this);
+    }
 }

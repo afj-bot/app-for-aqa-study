@@ -1,12 +1,14 @@
-package com.afj.solution.buyitapp.service.converters;
+package com.afj.solution.buyitapp.service.converters.product;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import com.afj.solution.buyitapp.model.Product;
 import com.afj.solution.buyitapp.payload.response.CharacteristicResponse;
+import com.afj.solution.buyitapp.payload.response.CreatedByResponse;
 import com.afj.solution.buyitapp.payload.response.ImageResponse;
 import com.afj.solution.buyitapp.payload.response.ProductResponse;
+import com.afj.solution.buyitapp.service.converters.Converter;
 
 import static java.util.Objects.nonNull;
 
@@ -25,10 +27,17 @@ public class ProductToResponseConverter implements Converter<Product, ProductRes
             productResponse.setPrice(String.format("%s %s", product.getPrice(), product.getCurrency()));
             productResponse.setDescription(product.getDescription());
             productResponse.setQuantity(product.getQuantity());
+            productResponse.setCreatedBy(new CreatedByResponse(createdByResponse -> {
+                createdByResponse.setId(product.getUser().getId());
+                createdByResponse.setEmail(product.getUser().getEmail());
+                createdByResponse.setFirstName(product.getUser().getFirstName());
+                createdByResponse.setLastName(product.getUser().getLastName());
+                createdByResponse.setPhoneNumber(product.getUser().getPhoneNumber());
+                createdByResponse.setHomeAddress(product.getUser().getHomeAddress());
+            }));
             if (nonNull(product.getImage())) {
-                productResponse.setImage(new ImageResponse(imageResponse -> {
-                    imageResponse.setName(product.getImage().getFileName());
-                }
+                productResponse.setImage(new ImageResponse(imageResponse ->
+                        imageResponse.setName(product.getImage().getFileName())
                 ));
             }
             if (nonNull(product.getCharacteristic())) {

@@ -16,8 +16,8 @@ import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.payload.request.CreateUserRequest;
 import com.afj.solution.buyitapp.payload.response.UserResponse;
 import com.afj.solution.buyitapp.repository.UserRepository;
-import com.afj.solution.buyitapp.service.converters.CreateUserRequestToUser;
-import com.afj.solution.buyitapp.service.converters.UserToResponseConverter;
+import com.afj.solution.buyitapp.service.converters.user.CreateUserRequestToUser;
+import com.afj.solution.buyitapp.service.converters.user.UserToResponseConverter;
 
 /**
  * @author Tomash Gombosh
@@ -45,6 +45,14 @@ public class UserServiceImpl implements UserService {
         this.converter = converter;
         this.createUserRequestToUser = createUserRequestToUser;
         this.userLoginService = userLoginService;
+    }
+
+    @Override
+    public User findById(final UUID userId) {
+        log.info("Find user by id {}", userId);
+        return userRepository
+                .findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(User.class, userId.toString()));
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.afj.solution.buyitapp.service.converters;
+package com.afj.solution.buyitapp.service.converters.user;
 
 import java.util.stream.Collectors;
 
@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.payload.response.UserResponse;
+import com.afj.solution.buyitapp.service.converters.Converter;
 
 /**
  * @author Tomash Gombosh

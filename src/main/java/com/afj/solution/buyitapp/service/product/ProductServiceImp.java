@@ -18,13 +18,15 @@ import com.afj.solution.buyitapp.exception.BadRequestException;
 import com.afj.solution.buyitapp.exception.EntityNotFoundException;
 import com.afj.solution.buyitapp.model.Image;
 import com.afj.solution.buyitapp.model.Product;
+import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.payload.request.CreateProductRequest;
 import com.afj.solution.buyitapp.payload.request.UpdateCharacteristicRequest;
 import com.afj.solution.buyitapp.payload.response.ProductResponse;
 import com.afj.solution.buyitapp.repository.ProductRepository;
-import com.afj.solution.buyitapp.service.converters.ProductRequestToProductConverter;
-import com.afj.solution.buyitapp.service.converters.ProductToResponseConverter;
-import com.afj.solution.buyitapp.service.converters.UpdateCharacteristicRequestToCharacteristicConverter;
+import com.afj.solution.buyitapp.service.UserServiceImpl;
+import com.afj.solution.buyitapp.service.converters.product.ProductRequestToProductConverter;
+import com.afj.solution.buyitapp.service.converters.product.ProductToResponseConverter;
+import com.afj.solution.buyitapp.service.converters.product.UpdateCharacteristicRequestToCharacteristicConverter;
 
 import static java.util.Objects.nonNull;
 
@@ -36,16 +38,19 @@ import static java.util.Objects.nonNull;
 public class ProductServiceImp implements ProductService {
 
     private final ProductRepository productRepository;
+    private final UserServiceImpl userService;
     private final ProductToResponseConverter productToResponseConverter;
     private final ProductRequestToProductConverter productRequestToProductConverter;
     private final UpdateCharacteristicRequestToCharacteristicConverter converter;
 
     @Autowired
     public ProductServiceImp(final ProductRepository productRepository,
+                             final UserServiceImpl userService,
                              final ProductToResponseConverter productToResponseConverter,
                              final ProductRequestToProductConverter productRequestToProductConverter,
                              final UpdateCharacteristicRequestToCharacteristicConverter converter) {
         this.productRepository = productRepository;
+        this.userService = userService;
         this.productToResponseConverter = productToResponseConverter;
         this.productRequestToProductConverter = productRequestToProductConverter;
         this.converter = converter;
@@ -53,13 +58,17 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public Page<ProductResponse> getProducts(final Pageable pageable) {
-        return productRepository.findAll(pageable).map(productToResponseConverter::convert);
+        return productRepository.findAll(pageable)
+                .map(productToResponseConverter::convert);
     }
 
     @Override
-    public Product save(final CreateProductRequest createProductRequest) {
+    public Product save(final CreateProductRequest createProductRequest, final UUID userId) {
         log.info("Create product {} from request", createProductRequest);
-        final Product product = this.save(productRequestToProductConverter.convert(createProductRequest));
+        final Product convertedProduct = productRequestToProductConverter.convert(createProductRequest);
+        final User createdByUser = userService.findById(userId);
+        convertedProduct.setUser(createdByUser);
+        final Product product = this.save(convertedProduct);
         log.info("Successfully create a product {}", product);
         return product;
     }
