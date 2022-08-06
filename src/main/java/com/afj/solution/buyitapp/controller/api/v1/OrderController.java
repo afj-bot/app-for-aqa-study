@@ -34,9 +34,9 @@ import static com.afj.solution.buyitapp.constans.Patterns.generateSuccessRespons
 /**
  * @author Tomash Gombosh
  */
+@Slf4j
 @RestController
 @RequestMapping(path = "/api/v1/orders", produces = "application/json; charset=utf-8")
-@Slf4j
 public class OrderController {
 
     private final OrderServiceImpl orderService;
@@ -50,7 +50,7 @@ public class OrderController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @ApiOperation(value = "Create a new order", notes = "Anonymous, User Role", authorizations = {@Authorization("Bearer")})
+    @ApiOperation(value = "Create a new order", notes = "All Roles", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 201, message = "Order created successfully"),
             @ApiResponse(code = 500, message = "Internal server error"),
@@ -64,7 +64,7 @@ public class OrderController {
         return orderService.create(createOrderRequest, userId);
     }
 
-    @ApiOperation(value = "Get my orders", notes = "Anonymous, User Role", authorizations = {@Authorization("Bearer")})
+    @ApiOperation(value = "Get my orders", notes = "All Roles", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 200, message = "Order created successfully"),
             @ApiResponse(code = 401, message = "Unauthorized"),
@@ -78,7 +78,7 @@ public class OrderController {
         return orderService.getMyOrders(pageable, userId);
     }
 
-    @ApiOperation(value = "Cancel order", notes = "Anonymous, User Role", authorizations = {@Authorization("Bearer")})
+    @ApiOperation(value = "Cancel order", notes = "All Roles", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 201, message = "Order created successfully"),
             @ApiResponse(code = 401, message = "Unauthorized"),

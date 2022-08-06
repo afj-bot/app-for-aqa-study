@@ -20,9 +20,9 @@ import com.afj.solution.buyitapp.service.UserAuthServiceImpl;
 /**
  * @author Tomash Gombosh
  */
+@Slf4j
 @RestController
 @RequestMapping(path = "/api/v1", produces = "application/json; charset=utf-8")
-@Slf4j
 public class LoginController {
 
     private final UserAuthServiceImpl userAuthService;

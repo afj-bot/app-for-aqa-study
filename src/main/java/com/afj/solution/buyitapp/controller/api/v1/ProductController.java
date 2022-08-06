@@ -41,9 +41,9 @@ import static com.afj.solution.buyitapp.constans.Patterns.generateSuccessRespons
 /**
  * @author Tomash Gombosh
  */
+@Slf4j
 @RestController
 @RequestMapping(path = "/api/v1/products", produces = "application/json; charset=utf-8")
-@Slf4j
 public class ProductController {
 
     private final ProductServiceImp productService;
@@ -57,7 +57,7 @@ public class ProductController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @ApiOperation(value = "Get products", notes = "Anonymous, User Role", authorizations = {@Authorization("Bearer")})
+    @ApiOperation(value = "Get products", notes = "All Roles", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 200, message = "Products returned successfully"),
             @ApiResponse(code = 500, message = "Internal server error"),
@@ -71,7 +71,7 @@ public class ProductController {
         return productService.getProducts(pageable);
     }
 
-    @ApiOperation(value = "Get product image", notes = "Anonymous, User Role", authorizations = {@Authorization("Bearer")})
+    @ApiOperation(value = "Get product image", notes = "All Roles", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 200, message = "Image successfully find"),
             @ApiResponse(code = 404, message = "Image not found"),
@@ -86,7 +86,7 @@ public class ProductController {
         return productService.getImageByProductId(id);
     }
 
-    @ApiOperation(value = "Create a new product", notes = "Admin role", authorizations = {@Authorization("Bearer")})
+    @ApiOperation(value = "Create a new product", notes = "User, Admin Roles", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 201, message = "Product created successfully"),
             @ApiResponse(code = 403, message = "Access denied"),
@@ -102,7 +102,7 @@ public class ProductController {
         return generateSuccessResponse();
     }
 
-    @ApiOperation(value = "Update the product quantity", notes = "Admin role", authorizations = {@Authorization("Bearer")})
+    @ApiOperation(value = "Update the product quantity", notes = "User, Admin Roles", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 201, message = "Product quantity updated successfully"),
             @ApiResponse(code = 403, message = "Access denied"),
@@ -118,7 +118,7 @@ public class ProductController {
         return generateSuccessResponse();
     }
 
-    @ApiOperation(value = "Update the product characteristic", notes = "Admin role", authorizations = {@Authorization("Bearer")})
+    @ApiOperation(value = "Update the product characteristic", notes = "User, Admin Roles", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 201, message = "Product characteristic updated successfully"),
             @ApiResponse(code = 403, message = "Access denied"),
@@ -135,7 +135,7 @@ public class ProductController {
     }
 
 
-    @ApiOperation(value = "Create a new product", notes = "ROLE_ADMIN", authorizations = {@Authorization("Bearer")})
+    @ApiOperation(value = "Add image to the product", notes = "User, Admin Roles", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 201, message = "Image added successfully to product"),
             @ApiResponse(code = 403, message = "Access denied"),
