@@ -1,5 +1,7 @@
 package com.afj.solution.buyitapp.security;
 
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.Date;
@@ -38,15 +40,14 @@ public class JwtTokenProvider {
     private static final String TOKEN = "ASLKJDHALKJSHDLKAJSHDLKAJSHDLKASJHDLKJASHDLKJAHSDLKJHASLDKJh";
     private final String tokenSecret;
 
-    private final ZonedDateTime tokenExpiration;
+    private final int tokenExpiration;
 
     public JwtTokenProvider() {
         this.tokenSecret = Base64.getEncoder().encodeToString(TOKEN.getBytes());
-        this.tokenExpiration = ZonedDateTime.now().plusSeconds(3600);
+        this.tokenExpiration = 3600;
     }
 
     public String createToken(final Map<String, Object> claims) {
-        requireNonNull(tokenExpiration, "Initialization of the Token Provider was incorrect use constructor or setter method");
         requireNonNull(tokenSecret, "Initialization of the Token Provider was incorrect use constructor or setter method");
 
         return this.createToken(claims, tokenExpiration);
@@ -61,10 +62,12 @@ public class JwtTokenProvider {
     }
 
 
-    public String createToken(final Map<String, Object> claims, final ZonedDateTime expiryDate) {
+    public String createToken(final Map<String, Object> claims, final int expirySeconds) {
+        final ZonedDateTime now = ZonedDateTime.now().withZoneSameInstant(ZoneId.of(ZoneOffset.UTC.getId()));
+        final ZonedDateTime expiryDate = now.plusSeconds(expirySeconds);
         return Jwts.builder()
                 .setClaims(claims)
-                .setIssuedAt(Date.from(ZonedDateTime.now().toInstant()))
+                .setIssuedAt(Date.from(now.toInstant()))
                 .setExpiration(Date.from(expiryDate.toInstant()))
                 .signWith(SignatureAlgorithm.HS512, tokenSecret)
                 .compact();
