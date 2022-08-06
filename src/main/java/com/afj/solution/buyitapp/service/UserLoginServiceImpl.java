@@ -58,4 +58,15 @@ public class UserLoginServiceImpl implements UserLoginService {
         throw new CustomAuthenticationException(String.format("Invalid user credentials, you can try %s more times before the user is locked out",
                 userLogin.getTotal()));
     }
+
+    @Override
+    public void updateLoginAttempts(final User user) {
+        final UserLogin userLogin = userLoginRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new EntityNotFoundException(User.class, "id"));
+        final int successLoginNumber = 10;
+        if (userLogin.getTotal() != successLoginNumber) {
+            userLogin.setTotal(10);
+            userLoginRepository.save(userLogin);
+        }
+    }
 }
