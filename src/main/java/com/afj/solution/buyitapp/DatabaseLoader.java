@@ -8,9 +8,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import com.afj.solution.buyitapp.exception.EntityAlreadyExistsException;
 import com.afj.solution.buyitapp.model.User;
-import com.afj.solution.buyitapp.service.UserService;
+import com.afj.solution.buyitapp.service.user.UserService;
 
 /**
  * @author Tomash Gombosh
@@ -26,8 +25,8 @@ public class DatabaseLoader implements CommandLineRunner {
     }
 
     @Override
-    public void run(final String... args) throws Exception {
-        try {
+    public void run(final String... args) {
+        if (!userService.isUserExist("blackjneco")) {
             userService.save(new User(user -> {
                 user.setId(UUID.randomUUID());
                 user.setEmail("blackjneco@gmail.com");
@@ -40,9 +39,6 @@ public class DatabaseLoader implements CommandLineRunner {
                 user.setAuthorities(Set.of(new SimpleGrantedAuthority("ROLE_ADMIN"),
                         new SimpleGrantedAuthority("ROLE_USER")));
             }));
-        } catch (EntityAlreadyExistsException ex) {
-            log.warn("User already exists in the system");
         }
-
     }
 }

@@ -1,6 +1,7 @@
 package com.afj.solution.buyitapp.exception;
 
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.springframework.security.core.AuthenticationException;
@@ -10,11 +11,8 @@ import org.springframework.security.core.AuthenticationException;
  */
 public class CustomAuthenticationException extends AuthenticationException implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -7944860703662008604L;
-
-    public CustomAuthenticationException(final String msg, final Throwable throwable) {
-        super(msg, throwable);
-    }
 
     public CustomAuthenticationException(final String msg) {
         super(msg);

@@ -1,5 +1,6 @@
 package com.afj.solution.buyitapp.payload.request;
 
+import java.io.Serial;
 import java.io.Serializable;
 import javax.validation.constraints.Size;
 
@@ -22,6 +23,7 @@ import static com.afj.solution.buyitapp.constans.Patterns.GSON;
 @ApiModel(value = "UpdateCharacteristicRequest", description = "Update characteristic request")
 public class UpdateCharacteristicRequest implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -8646541984538999467L;
 
     @ApiModelProperty(

@@ -1,4 +1,4 @@
-package com.afj.solution.buyitapp.service;
+package com.afj.solution.buyitapp.service.user;
 
 import com.afj.solution.buyitapp.model.User;
 

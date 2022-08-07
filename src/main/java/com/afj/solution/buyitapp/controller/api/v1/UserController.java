@@ -22,7 +22,7 @@ import com.afj.solution.buyitapp.common.Response;
 import com.afj.solution.buyitapp.payload.request.CreateUserRequest;
 import com.afj.solution.buyitapp.payload.response.UserResponse;
 import com.afj.solution.buyitapp.security.JwtTokenProvider;
-import com.afj.solution.buyitapp.service.UserServiceImpl;
+import com.afj.solution.buyitapp.service.user.UserServiceImpl;
 
 import static com.afj.solution.buyitapp.constans.Patterns.generateSuccessResponse;
 

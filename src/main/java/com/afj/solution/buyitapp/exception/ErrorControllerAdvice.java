@@ -1,6 +1,8 @@
 package com.afj.solution.buyitapp.exception;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -10,8 +12,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.afj.solution.buyitapp.common.Error;
 import com.afj.solution.buyitapp.common.Response;
+import com.afj.solution.buyitapp.service.localize.TranslatorService;
 
+import static com.afj.solution.buyitapp.constans.Patterns.STATUS_FAILED;
 import static com.afj.solution.buyitapp.constans.Patterns.generateErrorResponse;
 
 /**
@@ -60,7 +65,21 @@ public class ErrorControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Response<String> handleValidationExceptions(final MethodArgumentNotValidException ex) {
-        return generateErrorResponse(ex);
+        final TranslatorService translator = new TranslatorService();
+        final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+        final List<String> messages = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(fieldError -> String.format(translator.toLocale(fieldError.getDefaultMessage()), fieldError.getField()))
+                .toList();
+        final List<Error> errors = messages.stream()
+                .map(message -> new Error(message, "MethodArgumentNotValidException"))
+                .collect(Collectors.toList());
+
+        final Response.Status status = new Response.Status(httpStatus.toString(), errors);
+        log.error("Status -> {}, error -> {}", httpStatus.name(),
+                errors.stream().map(Error::getMessage).collect(Collectors.toList()));
+        return new Response<>(STATUS_FAILED, status, httpStatus);
     }
 
 }

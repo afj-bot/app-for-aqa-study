@@ -6,18 +6,16 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.ZonedDateTime;
 import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import com.afj.solution.buyitapp.common.Adapters;
 import com.afj.solution.buyitapp.common.Error;
 import com.afj.solution.buyitapp.common.Response;
+import com.afj.solution.buyitapp.service.localize.TranslatorService;
 
 import static java.util.Objects.isNull;
 
@@ -34,8 +32,6 @@ public final class Patterns {
     public static final String STATUS_FAILED = "Failed";
     public static final String BAD_RESPONSE_LOG = "Returning failed result with status code 400.";
     public static final String NOT_FOUND_RESPONSE_LOG = "Returning failed result with status code 404.";
-    public static final String FAILED_NOT_FOUND = String.format("%s. %s", STATUS_FAILED, NOT_FOUND_RESPONSE_LOG);
-    public static final String FAILED_BAD_REQUEST = String.format("%s. %s", STATUS_FAILED, BAD_RESPONSE_LOG);
 
     private Patterns() {
         throw new AssertionError(" Utility classes should not have a public or default constructor. [HideUtilityClassConstructor]");
@@ -72,37 +68,21 @@ public final class Patterns {
         return new Response<>(STATUS_FAILED, status, HttpStatus.BAD_REQUEST);
     }
 
-
-    public static Response<String> generateErrorResponse(final MethodArgumentNotValidException ex) {
-        final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-        final List<String> messages = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(fieldError -> String.format("%s - %s", fieldError.getField(), fieldError.getDefaultMessage()))
-                .toList();
-        final List<Error> errors = messages.stream()
-                .map(message -> new Error(message, "MethodArgumentNotValidException"))
-                .collect(Collectors.toList());
-
-        final Response.Status status = new Response.Status(httpStatus.toString(), errors);
-        log.error("Status -> {}, error -> {}", httpStatus.name(),
-                errors.stream().map(Error::getMessage).collect(Collectors.toList()));
-        return new Response<>(STATUS_FAILED, status, httpStatus);
-    }
-
     public static String generateAccessDeniedErrorResponse() {
+        final TranslatorService translator = new TranslatorService();
         log.error("Status -> 403, message -> Access denied, identify -> AccessDeniedException");
 
-        final Error error = new Error("Access denied", "AccessDeniedException");
+        final Error error = new Error(translator.toLocale("error.access.denied"), "AccessDeniedException");
         final Response.Status status = new Response.Status(HttpStatus.FORBIDDEN.name(), Collections.singletonList(error));
         final Response<String> response = new Response<>(STATUS_FAILED, status, HttpStatus.FORBIDDEN);
         return GSON.toJson(response);
     }
 
     public static String generateUnAuthorizedErrorResponse() {
+        final TranslatorService translator = new TranslatorService();
         log.error("Status -> 401, message -> Un Authorized, identify -> AuthenticationException");
 
-        return generateUnAuthorizedErrorResponse("Authentication required");
+        return generateUnAuthorizedErrorResponse(translator.toLocale("error.access.unauthorized"));
     }
 
     public static String generateUnAuthorizedErrorResponse(final String message) {

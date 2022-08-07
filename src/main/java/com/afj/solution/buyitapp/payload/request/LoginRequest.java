@@ -1,5 +1,7 @@
 package com.afj.solution.buyitapp.payload.request;
 
+import java.io.Serial;
+import java.io.Serializable;
 import javax.validation.constraints.NotEmpty;
 
 import io.swagger.annotations.ApiModel;
@@ -17,7 +19,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(value = "LoginRequest", description = "Login request model")
-public class LoginRequest {
+public class LoginRequest implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -1882607329776008227L;
 
     @ApiModelProperty(
             name = "username",

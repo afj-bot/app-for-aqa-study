@@ -1,5 +1,6 @@
 package com.afj.solution.buyitapp.payload.request;
 
+import java.io.Serial;
 import java.io.Serializable;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Max;
@@ -28,6 +29,7 @@ import static com.afj.solution.buyitapp.constans.Patterns.GSON;
 @ApiModel(value = "CreateProductRequest", description = "Create product request model")
 public class CreateProductRequest implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 5221455932434649938L;
 
     @ApiModelProperty(
@@ -58,8 +60,8 @@ public class CreateProductRequest implements Serializable {
             example = "5",
             required = true
     )
-    @Min(value = 1, message = "error.value.non-zero")
-    @Max(value = 8_388_607, message = "error.value.max")
+    @Min(value = 1, message = "error.int.non-zero")
+    @Max(value = 8_388_607, message = "error.int.max")
     private int quantity;
 
     @ApiModelProperty(

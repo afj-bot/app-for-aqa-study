@@ -87,6 +87,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/v1/auth/anonymous").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/auth/anonymous").permitAll()
 
+                // Localize controller
+                .antMatchers(HttpMethod.GET, "/api/v1/localize").permitAll()
+
                 // Login controller
                 .antMatchers(HttpMethod.POST, "/api/v1/login").permitAll()
 

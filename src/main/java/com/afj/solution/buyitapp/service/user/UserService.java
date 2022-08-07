@@ -1,4 +1,4 @@
-package com.afj.solution.buyitapp.service;
+package com.afj.solution.buyitapp.service.user;
 
 import java.util.UUID;
 
@@ -12,6 +12,8 @@ import com.afj.solution.buyitapp.payload.response.UserResponse;
 public interface UserService {
 
     User findById(UUID userId);
+
+    boolean isUserExist(String username);
 
     User save(User user);
 
