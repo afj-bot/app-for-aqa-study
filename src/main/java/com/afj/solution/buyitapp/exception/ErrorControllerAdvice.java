@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.afj.solution.buyitapp.common.Error;
 import com.afj.solution.buyitapp.common.Response;
 import com.afj.solution.buyitapp.service.localize.TranslatorService;
 
@@ -30,35 +29,35 @@ public class ErrorControllerAdvice {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(CustomAuthenticationException.class)
     public Response<String> customAuthenticationExceptionHandler(final CustomAuthenticationException ex) {
-        return generateErrorResponse(ex, HttpStatus.UNAUTHORIZED);
+        return generateErrorResponse(ex);
     }
 
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(EntityAlreadyExistsException.class)
     public Response<String> entityAlreadyExistsExceptionHandler(final EntityAlreadyExistsException ex) {
-        return generateErrorResponse(ex, HttpStatus.BAD_REQUEST);
+        return generateErrorResponse(ex);
     }
 
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(EntityNotFoundException.class)
     public Response<String> entityNotFoundExceptionHandler(final EntityNotFoundException ex) {
-        return generateErrorResponse(ex, HttpStatus.NOT_FOUND);
+        return generateErrorResponse(ex);
     }
 
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BadRequestException.class)
     public Response<String> badRequestExceptionHandler(final BadRequestException ex) {
-        return generateErrorResponse(ex, HttpStatus.BAD_REQUEST);
+        return generateErrorResponse(ex);
     }
 
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({NullPointerException.class, IOException.class})
     public Response<String> generalExceptionHandling(final Exception ex) {
-        return generateErrorResponse(ex, HttpStatus.BAD_REQUEST);
+        return generateErrorResponse(ex);
     }
 
     @ResponseBody
@@ -66,20 +65,16 @@ public class ErrorControllerAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Response<String> handleValidationExceptions(final MethodArgumentNotValidException ex) {
         final TranslatorService translator = new TranslatorService();
-        final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         final List<String> messages = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(fieldError -> String.format(translator.toLocale(fieldError.getDefaultMessage()), fieldError.getField()))
                 .toList();
-        final List<Error> errors = messages.stream()
-                .map(message -> new Error(message, "MethodArgumentNotValidException"))
-                .collect(Collectors.toList());
-
-        final Response.Status status = new Response.Status(httpStatus.toString(), errors);
-        log.error("Status -> {}, error -> {}", httpStatus.name(),
-                errors.stream().map(Error::getMessage).collect(Collectors.toList()));
-        return new Response<>(STATUS_FAILED, status, httpStatus);
+        final List<Response.Error> errors = messages.stream()
+                .map(Response.Error::new).toList();
+        log.error("Exception -> {}, error -> {}", ex.getMessage(),
+                errors.stream().map(Response.Error::getMessage).collect(Collectors.toList()));
+        return new Response<>(STATUS_FAILED, errors);
     }
 
 }

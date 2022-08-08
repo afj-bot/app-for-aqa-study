@@ -37,6 +37,7 @@ public class LocalizeController {
     @GetMapping("/localize")
     public @ResponseBody
     Map<String, Object> localize() {
+        log.info("Get localize request");
         return translatorService.getLocalize();
     }
 }
