@@ -157,6 +157,8 @@ public class ProductController {
     @ApiOperation(value = "Get My products", notes = "User, Admin Roles", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 200, message = "Products returned successfully"),
+            @ApiResponse(code = 401, message = "Not Authorized"),
+            @ApiResponse(code = 403, message = "Access denied"),
             @ApiResponse(code = 500, message = "Internal server error"),
     })
     @GetMapping("/me")
