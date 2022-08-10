@@ -27,7 +27,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import static com.afj.solution.buyitapp.constans.Patterns.GSON;
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 

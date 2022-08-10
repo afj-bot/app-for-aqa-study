@@ -7,7 +7,6 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -68,9 +67,10 @@ public class Adapters {
     public static class ZonedDateTimeDeserializer extends JsonDeserializer<ZonedDateTime> {
 
         @Override
-        public ZonedDateTime deserialize(com.fasterxml.jackson.core.JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ZONED_DATE_TIME_FORMAT);
-            LocalDate date = LocalDate.parse(jsonParser.getText(), formatter);
+        public ZonedDateTime deserialize(final com.fasterxml.jackson.core.JsonParser jsonParser,
+                                         final DeserializationContext deserializationContext) throws IOException {
+            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ZONED_DATE_TIME_FORMAT);
+            final LocalDate date = LocalDate.parse(jsonParser.getText(), formatter);
 
             return date.atStartOfDay(ZoneId.of(ZoneOffset.UTC.getId()));
         }
