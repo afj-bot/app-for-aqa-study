@@ -153,4 +153,20 @@ public class ProductController {
         log.info("Upload an image for product {} by username -> {}", id, username);
         return productService.addImageToProduct(id, file);
     }
+
+    @ApiOperation(value = "Get My products", notes = "User, Admin Roles", authorizations = {@Authorization("Bearer")})
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Products returned successfully"),
+            @ApiResponse(code = 500, message = "Internal server error"),
+    })
+    @GetMapping("/me")
+    public @ResponseBody
+    Page<ProductResponse> getMyProducts(final Pageable pageable,
+                                        @RequestParam(value = "title", required = false) final String title,
+                                        @RequestParam(value = "description", required = false) final String description) {
+        final UUID userId = jwtTokenProvider.getUuidFromToken(jwtTokenProvider.getToken().substring(7));
+        log.info("Get products request for id -> {}", userId);
+        log.info("Get products by {}", pageable);
+        return productService.getMyProducts(pageable, userId, title, description);
+    }
 }

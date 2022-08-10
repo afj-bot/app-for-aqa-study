@@ -40,4 +40,6 @@ public interface ProductService {
     void decreaseProductQuantity(UUID productId, int quantity);
 
     void increaseProductQuantity(UUID productId, int quantity);
+
+    Page<ProductResponse> getMyProducts(Pageable pageable, UUID userId, String title, String description);
 }

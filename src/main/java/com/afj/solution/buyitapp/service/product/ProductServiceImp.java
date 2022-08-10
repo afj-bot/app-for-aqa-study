@@ -156,4 +156,11 @@ public class ProductServiceImp implements ProductService {
         log.info("Decrease the product {}-{} quantity to {}",
                 product.getId(), product.getName(), product.getQuantity());
     }
+
+    @Override
+    public Page<ProductResponse> getMyProducts(final Pageable pageable, final UUID userId, final String title, final String description) {
+        final User user = userService.findById(userId);
+        return productRepository.findAllByUserAndNameAndDescription(pageable, user, title, description)
+                .map(productToResponseConverter::convert);
+    }
 }
