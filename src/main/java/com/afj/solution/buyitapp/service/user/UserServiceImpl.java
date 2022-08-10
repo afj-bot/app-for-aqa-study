@@ -2,10 +2,12 @@ package com.afj.solution.buyitapp.service.user;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -104,12 +106,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void createUser(final CreateUserRequest createUserRequest, final UUID userId) {
+        final Set<GrantedAuthority> userRole = new HashSet<>();
+        userRole.add(new SimpleGrantedAuthority("ROLE_USER"));
+        if (userRepository.findByUsernameOrEmail(createUserRequest.getUsername(), createUserRequest.getEmail()).isPresent()) {
+            throw new EntityAlreadyExistsException(User.class, "email or username");
+        }
         final User existingUser = userRepository
                 .findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format(
                         translator.toLocale("error.user.not-found"), userId
                 )));
         final User newUser = createUserRequestToUser.convert(createUserRequest);
+        newUser.setAuthorities(userRole);
         existingUser.update(newUser, existingUser);
         existingUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         userRepository.save(existingUser);
