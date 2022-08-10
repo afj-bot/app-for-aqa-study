@@ -1,4 +1,4 @@
-package com.afj.solution.buyitapp.service;
+package com.afj.solution.buyitapp.service.user;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -25,6 +25,9 @@ import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.payload.request.LoginRequest;
 import com.afj.solution.buyitapp.repository.UserRepository;
 import com.afj.solution.buyitapp.security.JwtTokenProvider;
+import com.afj.solution.buyitapp.service.AnonymousCookieService;
+import com.afj.solution.buyitapp.service.TemporaryTokenServiceImpl;
+import com.afj.solution.buyitapp.service.localize.TranslatorService;
 
 import static java.util.Objects.isNull;
 
@@ -46,33 +49,41 @@ public class UserAuthServiceImpl implements UserAuthService {
 
     private final UserLoginService userLoginService;
 
+    private final TranslatorService translator;
+
     @Autowired
     public UserAuthServiceImpl(final UserRepository userRepository,
                                final JwtTokenProvider jwtTokenProvider,
                                final AuthenticationManager authenticationManager,
                                final AnonymousCookieService anonymousCookieService,
                                final TemporaryTokenServiceImpl temporaryTokenService,
-                               final UserLoginService userLoginService) {
+                               final UserLoginService userLoginService,
+                               final TranslatorService translator) {
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.authenticationManager = authenticationManager;
         this.anonymousCookieService = anonymousCookieService;
         this.temporaryTokenService = temporaryTokenService;
         this.userLoginService = userLoginService;
+        this.translator = translator;
     }
 
     @Override
     public User findByUsername(final String username) {
         return userRepository
                 .findByUsername(username)
-                .orElseThrow(() -> new CustomAuthenticationException("error.username-password.invalid"));
+                .orElseThrow(() ->
+                        new CustomAuthenticationException(translator
+                                .toLocale("error.username-password.invalid")));
     }
 
     @Override
     public User findById(final UUID id) {
         return userRepository
                 .findById(id)
-                .orElseThrow(() -> new CustomAuthenticationException("error.username-password.invalid"));
+                .orElseThrow(() ->
+                        new CustomAuthenticationException(translator
+                                .toLocale("error.username-password.invalid")));
     }
 
     @Override

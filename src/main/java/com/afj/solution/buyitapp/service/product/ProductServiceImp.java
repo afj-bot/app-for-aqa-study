@@ -23,10 +23,11 @@ import com.afj.solution.buyitapp.payload.request.CreateProductRequest;
 import com.afj.solution.buyitapp.payload.request.UpdateCharacteristicRequest;
 import com.afj.solution.buyitapp.payload.response.ProductResponse;
 import com.afj.solution.buyitapp.repository.ProductRepository;
-import com.afj.solution.buyitapp.service.UserServiceImpl;
 import com.afj.solution.buyitapp.service.converters.product.ProductRequestToProductConverter;
 import com.afj.solution.buyitapp.service.converters.product.ProductToResponseConverter;
 import com.afj.solution.buyitapp.service.converters.product.UpdateCharacteristicRequestToCharacteristicConverter;
+import com.afj.solution.buyitapp.service.localize.TranslatorService;
+import com.afj.solution.buyitapp.service.user.UserServiceImpl;
 
 import static java.util.Objects.nonNull;
 
@@ -42,18 +43,21 @@ public class ProductServiceImp implements ProductService {
     private final ProductToResponseConverter productToResponseConverter;
     private final ProductRequestToProductConverter productRequestToProductConverter;
     private final UpdateCharacteristicRequestToCharacteristicConverter converter;
+    private final TranslatorService translator;
 
     @Autowired
     public ProductServiceImp(final ProductRepository productRepository,
                              final UserServiceImpl userService,
                              final ProductToResponseConverter productToResponseConverter,
                              final ProductRequestToProductConverter productRequestToProductConverter,
-                             final UpdateCharacteristicRequestToCharacteristicConverter converter) {
+                             final UpdateCharacteristicRequestToCharacteristicConverter converter,
+                             final TranslatorService translator) {
         this.productRepository = productRepository;
         this.userService = userService;
         this.productToResponseConverter = productToResponseConverter;
         this.productRequestToProductConverter = productRequestToProductConverter;
         this.converter = converter;
+        this.translator = translator;
     }
 
     @Override
@@ -94,13 +98,14 @@ public class ProductServiceImp implements ProductService {
             log.info("Product {} saved successfully to database", product.getId());
             return productToResponseConverter.convert(product);
         }
-        throw new BadRequestException(String.format("error.file.unsupported.%s", file.getOriginalFilename()));
+        throw new BadRequestException(String.format(translator
+                .toLocale("error.file.unsupported"), file.getOriginalFilename()));
     }
 
     @Override
     public ProductResponse updateCharacteristicToProduct(final UUID id, final UpdateCharacteristicRequest request) {
         if (request.getColor().isEmpty() && request.getSize().isEmpty() && request.getAdditionalParams().isEmpty()) {
-            throw new BadRequestException("error.empty.model.provided");
+            throw new BadRequestException(translator.toLocale("error.model.empty-provided"));
         }
         log.info("Add characteristic {} to the product {}", request, id);
         final Product product = this.findById(id);
@@ -119,7 +124,9 @@ public class ProductServiceImp implements ProductService {
     public Product findById(final UUID id) {
         final Product product = this.productRepository
                 .findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(Product.class, "id"));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(translator
+                                .toLocale("error.product.not-found"), id)));
         log.info("Find Product {} by id({})", product, id);
         return product;
     }

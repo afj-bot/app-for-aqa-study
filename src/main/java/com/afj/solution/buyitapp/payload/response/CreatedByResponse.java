@@ -1,5 +1,6 @@
 package com.afj.solution.buyitapp.payload.response;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -25,6 +26,7 @@ import static java.util.Objects.requireNonNull;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CreatedByResponse implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 3253089907393733239L;
 
     @ApiModelProperty(

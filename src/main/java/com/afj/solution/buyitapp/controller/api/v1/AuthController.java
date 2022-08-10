@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.payload.response.JwtResponse;
-import com.afj.solution.buyitapp.service.UserAuthServiceImpl;
-import com.afj.solution.buyitapp.service.UserServiceImpl;
+import com.afj.solution.buyitapp.service.user.UserAuthServiceImpl;
+import com.afj.solution.buyitapp.service.user.UserServiceImpl;
 
 /**
  * @author Tomash Gombosh

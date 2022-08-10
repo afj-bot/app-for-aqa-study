@@ -1,5 +1,6 @@
 package com.afj.solution.buyitapp.payload.response;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Set;
@@ -30,6 +31,7 @@ import static java.util.Objects.requireNonNull;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderResponse implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 621395641796331484L;
 
     @ApiModelProperty(
