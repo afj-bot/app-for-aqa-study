@@ -5,12 +5,15 @@ import java.time.ZonedDateTime;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import com.afj.solution.buyitapp.common.Adapters;
 
 import static com.afj.solution.buyitapp.constans.Patterns.GSON;
 
@@ -98,6 +101,7 @@ public class CreateUserRequest implements Serializable {
             value = "User birthday",
             example = "07/27/2022"
     )
+    @JsonDeserialize(using = Adapters.ZonedDateTimeDeserializer.class)
     private ZonedDateTime dateOfBirth;
 
     @Override

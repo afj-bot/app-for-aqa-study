@@ -1,11 +1,15 @@
 package com.afj.solution.buyitapp.common;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.TypeAdapter;
@@ -22,11 +26,13 @@ import static java.util.Objects.isNull;
  */
 @Slf4j
 public class Adapters {
+    private static final String ZONED_DATE_TIME_FORMAT = "MM/dd/yyyy";
+
     /**
      * @author Tomash Gombosh
      */
     public static class ZonedDateTimeAdapter extends TypeAdapter<ZonedDateTime> {
-        private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
+        private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         @Override
         public void write(final JsonWriter jsonWriter, final ZonedDateTime value) throws IOException {
@@ -53,6 +59,20 @@ public class Adapters {
 
             }
             throw new BadRequestException(String.format("error.invalid.date.%s", element));
+        }
+    }
+
+    /**
+     * @author Tomash Gombosh
+     */
+    public static class ZonedDateTimeDeserializer extends JsonDeserializer<ZonedDateTime> {
+
+        @Override
+        public ZonedDateTime deserialize(com.fasterxml.jackson.core.JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ZONED_DATE_TIME_FORMAT);
+            LocalDate date = LocalDate.parse(jsonParser.getText(), formatter);
+
+            return date.atStartOfDay(ZoneId.of(ZoneOffset.UTC.getId()));
         }
     }
 }

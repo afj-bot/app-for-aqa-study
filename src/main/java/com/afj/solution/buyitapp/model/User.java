@@ -143,7 +143,20 @@ public class User implements UserDetails, Serializable {
 
     @Override
     public String toString() {
-        return GSON.toJson(this);
+        return String.format("{ \"id\": \"%s\", \"email\": \"%s\", \"username\": \"%s\", \"firstName\": \"%s\", "
+                        + "\"lastName\": \"%s\", \"homeAddress\": \"%s\", \"phoneNumber\": \"%s\", \"roles\": \"%s\","
+                        + " \"products\": \"%s\",  \"createdAt\": \"%s\", \"updatedAt\": \"%s\" }",
+                this.getId(),
+                this.getEmail(),
+                this.getUsername(),
+                this.getFirstName(),
+                this.getLastName(),
+                this.getHomeAddress(),
+                this.getPhoneNumber(),
+                this.getAuthorities(),
+                this.getProducts(),
+                this.getCreatedAt(),
+                this.getUpdatedAt());
     }
 
     public User update(final User newUser, final User currentUser) {
