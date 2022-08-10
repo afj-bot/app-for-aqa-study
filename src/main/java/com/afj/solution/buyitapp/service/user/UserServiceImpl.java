@@ -109,7 +109,9 @@ public class UserServiceImpl implements UserService {
         final Set<GrantedAuthority> userRole = new HashSet<>();
         userRole.add(new SimpleGrantedAuthority("ROLE_USER"));
         if (userRepository.findByUsernameOrEmail(createUserRequest.getUsername(), createUserRequest.getEmail()).isPresent()) {
-            throw new EntityAlreadyExistsException(User.class, "email or username");
+            throw new EntityAlreadyExistsException(
+                    String.format(translator.toLocale("error.user.exits"),
+                    String.format("%s/%s", createUserRequest.getUsername(), createUserRequest.getEmail())));
         }
         final User existingUser = userRepository
                 .findById(userId)
