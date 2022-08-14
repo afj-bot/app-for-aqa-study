@@ -1,4 +1,4 @@
-package com.afj.solution.buyitapp.config;
+package com.afj.solution.buyitapp.config.nonprod;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
