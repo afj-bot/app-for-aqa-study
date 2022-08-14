@@ -60,7 +60,9 @@ workflows:
     jobs:
       - test
       - build:
-          context: AWS
+          context:
+          - AWS
+          - SLACK
           filters:
             branches:
               only: master
