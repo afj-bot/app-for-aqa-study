@@ -1,4 +1,4 @@
-package com.afj.solution.buyitapp.config;
+package com.afj.solution.buyitapp.config.nonprod;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -8,6 +8,7 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -26,14 +27,15 @@ import com.afj.solution.buyitapp.common.Response;
  */
 @EnableSwagger2
 @Configuration
-public class WebMvcConfig implements WebMvcConfigurer {
+@Profile({"dev"})
+public class WebMvcDevConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(final CorsRegistry registry) {
         registry
                 .addMapping("/**")
                 .allowCredentials(true)
-                .allowedOrigins("http://localhost:3000", "https://dev.buy-it.afj-solution.com")
+                .allowedOrigins("https://dev.buy-it.afj-solution.com")
                 .maxAge(3600);
     }
 

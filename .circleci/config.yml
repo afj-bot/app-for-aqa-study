@@ -45,6 +45,14 @@ jobs:
             docker tag buy-it-api:${CIRCLE_BUILD_NUM} ${IMAGE}:${CIRCLE_BUILD_NUM}
             docker push ${IMAGE}:latest
             docker push ${IMAGE}:${CIRCLE_BUILD_NUM}
+      - run:
+          name: Success build notify
+          command: ./tools/notify.sh success 'Buy IT API'
+          when: on_success
+      - run:
+          name: Failed build notify
+          command: ./tools/notify.sh failed 'Buy IT API'
+          when: on_fail
 
 workflows:
   version: 2
@@ -52,7 +60,9 @@ workflows:
     jobs:
       - test
       - build:
-          context: AWS
+          context:
+          - AWS
+          - SLACK
           filters:
             branches:
               only: master
