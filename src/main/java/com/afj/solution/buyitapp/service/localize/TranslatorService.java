@@ -20,7 +20,7 @@ public class TranslatorService extends ResourceBundleMessageSource {
     public TranslatorService() {
         this.setDefaultEncoding("UTF-8");
         this.setUseCodeAsDefaultMessage(true);
-        this.setBasenames("error", "forms");
+        this.setBasenames("error", "localize");
     }
 
     public String toLocale(final String msgCode) {
