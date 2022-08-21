@@ -29,7 +29,7 @@ public class TranslatorService extends ResourceBundleMessageSource {
     }
 
     public Map<String, Object> getLocalize() {
-        final ResourceBundle resourceBundle = getResourceBundle("forms", LocaleContextHolder.getLocale());
+        final ResourceBundle resourceBundle = getResourceBundle("localize", LocaleContextHolder.getLocale());
         requireNonNull(resourceBundle, "Not found a localization");
 
         final Map<String, Object> objectMap = new ConcurrentHashMap<>();
