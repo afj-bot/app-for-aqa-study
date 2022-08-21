@@ -20,7 +20,7 @@ public class TranslatorService extends ResourceBundleMessageSource {
     public TranslatorService() {
         this.setDefaultEncoding("UTF-8");
         this.setUseCodeAsDefaultMessage(true);
-        this.setBasenames("error", "forms");
+        this.setBasenames("error", "localize");
     }
 
     public String toLocale(final String msgCode) {
@@ -29,7 +29,7 @@ public class TranslatorService extends ResourceBundleMessageSource {
     }
 
     public Map<String, Object> getLocalize() {
-        final ResourceBundle resourceBundle = getResourceBundle("forms", LocaleContextHolder.getLocale());
+        final ResourceBundle resourceBundle = getResourceBundle("localize", LocaleContextHolder.getLocale());
         requireNonNull(resourceBundle, "Not found a localization");
 
         final Map<String, Object> objectMap = new ConcurrentHashMap<>();
