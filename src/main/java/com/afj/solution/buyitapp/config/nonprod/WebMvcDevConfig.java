@@ -35,7 +35,7 @@ public class WebMvcDevConfig implements WebMvcConfigurer {
         registry
                 .addMapping("/**")
                 .allowCredentials(true)
-                .allowedOriginPatterns("https://*.buy-it.afj-solution.com:[*]")
+                .allowedOrigins("https://*.afj-solution.com")
                 .maxAge(3600);
     }
 
