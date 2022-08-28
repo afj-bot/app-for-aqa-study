@@ -27,7 +27,6 @@ public class BaseTest implements WithAssertions {
 
     protected final UUID productId = UUID.fromString("2a51b256-a6ef-4748-9354-a869290c3bf0");
     protected final UUID userId = UUID.fromString("3b0a4223-35e6-47b1-9ac3-f95911979574");
-
     protected final UUID cancelOrderId = UUID.fromString("3e5451f2-efb3-42ce-88f1-1a566421e676");
     protected final UUID waitingForPaymentOrderId = UUID.fromString("6434e8d9-3ab1-40e0-88c2-bc318538f8e1");
     protected final UUID inProgressOrderId = UUID.fromString("78452df2-1e97-4c0e-a691-9b381c714850");

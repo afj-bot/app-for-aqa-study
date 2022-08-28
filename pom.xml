@@ -24,6 +24,7 @@
         <io.springfox.swagger.version>3.0.0</io.springfox.swagger.version>
         <!-- Test plugins versions -->
         <org.jacoco.version>0.8.8</org.jacoco.version>
+        <io.qameta.allure.version>2.19.0</io.qameta.allure.version>
 
         <!--Build plugins versions -->
         <maven.compiler.version>3.8.1</maven.compiler.version>
@@ -31,6 +32,7 @@
         <maven.checkstyle.version>3.1.2</maven.checkstyle.version>
         <com.puppycrawl.tools.version>10.1</com.puppycrawl.tools.version>
         <maven.pmd.version>3.15.0</maven.pmd.version>
+        <maven.allure.version>2.10.0</maven.allure.version>
     </properties>
 
     <dependencies>
@@ -119,6 +121,12 @@
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-junit5</artifactId>
+            <version>${io.qameta.allure.version}</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -167,6 +175,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemProperties>
+                        <allure.results.directory>target/allure-results</allure.results.directory>
+                    </systemProperties>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -263,6 +276,14 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>${maven.allure.version}</version>
+                <configuration>
+                    <reportVersion>${io.qameta.allure.version}</reportVersion>
+                </configuration>
             </plugin>
         </plugins>
     </build>
