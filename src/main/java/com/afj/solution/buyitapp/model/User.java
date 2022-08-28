@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -26,7 +27,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import static com.afj.solution.buyitapp.constans.Patterns.GSON;
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 
@@ -98,6 +98,9 @@ public class User implements UserDetails, Serializable {
     @Column(name = "authorities")
     private Set<GrantedAuthority> authorities = new HashSet<>();
 
+    @OneToMany(mappedBy = "user")
+    private Set<Product> products = new HashSet<>();
+
     public User(final Consumer<User> builder) {
         requireNonNull(builder).accept(this);
     }
@@ -139,7 +142,20 @@ public class User implements UserDetails, Serializable {
 
     @Override
     public String toString() {
-        return GSON.toJson(this);
+        return String.format("{ \"id\": \"%s\", \"email\": \"%s\", \"username\": \"%s\", \"firstName\": \"%s\", "
+                        + "\"lastName\": \"%s\", \"homeAddress\": \"%s\", \"phoneNumber\": \"%s\", \"roles\": \"%s\","
+                        + " \"products\": \"%s\",  \"createdAt\": \"%s\", \"updatedAt\": \"%s\" }",
+                this.getId(),
+                this.getEmail(),
+                this.getUsername(),
+                this.getFirstName(),
+                this.getLastName(),
+                this.getHomeAddress(),
+                this.getPhoneNumber(),
+                this.getAuthorities(),
+                this.getProducts(),
+                this.getCreatedAt(),
+                this.getUpdatedAt());
     }
 
     public User update(final User newUser, final User currentUser) {

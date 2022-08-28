@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.afj.solution.buyitapp.common.Response;
 import com.afj.solution.buyitapp.payload.request.CreateProductRequest;
+import com.afj.solution.buyitapp.payload.request.UpdateCharacteristicRequest;
 import com.afj.solution.buyitapp.payload.response.ProductResponse;
 import com.afj.solution.buyitapp.security.JwtTokenProvider;
 import com.afj.solution.buyitapp.service.product.ProductServiceImp;
@@ -40,9 +41,9 @@ import static com.afj.solution.buyitapp.constans.Patterns.generateSuccessRespons
 /**
  * @author Tomash Gombosh
  */
+@Slf4j
 @RestController
 @RequestMapping(path = "/api/v1/products", produces = "application/json; charset=utf-8")
-@Slf4j
 public class ProductController {
 
     private final ProductServiceImp productService;
@@ -56,7 +57,7 @@ public class ProductController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @ApiOperation(value = "Get products", notes = "Anonymous, User Role", authorizations = {@Authorization("Bearer")})
+    @ApiOperation(value = "Get products", notes = "All Roles", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 200, message = "Products returned successfully"),
             @ApiResponse(code = 500, message = "Internal server error"),
@@ -70,7 +71,7 @@ public class ProductController {
         return productService.getProducts(pageable);
     }
 
-    @ApiOperation(value = "Get product image", notes = "Anonymous, User Role", authorizations = {@Authorization("Bearer")})
+    @ApiOperation(value = "Get product image", notes = "All Roles", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 200, message = "Image successfully find"),
             @ApiResponse(code = 404, message = "Image not found"),
@@ -85,7 +86,7 @@ public class ProductController {
         return productService.getImageByProductId(id);
     }
 
-    @ApiOperation(value = "Create a new product", notes = "Admin role", authorizations = {@Authorization("Bearer")})
+    @ApiOperation(value = "Create a new product", notes = "User, Admin Roles", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 201, message = "Product created successfully"),
             @ApiResponse(code = 403, message = "Access denied"),
@@ -96,12 +97,13 @@ public class ProductController {
     public @ResponseBody
     Response<String> createProduct(@Valid @RequestBody final CreateProductRequest createProductRequest) {
         final String username = jwtTokenProvider.getUsernameFromToken(jwtTokenProvider.getToken().substring(7));
+        final UUID userId = jwtTokenProvider.getUuidFromToken(jwtTokenProvider.getToken().substring(7));
         log.info("Receive create request from username -> {}", username);
-        productService.save(createProductRequest);
+        productService.save(createProductRequest, userId);
         return generateSuccessResponse();
     }
 
-    @ApiOperation(value = "Update the product quantity", notes = "Admin role", authorizations = {@Authorization("Bearer")})
+    @ApiOperation(value = "Update the product quantity", notes = "User, Admin Roles", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 201, message = "Product quantity updated successfully"),
             @ApiResponse(code = 403, message = "Access denied"),
@@ -117,7 +119,24 @@ public class ProductController {
         return generateSuccessResponse();
     }
 
-    @ApiOperation(value = "Create a new product", notes = "ROLE_ADMIN", authorizations = {@Authorization("Bearer")})
+    @ApiOperation(value = "Update the product characteristic", notes = "User, Admin Roles", authorizations = {@Authorization("Bearer")})
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Product characteristic updated successfully"),
+            @ApiResponse(code = 403, message = "Access denied"),
+            @ApiResponse(code = 500, message = "Internal server error"),
+    })
+    @PutMapping("/{id}/characteristic")
+    public @ResponseBody
+    Response<String> updateProductCharacteristic(@Valid @NotEmpty @PathVariable final UUID id,
+                                                 @RequestBody final UpdateCharacteristicRequest updateCharacteristicRequest) {
+        final String username = jwtTokenProvider.getUsernameFromToken(jwtTokenProvider.getToken().substring(7));
+        log.info("Receive update characteristic of product {} request from username -> {}", id, username);
+        productService.updateCharacteristicToProduct(id, updateCharacteristicRequest);
+        return generateSuccessResponse();
+    }
+
+
+    @ApiOperation(value = "Add image to the product", notes = "User, Admin Roles", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 201, message = "Image added successfully to product"),
             @ApiResponse(code = 403, message = "Access denied"),
@@ -133,5 +152,23 @@ public class ProductController {
         final String username = jwtTokenProvider.getUsernameFromToken(jwtTokenProvider.getToken().substring(7));
         log.info("Upload an image for product {} by username -> {}", id, username);
         return productService.addImageToProduct(id, file);
+    }
+
+    @ApiOperation(value = "Get My products", notes = "User, Admin Roles", authorizations = {@Authorization("Bearer")})
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Products returned successfully"),
+            @ApiResponse(code = 401, message = "Not Authorized"),
+            @ApiResponse(code = 403, message = "Access denied"),
+            @ApiResponse(code = 500, message = "Internal server error"),
+    })
+    @GetMapping("/me")
+    public @ResponseBody
+    Page<ProductResponse> getMyProducts(final Pageable pageable,
+                                        @RequestParam(value = "title", required = false) final String title,
+                                        @RequestParam(value = "description", required = false) final String description) {
+        final UUID userId = jwtTokenProvider.getUuidFromToken(jwtTokenProvider.getToken().substring(7));
+        log.info("Get products request for id -> {}", userId);
+        log.info("Get products by {}", pageable);
+        return productService.getMyProducts(pageable, userId, title, description);
     }
 }

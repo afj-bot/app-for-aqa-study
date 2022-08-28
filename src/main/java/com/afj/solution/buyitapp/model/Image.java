@@ -28,7 +28,6 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author Tommash Gombosh
  */
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

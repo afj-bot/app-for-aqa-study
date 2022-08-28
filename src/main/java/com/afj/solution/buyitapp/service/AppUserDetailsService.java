@@ -7,6 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import com.afj.solution.buyitapp.service.user.UserAuthService;
+
 /**
  * @author Tomash Gombosh
  */

@@ -15,14 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.afj.solution.buyitapp.payload.request.LoginRequest;
 import com.afj.solution.buyitapp.payload.response.JwtResponse;
-import com.afj.solution.buyitapp.service.UserAuthServiceImpl;
+import com.afj.solution.buyitapp.service.user.UserAuthServiceImpl;
 
 /**
  * @author Tomash Gombosh
  */
-@RestController
-@RequestMapping(path = "/api/v1", produces = "application/json; charset=utf-8")
 @Slf4j
+@RestController
+@RequestMapping(path = "/api/v1",
+        produces = "application/json; charset=utf-8")
 public class LoginController {
 
     private final UserAuthServiceImpl userAuthService;

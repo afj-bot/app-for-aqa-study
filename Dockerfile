@@ -5,8 +5,11 @@ ENV DATABASE_PASSWORD=password123
 ENV DATABASE_URL="jdbc:mysql://localhost:3306/app"
 ENV APP_DOMAIN="localhost"
 ENV FE_URL="http://localhost:3000"
+ENV VERSION="1.1.0-1"
+ENV ENVIRONMENT="local"
 
 COPY ./target/*.jar ./app.jar
 
-CMD ["java", "-Dserver.port=80","-Dproject.version=1.1.0-1", \
+CMD ["java", "-Dserver.port=80","-Dproject.version=${VERSION}", \
+    "-Dspring.profiles.active=${ENVIRONMENT}", \
     "-jar", "./app.jar"]

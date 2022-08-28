@@ -1,5 +1,6 @@
 package com.afj.solution.buyitapp.payload.request;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +23,7 @@ import lombok.Setter;
 @ApiModel(value = "CreateOrderRequest", description = "Create product request model")
 public class CreateOrderRequest implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 2968630540737468996L;
 
     @ApiModelProperty(

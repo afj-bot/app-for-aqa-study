@@ -1,5 +1,6 @@
 package com.afj.solution.buyitapp.payload.response;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.function.Consumer;
 
@@ -24,6 +25,7 @@ import static java.util.Objects.requireNonNull;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductResponse implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -7667161353186665283L;
 
     @ApiModelProperty(
@@ -71,6 +73,22 @@ public class ProductResponse implements Serializable {
             example = "{ 'name': 'flower.jpg', 'picture': 'base64image' }"
     )
     private ImageResponse image;
+
+    @ApiModelProperty(
+            name = "characteristic",
+            dataType = "Object",
+            value = "Product characteristic",
+            example = "{ 'size': 'S', 'color': 'black' }"
+    )
+    private CharacteristicResponse characteristic;
+
+    @ApiModelProperty(
+            name = "createdBy",
+            dataType = "Object",
+            value = "User that created that product",
+            example = "{ 'email': 'S@mail.com', 'firstName': 'black' }"
+    )
+    private CreatedByResponse createdBy;
 
     public ProductResponse(final Consumer<ProductResponse> builder) {
         requireNonNull(builder).accept(this);

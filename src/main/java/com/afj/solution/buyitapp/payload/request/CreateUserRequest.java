@@ -1,16 +1,21 @@
 package com.afj.solution.buyitapp.payload.request;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import com.afj.solution.buyitapp.common.Adapters;
 
 import static com.afj.solution.buyitapp.constans.Patterns.GSON;
 
@@ -24,6 +29,7 @@ import static com.afj.solution.buyitapp.constans.Patterns.GSON;
 @ApiModel(value = "CreateUserRequest", description = "Create user request model")
 public class CreateUserRequest implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 3863852548921806327L;
 
     @ApiModelProperty(
@@ -32,7 +38,7 @@ public class CreateUserRequest implements Serializable {
             value = "First Name of the application User",
             example = "First Name"
     )
-    @Size(max = 255)
+    @Size(max = 255, message = "error.value.string.max")
     private String firstName;
 
     @ApiModelProperty(
@@ -41,7 +47,7 @@ public class CreateUserRequest implements Serializable {
             value = "Last Name of the application User",
             example = "Last Name"
     )
-    @Size(max = 255)
+    @Size(max = 255, message = "error.value.string.max")
     private String lastName;
 
     @ApiModelProperty(
@@ -52,7 +58,7 @@ public class CreateUserRequest implements Serializable {
             required = true
     )
 
-    @Size(max = 255)
+    @Size(max = 255, message = "error.value.string.max")
     private String username;
 
     @ApiModelProperty(
@@ -62,7 +68,7 @@ public class CreateUserRequest implements Serializable {
             example = "test@gmail.com",
             required = true
     )
-    @Email
+    @Email(message = "error.value.email")
     private String email;
 
 
@@ -73,6 +79,7 @@ public class CreateUserRequest implements Serializable {
             example = "NewPassword!",
             required = true
     )
+    @NotEmpty(message = "error.value.string.not-empty")
     private String password;
 
     @ApiModelProperty(
@@ -81,7 +88,7 @@ public class CreateUserRequest implements Serializable {
             value = "User phone number",
             example = "0975255207"
     )
-    @Size(max = 12)
+    @Size(max = 12, message = "error.value.string.max")
     private String phoneNumber;
 
     @ApiModelProperty(
@@ -98,6 +105,7 @@ public class CreateUserRequest implements Serializable {
             value = "User birthday",
             example = "07/27/2022"
     )
+    @JsonDeserialize(using = Adapters.ZonedDateTimeDeserializer.class)
     private ZonedDateTime dateOfBirth;
 
     @Override

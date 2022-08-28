@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.afj.solution.buyitapp.model.Product;
 import com.afj.solution.buyitapp.payload.request.CreateProductRequest;
+import com.afj.solution.buyitapp.payload.request.UpdateCharacteristicRequest;
 import com.afj.solution.buyitapp.payload.response.ProductResponse;
 
 /**
@@ -20,11 +21,13 @@ public interface ProductService {
 
     Page<ProductResponse> getProducts(Pageable pageable);
 
-    Product save(CreateProductRequest createProductRequest);
+    Product save(CreateProductRequest createProductRequest, UUID userId);
 
     Product save(Product product);
 
     ProductResponse addImageToProduct(UUID id, MultipartFile file) throws IOException;
+
+    ProductResponse updateCharacteristicToProduct(UUID id, UpdateCharacteristicRequest request);
 
     byte[] getImageByProductId(UUID id);
 
@@ -37,4 +40,6 @@ public interface ProductService {
     void decreaseProductQuantity(UUID productId, int quantity);
 
     void increaseProductQuantity(UUID productId, int quantity);
+
+    Page<ProductResponse> getMyProducts(Pageable pageable, UUID userId, String title, String description);
 }

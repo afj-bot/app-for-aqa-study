@@ -22,16 +22,16 @@ import com.afj.solution.buyitapp.common.Response;
 import com.afj.solution.buyitapp.payload.request.CreateUserRequest;
 import com.afj.solution.buyitapp.payload.response.UserResponse;
 import com.afj.solution.buyitapp.security.JwtTokenProvider;
-import com.afj.solution.buyitapp.service.UserServiceImpl;
+import com.afj.solution.buyitapp.service.user.UserServiceImpl;
 
 import static com.afj.solution.buyitapp.constans.Patterns.generateSuccessResponse;
 
 /**
  * @author Tomash Gombosh
  */
+@Slf4j
 @RestController
 @RequestMapping(path = "/api/v1/users", produces = "application/json; charset=utf-8")
-@Slf4j
 public class UserController {
 
     private final UserServiceImpl userService;
@@ -45,7 +45,7 @@ public class UserController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @ApiOperation(value = "Get my account data", notes = "Anonymous, User Role", authorizations = {@Authorization("Bearer")})
+    @ApiOperation(value = "Get my account data", notes = "Admin, User Role", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 200, message = "Request was successfully"),
             @ApiResponse(code = 401, message = "Invalid username/password supplied"),
@@ -61,7 +61,7 @@ public class UserController {
         return userService.getMe(userId);
     }
 
-    @ApiOperation(value = "Create New User", authorizations = {@Authorization("Bearer")})
+    @ApiOperation(value = "Create New User", notes = "Anonymous Role", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 201, message = "User created"),
             @ApiResponse(code = 400, message = "User Already exists"),

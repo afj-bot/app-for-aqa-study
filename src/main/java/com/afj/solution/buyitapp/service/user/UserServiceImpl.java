@@ -1,11 +1,13 @@
-package com.afj.solution.buyitapp.service;
+package com.afj.solution.buyitapp.service.user;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,8 +18,9 @@ import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.payload.request.CreateUserRequest;
 import com.afj.solution.buyitapp.payload.response.UserResponse;
 import com.afj.solution.buyitapp.repository.UserRepository;
-import com.afj.solution.buyitapp.service.converters.CreateUserRequestToUser;
-import com.afj.solution.buyitapp.service.converters.UserToResponseConverter;
+import com.afj.solution.buyitapp.service.converters.user.CreateUserRequestToUser;
+import com.afj.solution.buyitapp.service.converters.user.UserToResponseConverter;
+import com.afj.solution.buyitapp.service.localize.TranslatorService;
 
 /**
  * @author Tomash Gombosh
@@ -27,21 +30,42 @@ import com.afj.solution.buyitapp.service.converters.UserToResponseConverter;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
-
     private final UserToResponseConverter converter;
     private final CreateUserRequestToUser createUserRequestToUser;
+    private final UserLoginServiceImpl userLoginService;
+    private final TranslatorService translator;
 
     @Autowired
     public UserServiceImpl(final UserRepository userRepository,
                            final PasswordEncoder passwordEncoder,
                            final UserToResponseConverter converter,
-                           final CreateUserRequestToUser createUserRequestToUser) {
+                           final CreateUserRequestToUser createUserRequestToUser,
+                           final UserLoginServiceImpl userLoginService,
+                           final TranslatorService translator) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.converter = converter;
         this.createUserRequestToUser = createUserRequestToUser;
+        this.userLoginService = userLoginService;
+        this.translator = translator;
+    }
+
+    @Override
+    public User findById(final UUID userId) {
+        log.info("Find user by id {}", userId);
+        return userRepository
+                .findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(
+                        translator.toLocale("error.user.not-found"), userId
+                )));
+    }
+
+    @Override
+    public boolean isUserExist(final String username) {
+        return userRepository
+                .findByUsername(username)
+                .isPresent();
     }
 
     @Override
@@ -52,8 +76,9 @@ public class UserServiceImpl implements UserService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             return userRepository.save(user);
         }
-        throw new EntityAlreadyExistsException(User.class, String.format("%s %s",
-                user.getEmail(), user.getUsername()));
+        throw new EntityAlreadyExistsException(String.format(
+                translator.toLocale("error.user.exits"), user.getUsername()
+        ));
     }
 
     @Override
@@ -70,7 +95,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getMe(final UUID userId) {
         final User user = userRepository
-                .findById(userId).orElseThrow(() -> new EntityNotFoundException(User.class, "id"));
+                .findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(
+                        translator.toLocale("error.user.not-found"), userId
+                )));
         log.info("Find user by id {}", user);
 
         return converter.convert(user);
@@ -78,12 +106,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void createUser(final CreateUserRequest createUserRequest, final UUID userId) {
+        final Set<GrantedAuthority> userRole = new HashSet<>();
+        userRole.add(new SimpleGrantedAuthority("ROLE_USER"));
+        if (userRepository.findByUsernameOrEmail(createUserRequest.getUsername(), createUserRequest.getEmail()).isPresent()) {
+            throw new EntityAlreadyExistsException(
+                    String.format(translator.toLocale("error.user.exits"),
+                    String.format("%s/%s", createUserRequest.getUsername(), createUserRequest.getEmail())));
+        }
         final User existingUser = userRepository
                 .findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException(User.class, "id"));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(
+                        translator.toLocale("error.user.not-found"), userId
+                )));
         final User newUser = createUserRequestToUser.convert(createUserRequest);
+        newUser.setAuthorities(userRole);
         existingUser.update(newUser, existingUser);
         existingUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         userRepository.save(existingUser);
+        userLoginService.save(existingUser);
     }
 }

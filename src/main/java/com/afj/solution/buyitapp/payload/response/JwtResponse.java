@@ -1,5 +1,6 @@
 package com.afj.solution.buyitapp.payload.response;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import io.swagger.annotations.ApiModel;
@@ -19,6 +20,7 @@ import lombok.Setter;
 @ApiModel(value = "JwtResponse", description = "Access token response")
 public class JwtResponse implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 2162442422246022981L;
 
     @ApiModelProperty(

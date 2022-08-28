@@ -2,23 +2,30 @@ package com.afj.solution.buyitapp.service.order;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.afj.solution.buyitapp.exception.BadRequestException;
+import com.afj.solution.buyitapp.exception.EntityNotFoundException;
 import com.afj.solution.buyitapp.model.Order;
 import com.afj.solution.buyitapp.model.Product;
 import com.afj.solution.buyitapp.model.enums.OrderStatus;
 import com.afj.solution.buyitapp.payload.request.CreateOrderRequest;
 import com.afj.solution.buyitapp.payload.response.OrderResponse;
 import com.afj.solution.buyitapp.repository.OrderRepository;
-import com.afj.solution.buyitapp.service.converters.OrderToResponseConverter;
+import com.afj.solution.buyitapp.service.converters.order.OrderToResponseConverter;
+import com.afj.solution.buyitapp.service.localize.TranslatorService;
 import com.afj.solution.buyitapp.service.product.ProductService;
+
+import static com.afj.solution.buyitapp.model.enums.OrderStatus.CANCEL;
 
 /**
  * @author Tomash Gombosh
@@ -29,14 +36,17 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderToResponseConverter converter;
     private final ProductService productService;
+    private final TranslatorService translator;
 
     @Autowired
     public OrderServiceImpl(final OrderRepository orderRepository,
                             final OrderToResponseConverter converter,
-                            final ProductService productService) {
+                            final ProductService productService,
+                            final TranslatorService translator) {
         this.orderRepository = orderRepository;
         this.converter = converter;
         this.productService = productService;
+        this.translator = translator;
     }
 
     @Override
@@ -47,7 +57,7 @@ public class OrderServiceImpl implements OrderService {
                 .productsWithEmptyQuantity(createOrderRequest.getProductIds());
         if (!outOfStockProducts.isEmpty()) {
             log.info("The products is out of the quantity {}", outOfStockProducts);
-            throw new BadRequestException(String.format("error.outOfStock.products %s",
+            throw new BadRequestException(String.format(translator.toLocale("error.product.out-of-stock"),
                     outOfStockProducts.stream().map(Product::getName).collect(Collectors.toList())));
         }
         final Set<Product> products = productService.getProductsById(createOrderRequest.getProductIds());
@@ -68,5 +78,33 @@ public class OrderServiceImpl implements OrderService {
         final OrderResponse orderResponse = converter.convert(order);
         orderResponse.setProducts(products);
         return orderResponse;
+    }
+
+    @Override
+    public Page<OrderResponse> getMyOrders(final Pageable pageable, final UUID userId) {
+        return orderRepository.findAllByUserId(pageable, userId).map(converter::convert);
+    }
+
+    @Override
+    @SuppressWarnings("PMD")
+    public void cancelOrder(final UUID orderId) {
+        final Optional<Order> order = this.orderRepository.findById(orderId);
+        if (order.isEmpty()) {
+            throw new EntityNotFoundException(String
+                    .format(translator.toLocale("error.order.not-found"), orderId));
+        }
+        switch (order.get().getStatus()) {
+            case CANCEL -> throw new BadRequestException(translator.toLocale("error.order.cancel"));
+            case PENDING, WAITING_FOR_PAYMENT -> {
+                final Order cancelOrder = order.get();
+                cancelOrder.setStatus(CANCEL);
+                orderRepository.save(cancelOrder);
+                log.info("Order {} was successfully canceled", cancelOrder.getId());
+                cancelOrder
+                        .getProductIds()
+                        .forEach(id -> productService.increaseProductQuantity(id, 1));
+            }
+            default -> throw new BadRequestException(translator.toLocale("error.order.unsupported-state"));
+        }
     }
 }

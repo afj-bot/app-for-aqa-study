@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,14 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.payload.response.JwtResponse;
-import com.afj.solution.buyitapp.service.UserAuthServiceImpl;
-import com.afj.solution.buyitapp.service.UserServiceImpl;
+import com.afj.solution.buyitapp.service.user.UserAuthServiceImpl;
+import com.afj.solution.buyitapp.service.user.UserServiceImpl;
 
 /**
  * @author Tomash Gombosh
  */
 @Slf4j
-@CrossOrigin(originPatterns = {"http://localhost", ".afj-solution.com"}, allowCredentials = "true")
 @RestController
 @RequestMapping(path = "/api/v1/auth", produces = "application/json; charset=utf-8")
 public class AuthController {
@@ -48,7 +46,7 @@ public class AuthController {
     })
     @GetMapping("/anonymous")
     public @ResponseBody
-    ResponseEntity<Void> authAnonymous() {
+    ResponseEntity<?> authAnonymous() {
         log.info("Set cookie to generate anonymous token");
         return ResponseEntity
                 .ok()

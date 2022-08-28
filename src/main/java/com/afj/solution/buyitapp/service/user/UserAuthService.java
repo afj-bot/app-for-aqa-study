@@ -1,4 +1,4 @@
-package com.afj.solution.buyitapp.service;
+package com.afj.solution.buyitapp.service.user;
 
 import java.util.UUID;
 import javax.servlet.http.Cookie;

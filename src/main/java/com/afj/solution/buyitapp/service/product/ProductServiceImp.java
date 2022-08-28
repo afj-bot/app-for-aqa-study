@@ -18,11 +18,16 @@ import com.afj.solution.buyitapp.exception.BadRequestException;
 import com.afj.solution.buyitapp.exception.EntityNotFoundException;
 import com.afj.solution.buyitapp.model.Image;
 import com.afj.solution.buyitapp.model.Product;
+import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.payload.request.CreateProductRequest;
+import com.afj.solution.buyitapp.payload.request.UpdateCharacteristicRequest;
 import com.afj.solution.buyitapp.payload.response.ProductResponse;
 import com.afj.solution.buyitapp.repository.ProductRepository;
-import com.afj.solution.buyitapp.service.converters.ProductRequestToProductConverter;
-import com.afj.solution.buyitapp.service.converters.ProductToResponseConverter;
+import com.afj.solution.buyitapp.service.converters.product.ProductRequestToProductConverter;
+import com.afj.solution.buyitapp.service.converters.product.ProductToResponseConverter;
+import com.afj.solution.buyitapp.service.converters.product.UpdateCharacteristicRequestToCharacteristicConverter;
+import com.afj.solution.buyitapp.service.localize.TranslatorService;
+import com.afj.solution.buyitapp.service.user.UserServiceImpl;
 
 import static java.util.Objects.nonNull;
 
@@ -34,27 +39,40 @@ import static java.util.Objects.nonNull;
 public class ProductServiceImp implements ProductService {
 
     private final ProductRepository productRepository;
+    private final UserServiceImpl userService;
     private final ProductToResponseConverter productToResponseConverter;
     private final ProductRequestToProductConverter productRequestToProductConverter;
+    private final UpdateCharacteristicRequestToCharacteristicConverter converter;
+    private final TranslatorService translator;
 
     @Autowired
     public ProductServiceImp(final ProductRepository productRepository,
+                             final UserServiceImpl userService,
                              final ProductToResponseConverter productToResponseConverter,
-                             final ProductRequestToProductConverter productRequestToProductConverter) {
+                             final ProductRequestToProductConverter productRequestToProductConverter,
+                             final UpdateCharacteristicRequestToCharacteristicConverter converter,
+                             final TranslatorService translator) {
         this.productRepository = productRepository;
+        this.userService = userService;
         this.productToResponseConverter = productToResponseConverter;
         this.productRequestToProductConverter = productRequestToProductConverter;
+        this.converter = converter;
+        this.translator = translator;
     }
 
     @Override
     public Page<ProductResponse> getProducts(final Pageable pageable) {
-        return productRepository.findAll(pageable).map(productToResponseConverter::convert);
+        return productRepository.findAll(pageable)
+                .map(productToResponseConverter::convert);
     }
 
     @Override
-    public Product save(final CreateProductRequest createProductRequest) {
+    public Product save(final CreateProductRequest createProductRequest, final UUID userId) {
         log.info("Create product {} from request", createProductRequest);
-        final Product product = this.save(productRequestToProductConverter.convert(createProductRequest));
+        final Product convertedProduct = productRequestToProductConverter.convert(createProductRequest);
+        final User createdByUser = userService.findById(userId);
+        convertedProduct.setUser(createdByUser);
+        final Product product = this.save(convertedProduct);
         log.info("Successfully create a product {}", product);
         return product;
     }
@@ -76,11 +94,24 @@ public class ProductServiceImp implements ProductService {
                 i.setFileName(file.getOriginalFilename());
                 i.setPicture(fileBytes);
             }));
-            productRepository.save(product);
+            this.save(product);
             log.info("Product {} saved successfully to database", product.getId());
             return productToResponseConverter.convert(product);
         }
-        throw new BadRequestException(String.format("File extension is incorrect %s", file.getOriginalFilename()));
+        throw new BadRequestException(String.format(translator
+                .toLocale("error.file.unsupported"), file.getOriginalFilename()));
+    }
+
+    @Override
+    public ProductResponse updateCharacteristicToProduct(final UUID id, final UpdateCharacteristicRequest request) {
+        if (request.getColor().isEmpty() && request.getSize().isEmpty() && request.getAdditionalParams().isEmpty()) {
+            throw new BadRequestException(translator.toLocale("error.model.empty-provided"));
+        }
+        log.info("Add characteristic {} to the product {}", request, id);
+        final Product product = this.findById(id);
+        product.setCharacteristic(converter.convert(request));
+        this.save(product);
+        return productToResponseConverter.convert(product);
     }
 
     @Override
@@ -93,7 +124,9 @@ public class ProductServiceImp implements ProductService {
     public Product findById(final UUID id) {
         final Product product = this.productRepository
                 .findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(Product.class, "id"));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(translator
+                                .toLocale("error.product.not-found"), id)));
         log.info("Find Product {} by id({})", product, id);
         return product;
     }
@@ -129,5 +162,12 @@ public class ProductServiceImp implements ProductService {
         this.save(product);
         log.info("Decrease the product {}-{} quantity to {}",
                 product.getId(), product.getName(), product.getQuantity());
+    }
+
+    @Override
+    public Page<ProductResponse> getMyProducts(final Pageable pageable, final UUID userId, final String title, final String description) {
+        final User user = userService.findById(userId);
+        return productRepository.findAllByUserAndNameAndDescription(pageable, user, title, description)
+                .map(productToResponseConverter::convert);
     }
 }
