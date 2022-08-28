@@ -14,7 +14,7 @@ jobs:
       - checkout
       - run:
           name: Run test
-          command: mvn clean test
+          command: mvn clean verify -Dspring.profiles.active=local
   build:
     environment:
       IMAGE: 738181112533.dkr.ecr.us-east-2.amazonaws.com/buy-it-api
