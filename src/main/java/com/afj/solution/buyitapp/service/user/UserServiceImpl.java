@@ -2,8 +2,10 @@ package com.afj.solution.buyitapp.service.user;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +81,24 @@ public class UserServiceImpl implements UserService {
         throw new EntityAlreadyExistsException(String.format(
                 translator.toLocale("error.user.exits"), user.getUsername()
         ));
+    }
+
+    @Override
+    public User updateUser(final UUID userId, final User user) {
+        log.info("Update the {} with new values {}", userId, user);
+        final Set<GrantedAuthority> grantedAuthorities = user
+                .getAuthorities()
+                .stream()
+                .map(g -> new SimpleGrantedAuthority(g.getAuthority()))
+                .collect(Collectors.toSet());
+        final User existingUser = this.findById(userId);
+        existingUser.setAuthorities(grantedAuthorities);
+        existingUser.setFirstName(user.getFirstName());
+        existingUser.setLastName(user.getLastName());
+        existingUser.setPhoneNumber(user.getPhoneNumber());
+        userRepository.save(existingUser);
+        log.info("Save the {} with new values {}", userId, user);
+        return existingUser;
     }
 
     @Override

@@ -17,6 +17,8 @@ public interface UserService {
 
     User save(User user);
 
+    User updateUser(UUID userId, User user);
+
     User saveAnonymous();
 
     UserResponse getMe(UUID userId);

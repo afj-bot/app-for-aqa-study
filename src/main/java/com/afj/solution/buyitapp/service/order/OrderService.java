@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.afj.solution.buyitapp.model.Order;
 import com.afj.solution.buyitapp.payload.request.CreateOrderRequest;
 import com.afj.solution.buyitapp.payload.response.OrderResponse;
 
@@ -18,4 +19,6 @@ public interface OrderService {
     void cancelOrder(UUID orderId);
 
     Page<OrderResponse> getMyOrders(Pageable pageable, UUID userId);
+
+    Order findById(UUID orderId);
 }

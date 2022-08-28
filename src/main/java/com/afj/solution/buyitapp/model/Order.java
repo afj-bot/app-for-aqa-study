@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -14,8 +15,11 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -55,8 +59,7 @@ public class Order implements Serializable {
     @Column(name = "user_id", updatable = false, nullable = false)
     private UUID userId;
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    @Column(name = "product_ids")
+    @ElementCollection(fetch = FetchType.EAGER)
     private Set<UUID> productIds = new HashSet<>();
 
     @Column(name = "total")
