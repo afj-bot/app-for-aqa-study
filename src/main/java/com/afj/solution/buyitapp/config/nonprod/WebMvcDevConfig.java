@@ -34,8 +34,7 @@ public class WebMvcDevConfig implements WebMvcConfigurer {
     public void addCorsMappings(final CorsRegistry registry) {
         registry
                 .addMapping("/**")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD")
-                .allowCredentials(true)
+                .allowedMethods("*")
                 .allowedOriginPatterns("https://*.afj-solution.com")
                 .maxAge(3600);
     }
