@@ -1,6 +1,5 @@
 package com.afj.solution.buyitapp.service;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -9,11 +8,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.afj.solution.buyitapp.model.User;
-import com.afj.solution.buyitapp.service.user.UserAuthService;
 import com.afj.solution.buyitapp.service.user.UserService;
 
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
