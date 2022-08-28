@@ -26,7 +26,7 @@ jobs:
           command: sudo apt-get update && sudo apt-get install -y mysql-client
       - run:
           name: Init the the database
-          command: mysql -h 127.0.0.1 -u root < local/prepare-db-for-tests.sql
+          command: mysql -h 127.0.0.1 -u root < local/01.sql
       - restore_cache:
           keys:
             -  v1-dependencies-{{ checksum "pom.xml" }}
@@ -36,7 +36,15 @@ jobs:
           paths:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
-      - run: mvn clean verify -Dspring.profiles.active=local
+      - run:
+          name: Run migration
+          command: mvn clean flyway:migrate -Dflyway.configFiles=flywayTestMigration.conf
+      - run:
+          name: Prepare DB for test
+          command: mysql -h 127.0.0.1 -u root < prepare-db-for-tests.sql
+      - run:
+          name: Run tests
+          command: mvn clean verify -Dspring.profiles.active=local
       - run:
           name: Generate and copy reports
           command: |

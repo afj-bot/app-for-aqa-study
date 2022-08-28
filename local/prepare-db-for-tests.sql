@@ -1,7 +1,4 @@
-CREATE USER IF NOT EXISTS 'app'@'%' IDENTIFIED BY 'password123';
-CREATE DATABASE IF NOT EXISTS app;
-GRANT ALL PRIVILEGES ON app.* TO 'app'@'%';
-
+USE app;
 INSERT INTO user(id, username, email, password,
                  first_name, last_name, phone_number,
                  home_address, account_non_expired, account_non_locked,
