@@ -10,11 +10,30 @@ jobs:
   test:
     docker:
       - image: cimg/openjdk:17.0.3
+        environment:
+          MAVEN_OPTS: -Xmx3200m
+      - image: cimg/mysql:8.0
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_ROOT_PASSWORD: ''
     steps:
       - checkout
       - run:
-          name: Run test
-          command: mvn clean verify -Dspring.profiles.active=local
+          name: Wait for Database Connection
+          command: dockerize -wait tcp://localhost:3306 -timeout 1m
+      - run: sudo apt-get install mysql-client
+      - run: mysql -h 127.0.0.1 -u root < local/01.sql
+      - restore_cache:
+          keys:
+            -  v1-dependencies-{{ checksum "pom.xml" }}
+            -  v1-dependencies-
+      - run: mvn dependency:go-offline
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
+      - run: mvn clean verify -Dspring.profiles.active=local
+
   build:
     environment:
       IMAGE: 738181112533.dkr.ecr.us-east-2.amazonaws.com/buy-it-api
@@ -23,9 +42,17 @@ jobs:
       - image: cimg/openjdk:17.0.3
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            -  v1-dependencies-{{ checksum "pom.xml" }}
+            -  v1-dependencies-
       - run:
           name: Package application
           command: mvn clean package -Dproject.version=1.0.0-${CIRCLE_BUILD_NUM}
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
       - setup_remote_docker:
           docker_layer_caching: true
       - aws-cli/setup:
