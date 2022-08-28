@@ -48,6 +48,7 @@ jobs:
       - run:
           name: Generate and copy reports
           command: |
+            mvn allure:report
             sudo cp -R ./target/site /tmp/artifacts || true
             sudo cp -R ./target/allure-report /tmp/artifacts || true
           when: always
