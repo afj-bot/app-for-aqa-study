@@ -40,7 +40,7 @@ jobs:
       - run:
           name: Generate and copy reports
           command: |
-            sudo cp -R ./target/site/jacoco /tmp/artifacts || true
+            sudo cp -R ./target/site /tmp/artifacts || true
             sudo cp -R ./target/allure-report /tmp/artifacts || true
           when: always
       - store_artifacts:
