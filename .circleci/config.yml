@@ -21,8 +21,12 @@ jobs:
       - run:
           name: Wait for Database Connection
           command: dockerize -wait tcp://localhost:3306 -timeout 1m
-      - run: sudo apt-get update && sudo apt-get dist-upgrade && sudo apt-get install mysql-client
-      - run: mysql -h 127.0.0.1 -u root < local/01.sql
+      - run:
+          name: Install the MySQL client
+          command: sudo apt-get update && sudo apt-get install -y mysql-client
+      - run:
+          name: Init the the database
+          command: mysql -h 127.0.0.1 -u root < local/01.sql
       - restore_cache:
           keys:
             -  v1-dependencies-{{ checksum "pom.xml" }}
@@ -33,6 +37,14 @@ jobs:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
       - run: mvn clean verify -Dspring.profiles.active=local
+      - run:
+          name: Generate and copy reports
+          command: |
+            sudo cp -R ./target/site/jacoco /tmp/artifacts || true
+            sudo cp -R ./target/allure-report /tmp/artifacts || true
+          when: always
+      - store_artifacts:
+          path: /tmp/artifacts
 
   build:
     environment:
