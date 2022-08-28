@@ -19,7 +19,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry
                 .addMapping("/**")
                 .allowedMethods("*")
-                .allowedOrigins("https://buy-it.afj-solution.com")
+                .allowedOrigins("*")
                 .maxAge(3600);
     }
 }
