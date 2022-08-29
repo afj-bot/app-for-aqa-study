@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -28,6 +29,7 @@ import com.afj.solution.buyitapp.common.Response;
 @EnableSwagger2
 @Configuration
 @Profile({"dev"})
+@EnableWebMvc
 public class WebMvcDevConfig implements WebMvcConfigurer {
 
     @Override
