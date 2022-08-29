@@ -30,17 +30,6 @@ import com.afj.solution.buyitapp.common.Response;
 @Profile({"dev"})
 public class WebMvcDevConfig implements WebMvcConfigurer {
 
-    @Override
-    public void addCorsMappings(final CorsRegistry registry) {
-        registry
-                .addMapping("/**")
-                .allowedMethods("*")
-                .allowedOriginPatterns("https://*.afj-solution.com:[*]")
-                .allowedHeaders("*")
-                .allowCredentials(true)
-                .maxAge(3600);
-    }
-
     @Bean
     public Docket productApi() {
         return new Docket(DocumentationType.SWAGGER_2)
