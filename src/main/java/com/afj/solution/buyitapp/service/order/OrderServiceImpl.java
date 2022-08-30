@@ -26,6 +26,7 @@ import com.afj.solution.buyitapp.service.localize.TranslatorService;
 import com.afj.solution.buyitapp.service.product.ProductService;
 
 import static com.afj.solution.buyitapp.model.enums.OrderStatus.CANCEL;
+import static java.lang.String.format;
 
 /**
  * @author Tomash Gombosh
@@ -57,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
                 .productsWithEmptyQuantity(createOrderRequest.getProductIds());
         if (!outOfStockProducts.isEmpty()) {
             log.info("The products is out of the quantity {}", outOfStockProducts);
-            throw new BadRequestException(String.format(translator.toLocale("error.product.out-of-stock"),
+            throw new BadRequestException(format(translator.toLocale("error.product.out-of-stock"),
                     outOfStockProducts.stream().map(Product::getName).collect(Collectors.toList())));
         }
         final Set<Product> products = productService.getProductsById(createOrderRequest.getProductIds());
@@ -82,7 +83,23 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Page<OrderResponse> getMyOrders(final Pageable pageable, final UUID userId) {
-        return orderRepository.findAllByUserId(pageable, userId).map(converter::convert);
+        return orderRepository
+                .findAllByUserId(pageable, userId)
+                .map(o -> {
+                    final OrderResponse response = converter.convert(o);
+                    response.setProducts(productService.getProductsById(o.getProductIds().stream().toList()));
+                    return response;
+                });
+    }
+
+    @Override
+    public Order findById(final UUID orderId) {
+        log.info("Find the order {}", orderId);
+        return this.orderRepository
+                .findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        format(translator.toLocale("error.order.not-found"), orderId))
+                );
     }
 
     @Override
@@ -90,8 +107,7 @@ public class OrderServiceImpl implements OrderService {
     public void cancelOrder(final UUID orderId) {
         final Optional<Order> order = this.orderRepository.findById(orderId);
         if (order.isEmpty()) {
-            throw new EntityNotFoundException(String
-                    .format(translator.toLocale("error.order.not-found"), orderId));
+            throw new EntityNotFoundException(format(translator.toLocale("error.order.not-found"), orderId));
         }
         switch (order.get().getStatus()) {
             case CANCEL -> throw new BadRequestException(translator.toLocale("error.order.cancel"));

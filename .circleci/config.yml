@@ -10,11 +10,51 @@ jobs:
   test:
     docker:
       - image: cimg/openjdk:17.0.3
+        environment:
+          MAVEN_OPTS: -Xmx3200m
+      - image: cimg/mysql:8.0
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_ROOT_PASSWORD: ''
     steps:
       - checkout
       - run:
-          name: Run test
-          command: mvn clean test
+          name: Wait for Database Connection
+          command: dockerize -wait tcp://localhost:3306 -timeout 1m
+      - run:
+          name: Install the MySQL client
+          command: sudo apt-get update && sudo apt-get install -y mysql-client
+      - run:
+          name: Init the the database
+          command: mysql -h 127.0.0.1 -u root < sql/01.sql
+      - restore_cache:
+          keys:
+            -  v1-dependencies-{{ checksum "pom.xml" }}
+            -  v1-dependencies-
+      - run: mvn dependency:go-offline
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
+      - run:
+          name: Run migration
+          command: mvn clean flyway:migrate -Dflyway.configFiles=flywayTestMigration.conf
+      - run:
+          name: Prepare DB for test
+          command: mysql -h 127.0.0.1 -u root < sql/prepare-db-for-tests.sql
+      - run:
+          name: Run tests
+          command: mvn clean verify -Dspring.profiles.active=local
+      - run:
+          name: Generate and copy reports
+          command: |
+            mvn allure:report
+            sudo cp -R ./target/site /tmp/artifacts || true
+            sudo cp -R ./target/allure-report /tmp/artifacts || true
+          when: always
+      - store_artifacts:
+          path: /tmp/artifacts
+
   build:
     environment:
       IMAGE: 738181112533.dkr.ecr.us-east-2.amazonaws.com/buy-it-api
@@ -23,9 +63,17 @@ jobs:
       - image: cimg/openjdk:17.0.3
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            -  v1-dependencies-{{ checksum "pom.xml" }}
+            -  v1-dependencies-
       - run:
           name: Package application
           command: mvn clean package -Dproject.version=1.0.0-${CIRCLE_BUILD_NUM}
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
       - setup_remote_docker:
           docker_layer_caching: true
       - aws-cli/setup:

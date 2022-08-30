@@ -55,8 +55,7 @@ public class Order implements Serializable {
     @Column(name = "user_id", updatable = false, nullable = false)
     private UUID userId;
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    @Column(name = "product_ids")
+    @ElementCollection(fetch = FetchType.EAGER)
     private Set<UUID> productIds = new HashSet<>();
 
     @Column(name = "total")

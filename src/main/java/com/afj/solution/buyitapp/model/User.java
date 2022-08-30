@@ -94,8 +94,7 @@ public class User implements UserDetails, Serializable {
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    @Column(name = "authorities")
+    @ElementCollection(fetch = FetchType.EAGER)
     private Set<GrantedAuthority> authorities = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
