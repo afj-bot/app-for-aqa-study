@@ -33,13 +33,13 @@ import com.afj.solution.buyitapp.service.AppUserDetailsService;
  */
 @Configuration
 @EnableWebSecurity
-@Profile({"dev"})
+@Profile({"local"})
 @EnableGlobalMethodSecurity(
         securedEnabled = true,
         jsr250Enabled = true,
         prePostEnabled = true
 )
-public class SecurityDevConfig extends WebSecurityConfigurerAdapter {
+public class SecurityLocalConfig extends WebSecurityConfigurerAdapter {
 
     private final ApplicationSecurityEntryPoint applicationSecurityEntryPoint = new ApplicationSecurityEntryPoint();
 
@@ -72,7 +72,7 @@ public class SecurityDevConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("https://dev.buy-it.afj-solution.com"));
+        configuration.setAllowedOriginPatterns(List.of("http://localhost:3000"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setMaxAge(Duration.ofSeconds(3600));
