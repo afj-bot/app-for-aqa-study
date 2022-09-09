@@ -2,6 +2,7 @@ package com.afj.solution.buyitapp.model.category;
 
 import java.util.Locale;
 import java.util.UUID;
+import java.util.function.Consumer;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,6 +20,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * @author Tomash Gombosh
@@ -57,4 +60,7 @@ public class CategoryLocalization {
     @JoinColumn(name = "sub_category_id")
     private SubCategory subCategory;
 
+    public CategoryLocalization(final Consumer<CategoryLocalization> builder) {
+        requireNonNull(builder).accept(this);
+    }
 }

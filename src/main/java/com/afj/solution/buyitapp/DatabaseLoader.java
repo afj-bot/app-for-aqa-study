@@ -4,11 +4,16 @@ import java.util.Set;
 import java.util.UUID;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import com.afj.solution.buyitapp.exception.EntityAlreadyExistsException;
 import com.afj.solution.buyitapp.model.User;
+import com.afj.solution.buyitapp.model.category.Category;
+import com.afj.solution.buyitapp.service.category.CategoryService;
+import com.afj.solution.buyitapp.service.category.CategoryServiceImpl;
 import com.afj.solution.buyitapp.service.user.UserService;
 
 /**
@@ -20,6 +25,7 @@ public class DatabaseLoader implements CommandLineRunner {
 
     private final UserService userService;
 
+    @Autowired
     public DatabaseLoader(final UserService userService) {
         this.userService = userService;
     }
