@@ -128,7 +128,8 @@ public class SecurityLocalConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/v1/users").hasAnyRole("ANONYMOUS")
                 .antMatchers(HttpMethod.GET, "/api/v1/users/**").hasAnyRole("USER", "ADMIN")
 
-                .antMatchers(HttpMethod.GET, "/api/v1/category").permitAll()
+                //Category controller
+                .antMatchers(HttpMethod.GET, "/api/v1/category").hasAnyRole("ANONYMOUS", "USER", "ADMIN")
 
                 .anyRequest()
                 .authenticated();

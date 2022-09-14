@@ -9,11 +9,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import com.afj.solution.buyitapp.exception.EntityAlreadyExistsException;
 import com.afj.solution.buyitapp.model.User;
-import com.afj.solution.buyitapp.model.category.Category;
-import com.afj.solution.buyitapp.service.category.CategoryService;
-import com.afj.solution.buyitapp.service.category.CategoryServiceImpl;
 import com.afj.solution.buyitapp.service.user.UserService;
 
 /**

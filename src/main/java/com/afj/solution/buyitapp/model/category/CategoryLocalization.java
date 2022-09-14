@@ -1,8 +1,8 @@
 package com.afj.solution.buyitapp.model.category;
 
+import java.time.ZonedDateTime;
 import java.util.Locale;
 import java.util.UUID;
-import java.util.function.Consumer;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,15 +13,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
-
-import static java.util.Objects.requireNonNull;
+import org.hibernate.annotations.UpdateTimestamp;
 
 /**
  * @author Tomash Gombosh
@@ -60,7 +59,23 @@ public class CategoryLocalization {
     @JoinColumn(name = "sub_category_id")
     private SubCategory subCategory;
 
-    public CategoryLocalization(final Consumer<CategoryLocalization> builder) {
-        requireNonNull(builder).accept(this);
+    @Column(name = "created_at", updatable = false, nullable = false)
+    @CreationTimestamp
+    private ZonedDateTime createdAt;
+
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private ZonedDateTime updatedAt;
+
+    @Override
+    public String toString() {
+        return String.format("{ \"id\": \"%s\", \"name\": \"%s\", \"description\": \"%s\", "
+                        + "\"locale\": \"%s\", \"created_at\": \"%s\", \"updated_at\": \"%s\" }",
+                this.getId(),
+                this.getName(),
+                this.getDescription(),
+                this.getLocale(),
+                this.getCreatedAt(),
+                this.getUpdatedAt());
     }
 }

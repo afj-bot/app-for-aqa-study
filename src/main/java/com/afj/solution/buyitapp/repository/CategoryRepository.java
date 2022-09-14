@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import com.afj.solution.buyitapp.model.category.Category;
 
+/**
+ * @author Tomash Gombosh
+ */
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, UUID> {
 }
