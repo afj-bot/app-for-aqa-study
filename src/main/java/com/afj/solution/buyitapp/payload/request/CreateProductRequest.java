@@ -2,6 +2,7 @@ package com.afj.solution.buyitapp.payload.request;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.UUID;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -80,6 +81,22 @@ public class CreateProductRequest implements Serializable {
     )
     @Size(max = 255, message = "error.value.string.max")
     private String description;
+
+    @ApiModelProperty(
+            name = "categoryId",
+            dataType = "UUID",
+            value = "Category id of the product",
+            example = "757a9f2e-1c19-4086-91a4-c42c7fba7107"
+    )
+    private UUID categoryId;
+
+    @ApiModelProperty(
+            name = "description",
+            dataType = "String",
+            value = "Subcategory id of the product",
+            example = "757a9f2e-1c19-4086-91a4-c42c7fba7107"
+    )
+    private UUID subCategoryId;
 
     @Override
     public String toString() {

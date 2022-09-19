@@ -3,7 +3,6 @@ package com.afj.solution.buyitapp.model.category;
 import java.time.ZonedDateTime;
 import java.util.Locale;
 import java.util.UUID;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,6 +20,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.EAGER;
 
 /**
  * @author Tomash Gombosh
@@ -50,12 +52,12 @@ public class CategoryLocalization {
     private String description;
 
     @JsonBackReference
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = EAGER, cascade = ALL)
     @JoinColumn(name = "category_id")
     private Category category;
 
     @JsonBackReference
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = EAGER, cascade = ALL)
     @JoinColumn(name = "sub_category_id")
     private SubCategory subCategory;
 

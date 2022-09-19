@@ -1,5 +1,8 @@
 package com.afj.solution.buyitapp.service.category;
 
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,4 +17,10 @@ public interface CategoryService {
     void save(Category category);
 
     Page<CategoryResponse> getCategories(Pageable pageable, String language);
+
+    List<CategoryResponse> getLocalizeCategory(Pageable pageable, String language);
+
+    Category getLocalizedCategory(Category category, String language);
+
+    Category findById(UUID id);
 }

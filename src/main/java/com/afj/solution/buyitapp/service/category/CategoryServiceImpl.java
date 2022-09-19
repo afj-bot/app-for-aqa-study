@@ -1,5 +1,8 @@
 package com.afj.solution.buyitapp.service.category;
 
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.afj.solution.buyitapp.exception.EntityAlreadyExistsException;
+import com.afj.solution.buyitapp.exception.EntityNotFoundException;
 import com.afj.solution.buyitapp.model.category.Category;
+import com.afj.solution.buyitapp.model.category.SubCategory;
 import com.afj.solution.buyitapp.payload.response.CategoryResponse;
 import com.afj.solution.buyitapp.repository.CategoryRepository;
 import com.afj.solution.buyitapp.service.converters.category.CategoryToCategoryResponseConverter;
@@ -48,7 +53,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Page<CategoryResponse> getCategories(final Pageable pageable, final String language) {
-        return new PageImpl<>(repository.findAll(pageable)
+        return new PageImpl<>(this.getLocalizeCategory(pageable, language));
+    }
+
+    @Override
+    public List<CategoryResponse> getLocalizeCategory(final Pageable pageable, final String language) {
+        return repository.findAll(pageable)
                 .stream()
                 .peek(c -> c.setLocalizations(c
                         .getLocalizations()
@@ -66,7 +76,36 @@ public class CategoryServiceImpl implements CategoryService {
                                 .collect(Collectors.toSet())
                 ))
                 .map(converter::convert)
-                .collect(Collectors.toList()));
+                .toList();
+    }
+
+    @Override
+    public Category getLocalizedCategory(final Category category, final String language) {
+        final Set<SubCategory> subCategoryLocalization =
+                category
+                        .getSubCategories()
+                        .stream()
+                        .peek(s -> s.setSubCategoryLocalizations(s.getSubCategoryLocalizations()
+                                .stream()
+                                .filter(l -> l.getLocale().getLanguage().equals(language))
+                                .collect(Collectors.toSet())))
+                        .collect(Collectors.toSet());
+        category.setLocalizations(category
+                .getLocalizations()
+                .stream()
+                .filter(l -> l.getLocale().getLanguage().equals(language))
+                .collect(Collectors.toSet()));
+        category.setSubCategories(subCategoryLocalization);
+        return category;
+    }
+
+    @Override
+    public Category findById(final UUID id) {
+        log.info("Find category by id({})", id);
+        return this.repository
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        format(translatorService.toLocale("error.category.not-found"), id)));
     }
 
 }

@@ -22,6 +22,8 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import static java.util.Objects.requireNonNull;
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.EAGER;
 
 /**
  * @author Tommash Gombosh
@@ -53,7 +55,7 @@ public class Characteristic implements Serializable {
     private String additionalParams;
 
     @JsonBackReference
-    @OneToOne(mappedBy = "characteristic")
+    @OneToOne(fetch = EAGER, cascade = ALL, mappedBy = "characteristic")
     private Product product;
 
     @Column(name = "created_at", updatable = false, nullable = false)

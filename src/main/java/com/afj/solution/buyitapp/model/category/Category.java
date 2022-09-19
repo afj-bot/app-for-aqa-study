@@ -9,8 +9,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +22,11 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import com.afj.solution.buyitapp.model.Product;
+
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.EAGER;
 
 
 /**
@@ -47,12 +54,16 @@ public class Category {
     private String description;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", fetch = EAGER, cascade = ALL)
     private Set<CategoryLocalization> localizations = new HashSet<>();
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", fetch = EAGER, cascade = ALL)
     private Set<SubCategory> subCategories = new HashSet<>();
+
+    @JsonBackReference
+    @OneToOne(mappedBy = "category", fetch = EAGER, cascade = ALL)
+    private Product product;
 
     @Column(name = "created_at", updatable = false, nullable = false)
     @CreationTimestamp

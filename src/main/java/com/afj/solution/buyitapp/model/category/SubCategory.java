@@ -4,7 +4,6 @@ import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -24,6 +24,11 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import com.afj.solution.buyitapp.model.Product;
+
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.EAGER;
 
 /**
  * @author Tomash Gombosh
@@ -49,13 +54,17 @@ public class SubCategory {
     private String description;
 
     @JsonBackReference
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = EAGER, cascade = ALL)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "subCategory")
+    @OneToMany(mappedBy = "subCategory", fetch = EAGER, cascade = ALL)
     private Set<CategoryLocalization> subCategoryLocalizations = new HashSet<>();
+
+    @JsonBackReference
+    @OneToOne(fetch = EAGER, mappedBy = "subCategory", cascade = ALL)
+    private Product product;
 
     @Column(name = "created_at", updatable = false, nullable = false)
     @CreationTimestamp
