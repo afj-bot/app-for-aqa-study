@@ -17,7 +17,7 @@ public interface UserAuthService {
 
     User findById(UUID id);
 
-    String login(LoginRequest loginRequest);
+    Object login(LoginRequest loginRequest);
 
     String loginAnonymous(String anonymousCookie, UUID userId);
 

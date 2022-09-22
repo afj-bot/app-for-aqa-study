@@ -38,6 +38,7 @@ public class DatabaseLoader implements CommandLineRunner {
                 user.setEmail("blackjneco@gmail.com");
                 user.setUsername("blackjneco");
                 user.setPassword("Test123$");
+                user.setPrivacyPolicy(true);
                 user.setAccountNonExpired(true);
                 user.setAccountNonLocked(true);
                 user.setEnabled(true);

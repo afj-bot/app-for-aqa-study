@@ -29,6 +29,7 @@ public class CreateUserRequestToUser implements Converter<CreateUserRequest, Use
             user.setDateOfBirth(createUserRequest.getDateOfBirth());
             user.setHomeAddress(createUserRequest.getHomeAddress());
             user.setPassword(createUserRequest.getPassword());
+            user.setPrivacyPolicy(createUserRequest.isPrivacyPolicy());
             user.setAccountNonExpired(true);
             user.setAccountNonLocked(true);
             user.setEnabled(true);
