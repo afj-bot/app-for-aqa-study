@@ -65,7 +65,9 @@ public class ProductController {
     })
     @GetMapping
     public @ResponseBody
-    Page<ProductResponse> getProducts(final Pageable pageable, @RequestHeader("Accept-Language") final String language) {
+    Page<ProductResponse> getProducts(final Pageable pageable,
+                                      @RequestHeader(value = "Accept-Language", defaultValue = "gb")
+                                      final String language) {
         final UUID userId = jwtTokenProvider.getUuidFromToken(jwtTokenProvider.getToken().substring(7));
         log.info("Get products request for id -> {}", userId);
         log.info("Get products by {}", pageable);

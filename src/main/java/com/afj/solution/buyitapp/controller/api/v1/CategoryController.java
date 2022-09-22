@@ -36,9 +36,10 @@ public class CategoryController {
             @ApiResponse(code = 500, message = "Internal server error"),
     })
     @GetMapping
-
     public @ResponseBody
-    Page<CategoryResponse> getMyOrders(final Pageable pageable, @RequestHeader("Accept-Language") final String language) {
+    Page<CategoryResponse> getMyOrders(final Pageable pageable,
+                                       @RequestHeader(value = "Accept-Language", defaultValue = "gb")
+                                       final String language) {
         log.info("Get all products for {} and language {}", pageable, language);
         return categoryService.getCategories(pageable, language);
     }
