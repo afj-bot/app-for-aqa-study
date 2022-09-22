@@ -74,6 +74,8 @@ public class User implements UserDetails, Serializable {
     @Column(name = "date_of_birth")
     private ZonedDateTime dateOfBirth;
 
+    @Column(name = "privacy_policy")
+    private boolean privacyPolicy;
     @Column(name = "account_non_expired")
     private boolean accountNonExpired;
 
@@ -174,6 +176,7 @@ public class User implements UserDetails, Serializable {
         currentUser.setHomeAddress(homeAddress);
         currentUser.setDateOfBirth(dateOfBirth);
         currentUser.setAuthorities(authorities);
+        currentUser.setPrivacyPolicy(newUser.isPrivacyPolicy());
         return currentUser;
     }
 }
