@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.afj.solution.buyitapp.common.Response;
 import com.afj.solution.buyitapp.payload.request.CreateUserRequest;
+import com.afj.solution.buyitapp.payload.request.UpdateUserRequest;
 import com.afj.solution.buyitapp.payload.response.UserResponse;
 import com.afj.solution.buyitapp.security.JwtTokenProvider;
 import com.afj.solution.buyitapp.service.user.UserServiceImpl;
@@ -77,4 +79,19 @@ public class UserController {
         return generateSuccessResponse();
     }
 
+    @ApiOperation(value = "Update my data", notes = "All Roles", authorizations = {@Authorization("Bearer")})
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "User updated"),
+            @ApiResponse(code = 400, message = "User not exist"),
+            @ApiResponse(code = 500, message = "Internal server error"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping("/me")
+    public @ResponseBody
+    Response<String> updateCurrentUser(@Valid @RequestBody final UpdateUserRequest updateUserRequest) {
+        final String token = jwtTokenProvider.getToken().substring(7);
+        final UUID userId = jwtTokenProvider.getUuidFromToken(token);
+        userService.updateUser(userId, updateUserRequest);
+        return generateSuccessResponse();
+    }
 }

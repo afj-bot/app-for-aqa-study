@@ -17,6 +17,7 @@ import com.afj.solution.buyitapp.exception.EntityAlreadyExistsException;
 import com.afj.solution.buyitapp.exception.EntityNotFoundException;
 import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.payload.request.CreateUserRequest;
+import com.afj.solution.buyitapp.payload.request.UpdateUserRequest;
 import com.afj.solution.buyitapp.payload.response.UserResponse;
 import com.afj.solution.buyitapp.repository.UserRepository;
 import com.afj.solution.buyitapp.service.converters.user.CreateUserRequestToUser;
@@ -80,6 +81,17 @@ public class UserServiceImpl implements UserService {
         throw new EntityAlreadyExistsException(String.format(
                 translator.toLocale("error.user.exits"), user.getUsername()
         ));
+    }
+
+    @Override
+    public User updateUser(final UUID userId, final UpdateUserRequest request) {
+        final User exitingUser = this.findById(userId);
+        exitingUser.setPhoneNumber(request.phone());
+        exitingUser.setHomeAddress(request.homeAddress());
+        exitingUser.setFirstName(request.firstName());
+        exitingUser.setLastName(request.lastName());
+        this.save(exitingUser);
+        return exitingUser;
     }
 
     @Override

@@ -176,10 +176,31 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                        <excludes>
+                            <exclude>**/integration/**/*.java</exclude>
+                        </excludes>
                     <systemProperties>
                         <allure.results.directory>target/allure-results</allure.results.directory>
                     </systemProperties>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>integration</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <phase>integration-test</phase>
+                        <configuration>
+                            <excludes>
+                                <exclude>none</exclude>
+                            </excludes>
+                            <includes>
+                                <include>**/integration/**/*.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -281,9 +302,6 @@
                 <groupId>io.qameta.allure</groupId>
                 <artifactId>allure-maven</artifactId>
                 <version>${maven.allure.version}</version>
-                <configuration>
-                    <reportVersion>${io.qameta.allure.version}</reportVersion>
-                </configuration>
             </plugin>
         </plugins>
     </build>

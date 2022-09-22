@@ -44,7 +44,7 @@ jobs:
           command: mysql -h 127.0.0.1 -u root < sql/prepare-db-for-tests.sql
       - run:
           name: Run tests
-          command: mvn clean verify -Dspring.profiles.active=local
+          command: mvn clean verify
       - run:
           name: Generate and copy reports
           command: |

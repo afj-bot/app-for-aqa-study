@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -29,6 +28,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
+import static javax.persistence.FetchType.EAGER;
 
 /**
  * @author Tomash Gombosh
@@ -94,10 +94,10 @@ public class User implements UserDetails, Serializable {
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = EAGER)
     private Set<GrantedAuthority> authorities = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = EAGER)
     private Set<Product> products = new HashSet<>();
 
     public User(final Consumer<User> builder) {
