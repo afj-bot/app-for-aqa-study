@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -29,6 +28,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.EAGER;
 
 /**
  * @author Tomash Gombosh
@@ -96,10 +97,10 @@ public class User implements UserDetails, Serializable {
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = EAGER)
     private Set<GrantedAuthority> authorities = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = EAGER, cascade = ALL)
     private Set<Product> products = new HashSet<>();
 
     public User(final Consumer<User> builder) {
@@ -145,7 +146,7 @@ public class User implements UserDetails, Serializable {
     public String toString() {
         return String.format("{ \"id\": \"%s\", \"email\": \"%s\", \"username\": \"%s\", \"firstName\": \"%s\", "
                         + "\"lastName\": \"%s\", \"homeAddress\": \"%s\", \"phoneNumber\": \"%s\", \"roles\": \"%s\","
-                        + " \"products\": \"%s\",  \"createdAt\": \"%s\", \"updatedAt\": \"%s\" }",
+                        + " \"createdAt\": \"%s\", \"updatedAt\": \"%s\" }",
                 this.getId(),
                 this.getEmail(),
                 this.getUsername(),
@@ -154,7 +155,6 @@ public class User implements UserDetails, Serializable {
                 this.getHomeAddress(),
                 this.getPhoneNumber(),
                 this.getAuthorities(),
-                this.getProducts(),
                 this.getCreatedAt(),
                 this.getUpdatedAt());
     }
