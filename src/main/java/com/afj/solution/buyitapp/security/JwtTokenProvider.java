@@ -19,6 +19,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -27,6 +28,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.afj.solution.buyitapp.exception.CustomAuthenticationException;
 import com.afj.solution.buyitapp.model.User;
+import com.afj.solution.buyitapp.service.localize.TranslatorService;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
@@ -39,12 +41,14 @@ import static java.util.Objects.requireNonNull;
 public class JwtTokenProvider {
     private static final String TOKEN = "ASLKJDHALKJSHDLKAJSHDLKAJSHDLKASJHDLKJASHDLKJAHSDLKJHASLDKJh";
     private final String tokenSecret;
-
     private final int tokenExpiration;
+    private final TranslatorService translator;
 
-    public JwtTokenProvider() {
+    @Autowired
+    public JwtTokenProvider(final TranslatorService translator) {
         this.tokenSecret = Base64.getEncoder().encodeToString(TOKEN.getBytes());
         this.tokenExpiration = 3600;
+        this.translator = translator;
     }
 
     public String createToken(final Map<String, Object> claims) {
@@ -83,7 +87,7 @@ public class JwtTokenProvider {
                     .getBody();
             return (String) claims.get("username");
         }
-        throw new CustomAuthenticationException("error.token.invalid");
+        throw new CustomAuthenticationException(translator.toLocale("error.token.invalid"));
     }
 
     public List<Map<String, String>> getRoleFromToken(final String token) {
@@ -96,7 +100,7 @@ public class JwtTokenProvider {
                     .getBody();
             return (List<Map<String, String>>) claims.get("roles");
         }
-        throw new CustomAuthenticationException("error.token.invalid");
+        throw new CustomAuthenticationException(translator.toLocale("error.token.invalid"));
     }
 
     public UUID getUuidFromToken(final String token) {
@@ -109,7 +113,7 @@ public class JwtTokenProvider {
                     .getBody();
             return UUID.fromString((String) claims.get("id"));
         }
-        throw new CustomAuthenticationException("error.token.invalid");
+        throw new CustomAuthenticationException(translator.toLocale("error.token.invalid"));
     }
 
 

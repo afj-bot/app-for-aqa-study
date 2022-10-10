@@ -28,6 +28,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
 
 /**
@@ -74,6 +75,9 @@ public class User implements UserDetails, Serializable {
     @Column(name = "date_of_birth")
     private ZonedDateTime dateOfBirth;
 
+    @Column(name = "privacy_policy")
+    private boolean privacyPolicy;
+
     @Column(name = "account_non_expired")
     private boolean accountNonExpired;
 
@@ -97,7 +101,7 @@ public class User implements UserDetails, Serializable {
     @ElementCollection(fetch = EAGER)
     private Set<GrantedAuthority> authorities = new HashSet<>();
 
-    @OneToMany(mappedBy = "user", fetch = EAGER)
+    @OneToMany(mappedBy = "user", fetch = EAGER, cascade = ALL)
     private Set<Product> products = new HashSet<>();
 
     public User(final Consumer<User> builder) {
@@ -143,7 +147,7 @@ public class User implements UserDetails, Serializable {
     public String toString() {
         return String.format("{ \"id\": \"%s\", \"email\": \"%s\", \"username\": \"%s\", \"firstName\": \"%s\", "
                         + "\"lastName\": \"%s\", \"homeAddress\": \"%s\", \"phoneNumber\": \"%s\", \"roles\": \"%s\","
-                        + " \"products\": \"%s\",  \"createdAt\": \"%s\", \"updatedAt\": \"%s\" }",
+                        + " \"createdAt\": \"%s\", \"updatedAt\": \"%s\" }",
                 this.getId(),
                 this.getEmail(),
                 this.getUsername(),
@@ -152,7 +156,6 @@ public class User implements UserDetails, Serializable {
                 this.getHomeAddress(),
                 this.getPhoneNumber(),
                 this.getAuthorities(),
-                this.getProducts(),
                 this.getCreatedAt(),
                 this.getUpdatedAt());
     }
@@ -174,6 +177,7 @@ public class User implements UserDetails, Serializable {
         currentUser.setHomeAddress(homeAddress);
         currentUser.setDateOfBirth(dateOfBirth);
         currentUser.setAuthorities(authorities);
+        currentUser.setPrivacyPolicy(newUser.isPrivacyPolicy());
         return currentUser;
     }
 }

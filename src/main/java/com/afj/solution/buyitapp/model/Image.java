@@ -23,6 +23,8 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import static java.util.Objects.requireNonNull;
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.EAGER;
 
 
 /**
@@ -53,7 +55,7 @@ public class Image implements Serializable {
     private byte[] picture;
 
     @JsonBackReference
-    @OneToOne(mappedBy = "image")
+    @OneToOne(fetch = EAGER, cascade = ALL, mappedBy = "image")
     private Product product;
 
     @Column(name = "created_at", updatable = false, nullable = false)

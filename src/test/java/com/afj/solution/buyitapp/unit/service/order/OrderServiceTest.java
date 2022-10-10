@@ -20,7 +20,7 @@ import static com.afj.solution.buyitapp.model.enums.OrderStatus.CANCEL;
 /**
  * @author Tomash Gombosh
  */
-@DisplayName("Order Service")
+@DisplayName("Order service tests")
 class OrderServiceTest extends BaseTest {
 
     @Autowired

@@ -75,6 +75,7 @@ public class UserController {
     Response<String> create(@Valid @RequestBody final CreateUserRequest createUserRequest) {
         final String token = jwtTokenProvider.getToken().substring(7);
         final UUID userId = jwtTokenProvider.getUuidFromToken(token);
+        log.info("Registration an user for id {} with data({})", userId, createUserRequest);
         userService.createUser(createUserRequest, userId);
         return generateSuccessResponse();
     }

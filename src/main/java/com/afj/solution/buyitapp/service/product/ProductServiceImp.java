@@ -19,10 +19,14 @@ import com.afj.solution.buyitapp.exception.EntityNotFoundException;
 import com.afj.solution.buyitapp.model.Image;
 import com.afj.solution.buyitapp.model.Product;
 import com.afj.solution.buyitapp.model.User;
+import com.afj.solution.buyitapp.model.category.Category;
+import com.afj.solution.buyitapp.model.category.SubCategory;
 import com.afj.solution.buyitapp.payload.request.CreateProductRequest;
 import com.afj.solution.buyitapp.payload.request.UpdateCharacteristicRequest;
 import com.afj.solution.buyitapp.payload.response.ProductResponse;
 import com.afj.solution.buyitapp.repository.ProductRepository;
+import com.afj.solution.buyitapp.service.category.CategoryService;
+import com.afj.solution.buyitapp.service.category.SubCategoryService;
 import com.afj.solution.buyitapp.service.converters.product.ProductRequestToProductConverter;
 import com.afj.solution.buyitapp.service.converters.product.ProductToResponseConverter;
 import com.afj.solution.buyitapp.service.converters.product.UpdateCharacteristicRequestToCharacteristicConverter;
@@ -44,6 +48,8 @@ public class ProductServiceImp implements ProductService {
     private final ProductRequestToProductConverter productRequestToProductConverter;
     private final UpdateCharacteristicRequestToCharacteristicConverter converter;
     private final TranslatorService translator;
+    private final CategoryService categoryService;
+    private final SubCategoryService subCategoryService;
 
     @Autowired
     public ProductServiceImp(final ProductRepository productRepository,
@@ -51,18 +57,26 @@ public class ProductServiceImp implements ProductService {
                              final ProductToResponseConverter productToResponseConverter,
                              final ProductRequestToProductConverter productRequestToProductConverter,
                              final UpdateCharacteristicRequestToCharacteristicConverter converter,
-                             final TranslatorService translator) {
+                             final TranslatorService translator,
+                             final CategoryService categoryService,
+                             final SubCategoryService subCategoryService) {
         this.productRepository = productRepository;
         this.userService = userService;
         this.productToResponseConverter = productToResponseConverter;
         this.productRequestToProductConverter = productRequestToProductConverter;
         this.converter = converter;
         this.translator = translator;
+        this.categoryService = categoryService;
+        this.subCategoryService = subCategoryService;
     }
 
     @Override
-    public Page<ProductResponse> getProducts(final Pageable pageable) {
+    public Page<ProductResponse> getProducts(final Pageable pageable, final String language) {
         return productRepository.findAll(pageable)
+                .map(p -> {
+                    p.setCategory(categoryService.getLocalizedCategory(p.getCategory(), language));
+                    return p;
+                })
                 .map(productToResponseConverter::convert);
     }
 
@@ -71,7 +85,11 @@ public class ProductServiceImp implements ProductService {
         log.info("Create product {} from request", createProductRequest);
         final Product convertedProduct = productRequestToProductConverter.convert(createProductRequest);
         final User createdByUser = userService.findById(userId);
+        final Category category = categoryService.findById(createProductRequest.getCategoryId());
+        final SubCategory subCategory = subCategoryService.findById(createProductRequest.getSubCategoryId());
         convertedProduct.setUser(createdByUser);
+        convertedProduct.setCategory(category);
+        convertedProduct.setSubCategory(subCategory);
         final Product product = this.save(convertedProduct);
         log.info("Successfully create a product {}", product);
         return product;

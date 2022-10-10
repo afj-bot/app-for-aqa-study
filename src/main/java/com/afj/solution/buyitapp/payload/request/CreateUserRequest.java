@@ -100,6 +100,15 @@ public class CreateUserRequest implements Serializable {
     private String homeAddress;
 
     @ApiModelProperty(
+            name = "privacyPolicy",
+            dataType = "boolean",
+            value = "The privacy policy of user",
+            example = "true",
+            required = true
+    )
+    private boolean privacyPolicy;
+
+    @ApiModelProperty(
             name = "dateOfBirth",
             dataType = "ZonedDateTime",
             value = "User birthday",

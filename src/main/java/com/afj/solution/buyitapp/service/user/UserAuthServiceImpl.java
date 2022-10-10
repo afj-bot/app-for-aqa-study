@@ -9,8 +9,10 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.http.Cookie;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -29,12 +31,14 @@ import com.afj.solution.buyitapp.service.AnonymousCookieService;
 import com.afj.solution.buyitapp.service.TemporaryTokenServiceImpl;
 import com.afj.solution.buyitapp.service.localize.TranslatorService;
 
+import static com.afj.solution.buyitapp.constans.Redirects.USER_PRIVACY_POLICY_URL;
 import static java.util.Objects.isNull;
 
 /**
  * @author Tomash Gombosh
  */
 @Service
+@Slf4j
 public class UserAuthServiceImpl implements UserAuthService {
 
     private final UserRepository userRepository;
@@ -87,10 +91,18 @@ public class UserAuthServiceImpl implements UserAuthService {
     }
 
     @Override
-    public String login(final LoginRequest loginRequest) {
+    public Object login(final LoginRequest loginRequest) {
         final String username = loginRequest.getUsername();
         final User user = this
-                .findByUsername(loginRequest.getUsername());
+                .findByUsername(username);
+        if (!user.isPrivacyPolicy()) {
+            log.info("User {} not have accepted privacy policy", user);
+            log.info("Redirect to the {} the user {}", USER_PRIVACY_POLICY_URL, user.getId());
+            return ResponseEntity
+                    .status(302)
+                    .header("Location", USER_PRIVACY_POLICY_URL)
+                    .build();
+        }
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username,
                     loginRequest.getPassword(), user.getAuthorities()));

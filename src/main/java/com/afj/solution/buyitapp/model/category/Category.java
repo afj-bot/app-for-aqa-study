@@ -1,17 +1,19 @@
-package com.afj.solution.buyitapp.model;
+package com.afj.solution.buyitapp.model.category;
 
-import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
-import java.util.function.Consumer;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,22 +23,22 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import static java.util.Objects.requireNonNull;
+import com.afj.solution.buyitapp.model.Product;
+
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
 
+
 /**
- * @author Tommash Gombosh
+ * @author Tomash Gombosh
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "characteristic")
-public class Characteristic implements Serializable {
-
-    private static final long serialVersionUID = -4683961545022122749L;
+@Table(name = "category")
+public class Category {
 
     @Id
     @Type(type = "uuid-binary")
@@ -45,17 +47,22 @@ public class Characteristic implements Serializable {
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name = "size")
-    private String size;
+    @Column(name = "name")
+    private String name;
 
-    @Column(name = "color")
-    private String color;
+    @Column(name = "description")
+    private String description;
 
-    @Column(name = "additional_params")
-    private String additionalParams;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "category", fetch = EAGER, cascade = ALL)
+    private Set<CategoryLocalization> localizations = new HashSet<>();
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "category", fetch = EAGER, cascade = ALL)
+    private Set<SubCategory> subCategories = new HashSet<>();
 
     @JsonBackReference
-    @OneToOne(fetch = EAGER, cascade = ALL, mappedBy = "characteristic")
+    @OneToOne(mappedBy = "category", fetch = EAGER, cascade = ALL)
     private Product product;
 
     @Column(name = "created_at", updatable = false, nullable = false)
@@ -66,18 +73,16 @@ public class Characteristic implements Serializable {
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
 
-    public Characteristic(final Consumer<Characteristic> builder) {
-        requireNonNull(builder).accept(this);
-    }
-
     @Override
     public String toString() {
-        return String.format("{ \"id\": \"%s\", \"size\": \"%s\", \"color\": \"%s\", \"additionalParams\": \"%s\", "
-                        + "\"createdAt\": \"%s\", \"updatedAt\": \"%s\" }",
+        return String.format("{ \"id\": \"%s\", \"name\": \"%s\", \"description\": \"%s\", "
+                        + "\"localization\": \"%s\", \"subCategories\": \"%s\", "
+                        + " \"created_at\": \"%s\", \"updated_at\": \"%s\" }",
                 this.getId(),
-                this.getSize(),
-                this.getColor(),
-                this.getAdditionalParams(),
+                this.getName(),
+                this.getDescription(),
+                this.getLocalizations(),
+                this.getSubCategories(),
                 this.getCreatedAt(),
                 this.getUpdatedAt());
     }

@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import java.util.function.Consumer;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -26,9 +25,13 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.afj.solution.buyitapp.model.category.Category;
+import com.afj.solution.buyitapp.model.category.SubCategory;
 import com.afj.solution.buyitapp.model.enums.Currency;
 
 import static java.util.Objects.requireNonNull;
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.EAGER;
 
 /**
  * @author Tomash Gombosh
@@ -75,19 +78,29 @@ public class Product implements Serializable {
     private ZonedDateTime updatedAt;
 
     @JsonManagedReference
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = EAGER, cascade = ALL)
     @JoinColumn
     private Image image;
 
     @JsonManagedReference
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = EAGER, cascade = ALL)
     @JoinColumn
     private Characteristic characteristic;
 
     @JsonManagedReference
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = EAGER, cascade = ALL)
     @JoinColumn(name = "created_user_id", nullable = false)
     private User user;
+
+    @JsonManagedReference
+    @OneToOne(fetch = EAGER, cascade = ALL)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
+    @JsonManagedReference
+    @OneToOne(fetch = EAGER, cascade = ALL)
+    @JoinColumn(name = "sub_category_id", nullable = false)
+    private SubCategory subCategory;
 
     public Product(final Consumer<Product> builder) {
         requireNonNull(builder).accept(this);
