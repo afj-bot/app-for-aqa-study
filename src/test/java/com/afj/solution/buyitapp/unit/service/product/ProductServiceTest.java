@@ -1,4 +1,4 @@
-package com.afj.solution.buyitapp.service.product;
+package com.afj.solution.buyitapp.unit.service.product;
 
 import java.util.UUID;
 
@@ -13,7 +13,8 @@ import com.afj.solution.buyitapp.payload.request.CreateProductRequest;
 import com.afj.solution.buyitapp.repository.CategoryRepository;
 import com.afj.solution.buyitapp.repository.ProductRepository;
 import com.afj.solution.buyitapp.repository.SubcategoryRepository;
-import com.afj.solution.buyitapp.service.BaseTest;
+import com.afj.solution.buyitapp.service.product.ProductService;
+import com.afj.solution.buyitapp.unit.BaseTest;
 
 /**
  * @author Tomash Gombosh
