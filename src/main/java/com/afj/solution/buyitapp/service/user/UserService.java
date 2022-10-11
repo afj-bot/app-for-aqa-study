@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.payload.request.CreateUserRequest;
+import com.afj.solution.buyitapp.payload.request.UpdateUserRequest;
 import com.afj.solution.buyitapp.payload.response.UserResponse;
 
 /**
@@ -16,6 +17,8 @@ public interface UserService {
     boolean isUserExist(String username);
 
     User save(User user);
+
+    User updateUser(UUID userId, UpdateUserRequest request);
 
     User updateUser(UUID userId, User user);
 

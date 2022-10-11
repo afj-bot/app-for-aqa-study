@@ -17,6 +17,30 @@ VALUES (UNHEX(REPLACE('3b0a4223-35e6-47b1-9ac3-f95911979574', '-','')),
         1,
         1);
 
+INSERT INTO user_login_events (id, user_id, total)
+VALUES (UUID_TO_BIN(UUID()), UNHEX(REPLACE('3b0a4223-35e6-47b1-9ac3-f95911979574', '-','')), 10);
+
+INSERT INTO user(id, username, email, password,
+                 first_name, last_name, phone_number,
+                 home_address, privacy_policy, account_non_expired, account_non_locked,
+                 credentials_non_expired, enabled)
+VALUES (UNHEX(REPLACE('3b0a4223-35e6-47b1-9ac3-f95911979573', '-','')),
+        'integration_test',
+        'integration_test@mailinator.com',
+        '$2a$10$QX1zQVtAoksD3KW2VjrhNux4b1I43FS.QIMJ1ttPb2TKDD./xPMY.',
+        'Integration',
+        'Test',
+        '380987100379',
+        'test',
+        1,
+        1,
+        1,
+        1,
+        1);
+
+INSERT INTO user_login_events (id, user_id, total)
+VALUES (UUID_TO_BIN(UUID()), UNHEX(REPLACE('3b0a4223-35e6-47b1-9ac3-f95911979573', '-','')), 10);
+
 INSERT INTO characteristic(id, size, color, additional_params)
 VALUES (UNHEX(REPLACE('252c63e6-6ca1-42d4-80cb-0b2dd2e1002f', '-', '')),
         'S',

@@ -77,6 +77,7 @@ public class User implements UserDetails, Serializable {
 
     @Column(name = "privacy_policy")
     private boolean privacyPolicy;
+
     @Column(name = "account_non_expired")
     private boolean accountNonExpired;
 
