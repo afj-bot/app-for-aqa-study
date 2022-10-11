@@ -22,7 +22,7 @@ VALUES (UUID_TO_BIN(UUID()), UNHEX(REPLACE('3b0a4223-35e6-47b1-9ac3-f95911979574
 
 INSERT INTO user(id, username, email, password,
                  first_name, last_name, phone_number,
-                 home_address, account_non_expired, account_non_locked,
+                 home_address, privacy_policy, account_non_expired, account_non_locked,
                  credentials_non_expired, enabled)
 VALUES (UNHEX(REPLACE('3b0a4223-35e6-47b1-9ac3-f95911979573', '-','')),
         'integration_test',
@@ -32,6 +32,7 @@ VALUES (UNHEX(REPLACE('3b0a4223-35e6-47b1-9ac3-f95911979573', '-','')),
         'Test',
         '380987100379',
         'test',
+        1,
         1,
         1,
         1,
