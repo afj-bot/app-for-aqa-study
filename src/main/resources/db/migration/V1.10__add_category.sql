@@ -38,7 +38,7 @@ CREATE index FKf812pygec23i5jo6odudjksdjk
 CREATE index FKf812pygec22i5jo6odudjksdjk
     ON category_localization (category_id);
 
-CREATE index FKf812pygec23i5jo6odudjksdjk
+CREATE index FKf812pygec21i5jo6odudjksdjk
     ON category_localization (sub_category_id);
 
 ALTER TABLE product
