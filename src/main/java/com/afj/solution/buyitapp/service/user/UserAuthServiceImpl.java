@@ -32,6 +32,7 @@ import com.afj.solution.buyitapp.service.TemporaryTokenServiceImpl;
 import com.afj.solution.buyitapp.service.localize.TranslatorService;
 
 import static com.afj.solution.buyitapp.constans.Redirects.USER_PRIVACY_POLICY_URL;
+import static com.afj.solution.buyitapp.constans.Time.DEFAULT_ANONYMOUS_TOKEN_EXPIRED_TIME;
 import static java.util.Objects.isNull;
 
 /**
@@ -123,7 +124,7 @@ public class UserAuthServiceImpl implements UserAuthService {
         claims.put("id", userId);
         claims.put("roles", roles);
         claims.put("username", "Anonymous");
-        return jwtTokenProvider.createToken(claims);
+        return jwtTokenProvider.createToken(claims, DEFAULT_ANONYMOUS_TOKEN_EXPIRED_TIME.toSeconds());
     }
 
     @Override

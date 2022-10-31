@@ -28,6 +28,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.afj.solution.buyitapp.exception.CustomAuthenticationException;
 import com.afj.solution.buyitapp.model.User;
 
+import static com.afj.solution.buyitapp.constans.Time.DEFAULT_TOKEN_EXPIRED_TIME;
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 
@@ -40,11 +41,11 @@ public class JwtTokenProvider {
     private static final String TOKEN = "ASLKJDHALKJSHDLKAJSHDLKAJSHDLKASJHDLKJASHDLKJAHSDLKJHASLDKJh";
     private final String tokenSecret;
 
-    private final int tokenExpiration;
+    private final long tokenExpiration;
 
     public JwtTokenProvider() {
         this.tokenSecret = Base64.getEncoder().encodeToString(TOKEN.getBytes());
-        this.tokenExpiration = 3600;
+        this.tokenExpiration = DEFAULT_TOKEN_EXPIRED_TIME.getSeconds();
     }
 
     public String createToken(final Map<String, Object> claims) {
@@ -62,7 +63,7 @@ public class JwtTokenProvider {
     }
 
 
-    public String createToken(final Map<String, Object> claims, final int expirySeconds) {
+    public String createToken(final Map<String, Object> claims, final long expirySeconds) {
         final ZonedDateTime now = ZonedDateTime.now().withZoneSameInstant(ZoneId.of(ZoneOffset.UTC.getId()));
         final ZonedDateTime expiryDate = now.plusSeconds(expirySeconds);
         return Jwts.builder()

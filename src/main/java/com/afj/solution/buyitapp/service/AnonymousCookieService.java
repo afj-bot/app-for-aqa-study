@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
+import static com.afj.solution.buyitapp.constans.Urls.APP_DOMAIN;
+
 /**
  * @author Tomash Gombosh
  */
@@ -23,7 +25,7 @@ public class AnonymousCookieService {
     }
 
     public ResponseCookie generateAnonymousCookie(final UUID temporaryToken) {
-        final String domain = System.getenv("APP_DOMAIN");
+        final String domain = APP_DOMAIN;
         log.info("Cookie domain is {}", domain);
         final ResponseCookie anonymousCookie = ResponseCookie
                 .from("anonymous", this.encode(temporaryToken.toString()))
