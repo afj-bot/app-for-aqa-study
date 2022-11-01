@@ -1,4 +1,4 @@
-package com.afj.solution.buyitapp.service.order;
+package com.afj.solution.buyitapp.unit.service.order;
 
 import java.util.List;
 
@@ -7,18 +7,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.annotation.Rollback;
 
 import com.afj.solution.buyitapp.exception.BadRequestException;
 import com.afj.solution.buyitapp.payload.request.CreateOrderRequest;
 import com.afj.solution.buyitapp.payload.response.OrderResponse;
-import com.afj.solution.buyitapp.service.BaseTest;
+import com.afj.solution.buyitapp.service.order.OrderServiceImpl;
+import com.afj.solution.buyitapp.unit.BaseTest;
 
 import static com.afj.solution.buyitapp.model.enums.OrderStatus.CANCEL;
 
 /**
  * @author Tomash Gombosh
  */
-@DisplayName("Order Service")
+@DisplayName("Order service tests")
 class OrderServiceTest extends BaseTest {
 
     @Autowired
@@ -58,10 +60,11 @@ class OrderServiceTest extends BaseTest {
     }
 
     @Test
+    @Rollback
     @DisplayName("Cancel order with status PENDING")
     void cancelOrderWithPendingStatus() {
         orderService.cancelOrder(waitingForPaymentOrderId);
-       assertThat(orderService.findById(waitingForPaymentOrderId).getStatus())
-               .isEqualTo(CANCEL);
+        assertThat(orderService.findById(waitingForPaymentOrderId).getStatus())
+                .isEqualTo(CANCEL);
     }
 }

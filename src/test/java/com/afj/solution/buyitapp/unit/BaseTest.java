@@ -1,4 +1,4 @@
-package com.afj.solution.buyitapp.service;
+package com.afj.solution.buyitapp.unit;
 
 import java.util.Set;
 import java.util.UUID;
@@ -9,6 +9,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.service.user.UserService;
@@ -18,8 +19,9 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 /**
  * @author Tomash Gombosh
  */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(PER_CLASS)
+@ActiveProfiles("local")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class BaseTest implements WithAssertions {
 
     @Autowired

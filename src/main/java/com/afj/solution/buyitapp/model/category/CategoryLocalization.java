@@ -1,14 +1,14 @@
-package com.afj.solution.buyitapp.model;
+package com.afj.solution.buyitapp.model.category;
 
-import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.util.Locale;
 import java.util.UUID;
-import java.util.function.Consumer;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -21,22 +21,19 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import static java.util.Objects.requireNonNull;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
 
 /**
- * @author Tommash Gombosh
+ * @author Tomash Gombosh
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "characteristic")
-public class Characteristic implements Serializable {
-
-    private static final long serialVersionUID = -4683961545022122749L;
+@Table(name = "category_localization")
+public class CategoryLocalization {
 
     @Id
     @Type(type = "uuid-binary")
@@ -45,18 +42,24 @@ public class Characteristic implements Serializable {
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name = "size")
-    private String size;
+    @Column(name = "locale")
+    private Locale locale;
 
-    @Column(name = "color")
-    private String color;
+    @Column(name = "name")
+    private String name;
 
-    @Column(name = "additional_params")
-    private String additionalParams;
+    @Column(name = "description")
+    private String description;
 
     @JsonBackReference
-    @OneToOne(fetch = EAGER, cascade = ALL, mappedBy = "characteristic")
-    private Product product;
+    @ManyToOne(fetch = EAGER, cascade = ALL)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @JsonBackReference
+    @ManyToOne(fetch = EAGER, cascade = ALL)
+    @JoinColumn(name = "sub_category_id")
+    private SubCategory subCategory;
 
     @Column(name = "created_at", updatable = false, nullable = false)
     @CreationTimestamp
@@ -66,20 +69,15 @@ public class Characteristic implements Serializable {
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
 
-    public Characteristic(final Consumer<Characteristic> builder) {
-        requireNonNull(builder).accept(this);
-    }
-
     @Override
     public String toString() {
-        return String.format("{ \"id\": \"%s\", \"size\": \"%s\", \"color\": \"%s\", \"additionalParams\": \"%s\", "
-                        + "\"createdAt\": \"%s\", \"updatedAt\": \"%s\" }",
+        return String.format("{ \"id\": \"%s\", \"name\": \"%s\", \"description\": \"%s\", "
+                        + "\"locale\": \"%s\", \"created_at\": \"%s\", \"updated_at\": \"%s\" }",
                 this.getId(),
-                this.getSize(),
-                this.getColor(),
-                this.getAdditionalParams(),
+                this.getName(),
+                this.getDescription(),
+                this.getLocale(),
                 this.getCreatedAt(),
                 this.getUpdatedAt());
     }
-
 }

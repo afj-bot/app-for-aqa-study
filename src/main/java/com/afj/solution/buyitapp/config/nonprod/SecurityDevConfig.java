@@ -129,6 +129,8 @@ public class SecurityDevConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/v1/users").hasAnyRole("ANONYMOUS")
                 .antMatchers(HttpMethod.GET, "/api/v1/users/**").hasAnyRole("USER", "ADMIN")
 
+                .antMatchers(HttpMethod.GET, "/api/v1/category").hasAnyRole("ANONYMOUS", "USER", "ADMIN")
+
                 .anyRequest()
                 .authenticated();
 
