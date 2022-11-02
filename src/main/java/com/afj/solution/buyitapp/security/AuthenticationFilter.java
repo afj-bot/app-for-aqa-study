@@ -21,10 +21,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.afj.solution.buyitapp.constans.Redirects;
 import com.afj.solution.buyitapp.service.AppUserDetailsService;
-
-import static com.afj.solution.buyitapp.constans.Redirects.USER_DISABLED_URL;
-import static com.afj.solution.buyitapp.constans.Redirects.USER_LOCKED_URL;
 
 /**
  * @author Tomash Gombosh
@@ -38,6 +36,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private AppUserDetailsService service;
 
+    @Autowired
+    private Redirects redirects;
 
     @Override
     protected void doFilterInternal(final HttpServletRequest request,
@@ -53,8 +53,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             final UserDetails userDetails = service.loadUserById(id);
             if (!userDetails.isEnabled() || !userDetails.isAccountNonLocked()) {
                 final String redirectUrl = !userDetails.isAccountNonLocked()
-                        ? USER_LOCKED_URL
-                        : USER_DISABLED_URL;
+                        ? redirects.getUserLockedUrl()
+                        : redirects.getUserDisabledUrl();
                 response.setStatus(302);
                 response.sendRedirect(redirectUrl);
             }

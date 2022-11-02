@@ -1,5 +1,6 @@
 package com.afj.solution.buyitapp.security;
 
+import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -20,6 +21,7 @@ import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -30,7 +32,6 @@ import com.afj.solution.buyitapp.exception.CustomAuthenticationException;
 import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.service.localize.TranslatorService;
 
-import static com.afj.solution.buyitapp.constans.Time.DEFAULT_TOKEN_EXPIRED_TIME;
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 
@@ -40,16 +41,17 @@ import static java.util.Objects.requireNonNull;
 @Slf4j
 @Service
 public class JwtTokenProvider {
-    private static final String TOKEN = "ASLKJDHALKJSHDLKAJSHDLKAJSHDLKASJHDLKJASHDLKJAHSDLKJHASLDKJh";
-    private final String tokenSecret;
 
-    private final long tokenExpiration;
+    private final String tokenSecret;
+    private final Duration tokenExpiration;
     private final TranslatorService translator;
 
     @Autowired
-    public JwtTokenProvider(final TranslatorService translator) {
-        this.tokenSecret = Base64.getEncoder().encodeToString(TOKEN.getBytes());
-        this.tokenExpiration = DEFAULT_TOKEN_EXPIRED_TIME.getSeconds();
+    public JwtTokenProvider(@Value("${token.secret}") final String tokenSecretValue,
+                            @Value("${token.expiration}") final long tokenExpirationValue,
+                            final TranslatorService translator) {
+        this.tokenSecret = Base64.getEncoder().encodeToString(tokenSecretValue.getBytes());
+        this.tokenExpiration = Duration.ofHours(tokenExpirationValue);
         this.translator = translator;
     }
 
@@ -68,9 +70,9 @@ public class JwtTokenProvider {
     }
 
 
-    public String createToken(final Map<String, Object> claims, final long expirySeconds) {
+    public String createToken(final Map<String, Object> claims, final Duration expirySeconds) {
         final ZonedDateTime now = ZonedDateTime.now().withZoneSameInstant(ZoneId.of(ZoneOffset.UTC.getId()));
-        final ZonedDateTime expiryDate = now.plusSeconds(expirySeconds);
+        final ZonedDateTime expiryDate = now.plusSeconds(expirySeconds.getSeconds());
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(Date.from(now.toInstant()))
