@@ -39,6 +39,7 @@ public class Response<T> {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
+    @JsonInclude(Include.NON_NULL)
     public static class Error {
         private String message;
 

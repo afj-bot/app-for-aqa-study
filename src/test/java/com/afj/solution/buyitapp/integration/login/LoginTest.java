@@ -15,8 +15,6 @@ import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 @DisplayName("Login controller tests")
 class LoginTest extends BaseTest {
-    private static final String LOGIN_ENDPOINT = "/api/v1/login";
-    private static final String ANONYMOUS_AUTH_ENDPOINT = "/api/v1/auth/anonymous";
 
     @Test
     @DisplayName("Login with POST")
@@ -26,7 +24,7 @@ class LoginTest extends BaseTest {
         final HttpEntity<LoginRequest> entity = new HttpEntity<>(request, headers);
 
         final ResponseEntity<String> response = restTemplate.exchange(
-                createUrlWithPort(LOGIN_ENDPOINT),
+                createUrlWithPort(LOGIN_PATH),
                 HttpMethod.POST, entity, String.class);
 
         assertThat(response.getStatusCodeValue())

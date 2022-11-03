@@ -7,6 +7,7 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import io.swagger.annotations.ApiModel;
@@ -88,6 +89,7 @@ public class CreateProductRequest implements Serializable {
             value = "Category id of the product",
             example = "757a9f2e-1c19-4086-91a4-c42c7fba7107"
     )
+    @NotNull
     private UUID categoryId;
 
     @ApiModelProperty(
@@ -96,6 +98,7 @@ public class CreateProductRequest implements Serializable {
             value = "Subcategory id of the product",
             example = "757a9f2e-1c19-4086-91a4-c42c7fba7107"
     )
+    @NotNull
     private UUID subCategoryId;
 
     @Override

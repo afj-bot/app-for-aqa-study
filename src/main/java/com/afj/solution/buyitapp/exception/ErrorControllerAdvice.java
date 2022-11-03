@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.afj.solution.buyitapp.common.Response;
-import com.afj.solution.buyitapp.service.localize.TranslatorService;
 
 import static com.afj.solution.buyitapp.constans.Patterns.STATUS_FAILED;
 import static com.afj.solution.buyitapp.constans.Patterns.generateErrorResponse;
+import static java.lang.String.format;
 
 /**
  * @author Tomash Gombosh
@@ -64,11 +64,10 @@ public class ErrorControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Response<String> handleValidationExceptions(final MethodArgumentNotValidException ex) {
-        final TranslatorService translator = new TranslatorService();
         final List<String> messages = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(fieldError -> String.format(translator.toLocale(fieldError.getDefaultMessage()), fieldError.getField()))
+                .map(fieldError -> format("%s %s", fieldError.getField(), fieldError.getDefaultMessage()))
                 .toList();
         final List<Response.Error> errors = messages.stream()
                 .map(Response.Error::new).toList();
