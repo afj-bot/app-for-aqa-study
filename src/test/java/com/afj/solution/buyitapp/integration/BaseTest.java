@@ -40,7 +40,9 @@ public class BaseTest implements WithAssertions {
 
     //Paths
     protected static final String LOGIN_PATH = "/api/v1/login";
+    protected static final String ANONYMOUS_AUTH_ENDPOINT = "/api/v1/auth/anonymous";
     protected static final String PRODUCTS_PATH = "/api/v1/products";
+
 
     @BeforeAll
     void integrationTestSetup() {
