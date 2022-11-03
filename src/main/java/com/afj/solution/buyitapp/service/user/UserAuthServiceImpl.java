@@ -1,5 +1,6 @@
 package com.afj.solution.buyitapp.service.user;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +12,7 @@ import javax.servlet.http.Cookie;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -21,17 +23,18 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
+import com.afj.solution.buyitapp.constans.Redirects;
 import com.afj.solution.buyitapp.exception.CustomAuthenticationException;
 import com.afj.solution.buyitapp.model.TemporaryToken;
 import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.payload.request.LoginRequest;
 import com.afj.solution.buyitapp.repository.UserRepository;
 import com.afj.solution.buyitapp.security.JwtTokenProvider;
-import com.afj.solution.buyitapp.service.AnonymousCookieService;
 import com.afj.solution.buyitapp.service.TemporaryTokenServiceImpl;
+import com.afj.solution.buyitapp.service.cookie.AnonymousCookieService;
+import com.afj.solution.buyitapp.service.cookie.CookieService;
 import com.afj.solution.buyitapp.service.localize.TranslatorService;
 
-import static com.afj.solution.buyitapp.constans.Redirects.USER_PRIVACY_POLICY_URL;
 import static java.util.Objects.isNull;
 
 /**
@@ -41,19 +44,21 @@ import static java.util.Objects.isNull;
 @Slf4j
 public class UserAuthServiceImpl implements UserAuthService {
 
+    private final Duration tokenExpiration;
     private final UserRepository userRepository;
 
     private final JwtTokenProvider jwtTokenProvider;
 
     private final AuthenticationManager authenticationManager;
 
-    private final AnonymousCookieService anonymousCookieService;
+    private final CookieService anonymousCookieService;
 
     private final TemporaryTokenServiceImpl temporaryTokenService;
 
     private final UserLoginService userLoginService;
 
     private final TranslatorService translator;
+    private final Redirects redirects;
 
     @Autowired
     public UserAuthServiceImpl(final UserRepository userRepository,
@@ -62,7 +67,9 @@ public class UserAuthServiceImpl implements UserAuthService {
                                final AnonymousCookieService anonymousCookieService,
                                final TemporaryTokenServiceImpl temporaryTokenService,
                                final UserLoginService userLoginService,
-                               final TranslatorService translator) {
+                               final TranslatorService translator,
+                               final Redirects redirects,
+                               @Value("${token.expiration.anonymous}") final long tokenExpiration) {
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.authenticationManager = authenticationManager;
@@ -70,6 +77,8 @@ public class UserAuthServiceImpl implements UserAuthService {
         this.temporaryTokenService = temporaryTokenService;
         this.userLoginService = userLoginService;
         this.translator = translator;
+        this.redirects = redirects;
+        this.tokenExpiration = Duration.ofHours(tokenExpiration);
     }
 
     @Override
@@ -97,10 +106,10 @@ public class UserAuthServiceImpl implements UserAuthService {
                 .findByUsername(username);
         if (!user.isPrivacyPolicy()) {
             log.info("User {} not have accepted privacy policy", user);
-            log.info("Redirect to the {} the user {}", USER_PRIVACY_POLICY_URL, user.getId());
+            log.info("Redirect to the {} the user {}", redirects.getUserPrivacyPolicyUrl(), user.getId());
             return ResponseEntity
                     .status(302)
-                    .header("Location", USER_PRIVACY_POLICY_URL)
+                    .header("Location", redirects.getUserPrivacyPolicyUrl())
                     .build();
         }
         try {
@@ -123,7 +132,7 @@ public class UserAuthServiceImpl implements UserAuthService {
         claims.put("id", userId);
         claims.put("roles", roles);
         claims.put("username", "Anonymous");
-        return jwtTokenProvider.createToken(claims);
+        return jwtTokenProvider.createToken(claims, tokenExpiration);
     }
 
     @Override
@@ -135,7 +144,7 @@ public class UserAuthServiceImpl implements UserAuthService {
                 .filter(c -> "anonymous".equals(c.getName()))
                 .findFirst()
                 .orElseThrow(() -> new CustomAuthenticationException("error.cookie.invalid"));
-        final UUID decodeToken = anonymousCookieService.decodeAnonymousCookie(cookie);
+        final UUID decodeToken = UUID.fromString(anonymousCookieService.decodeCookie(cookie));
         if (!temporaryTokenService.isTokenExist(decodeToken)) {
             throw new CustomAuthenticationException("error.cookie.invalid");
         }
@@ -145,6 +154,6 @@ public class UserAuthServiceImpl implements UserAuthService {
     @Override
     public ResponseCookie generateAnonymousCookie() {
         final TemporaryToken temporaryToken = temporaryTokenService.save();
-        return anonymousCookieService.generateAnonymousCookie(temporaryToken.getId());
+        return anonymousCookieService.generateCookie("anonymous", temporaryToken.getId().toString());
     }
 }

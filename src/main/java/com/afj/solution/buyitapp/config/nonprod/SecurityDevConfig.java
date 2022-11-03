@@ -72,7 +72,8 @@ public class SecurityDevConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("https://dev.buy-it.afj-solution.com"));
+        configuration.setAllowedOriginPatterns(List.of("https://dev.buy-it.afj-solution.com",
+                "https://api-dev.buy-it.afj-solution.com"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setMaxAge(Duration.ofSeconds(3600));
