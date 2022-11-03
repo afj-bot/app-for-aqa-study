@@ -10,11 +10,14 @@ import org.springframework.http.ResponseEntity;
 import com.afj.solution.buyitapp.integration.BaseTest;
 import com.afj.solution.buyitapp.payload.request.LoginRequest;
 
+import static org.springframework.http.HttpHeaders.COOKIE;
+import static org.springframework.http.HttpHeaders.SET_COOKIE;
+
 @DisplayName("Login controller tests")
 class LoginTest extends BaseTest {
 
     @Test
-    @DisplayName("Login")
+    @DisplayName("Login with POST")
     void login() {
         final HttpHeaders headers = new HttpHeaders();
         final LoginRequest request = new LoginRequest("integration_test", "Test123$");
@@ -23,6 +26,48 @@ class LoginTest extends BaseTest {
         final ResponseEntity<String> response = restTemplate.exchange(
                 createUrlWithPort(LOGIN_PATH),
                 HttpMethod.POST, entity, String.class);
+
+        assertThat(response.getStatusCodeValue())
+                .isEqualTo(200);
+
+        assertThat(response.getBody())
+                .contains("token");
+    }
+
+    @Test
+    @DisplayName("Anonymous authentication GET method")
+    void authAnonymous() {
+        final HttpHeaders headers = new HttpHeaders();
+        final HttpEntity<Object> entity = new HttpEntity<>(headers);
+
+        final ResponseEntity<String> response = restTemplate.exchange(
+                createUrlWithPort(ANONYMOUS_AUTH_ENDPOINT),
+                HttpMethod.GET, entity, String.class);
+
+        assertThat(response.getStatusCodeValue())
+                .isEqualTo(200);
+
+        final String cookie = response.getHeaders().get(SET_COOKIE).get(0);
+        assertThat(cookie)
+                .contains("anonymous");
+    }
+
+    @Test
+    @DisplayName("Anonymous authentication POST method")
+    void anonymousToken() {
+        final HttpEntity<Object> entity = new HttpEntity<>(new HttpHeaders());
+
+        final ResponseEntity<String> cookieResponse = restTemplate.exchange(
+                createUrlWithPort(ANONYMOUS_AUTH_ENDPOINT),
+                HttpMethod.GET, entity, String.class);
+        final String cookie = cookieResponse.getHeaders().get(SET_COOKIE).get(0);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(COOKIE, cookie);
+        final HttpEntity<Object> cookieEntity = new HttpEntity<>(headers);
+        final ResponseEntity<String> response = restTemplate.exchange(
+                createUrlWithPort(ANONYMOUS_AUTH_ENDPOINT),
+                HttpMethod.POST, cookieEntity, String.class);
 
         assertThat(response.getStatusCodeValue())
                 .isEqualTo(200);

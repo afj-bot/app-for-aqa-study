@@ -54,7 +54,7 @@ public class AuthController {
                 .build();
     }
 
-    @ApiOperation("Generate anonymous toke for user")
+    @ApiOperation("Generate anonymous token for user")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Anonymous token generated successfully"),
             @ApiResponse(code = 401, message = "Invalid cookie supplied"),
