@@ -21,7 +21,7 @@ class LoginTest extends BaseTest {
         final HttpEntity<LoginRequest> entity = new HttpEntity<>(request, headers);
 
         final ResponseEntity<String> response = restTemplate.exchange(
-                createUrlWithPort("/api/v1/login"),
+                createUrlWithPort(LOGIN_PATH),
                 HttpMethod.POST, entity, String.class);
 
         assertThat(response.getStatusCodeValue())
