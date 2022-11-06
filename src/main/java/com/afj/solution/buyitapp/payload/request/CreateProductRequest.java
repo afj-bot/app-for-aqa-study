@@ -42,7 +42,7 @@ public class CreateProductRequest implements Serializable {
             required = true
     )
     @NotEmpty
-    @Size(max = 255, message = "error.value.string.max")
+    @Size(max = 64, message = "error.value.string.max")
     private String name;
 
     @ApiModelProperty(
@@ -80,7 +80,7 @@ public class CreateProductRequest implements Serializable {
             value = "Product description",
             example = "Beautiful red flower"
     )
-    @Size(max = 255, message = "error.value.string.max")
+    @Size(max = 128, message = "error.value.string.max")
     private String description;
 
     @ApiModelProperty(

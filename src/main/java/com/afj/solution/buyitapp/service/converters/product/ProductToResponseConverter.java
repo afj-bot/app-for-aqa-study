@@ -39,14 +39,14 @@ public class ProductToResponseConverter implements Converter<Product, ProductRes
                 .getLocalizations()
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new BadRequestException("Something went wrong with converter"));
+                .orElseThrow(() -> new BadRequestException("Something went wrong to convert product to product response"));
 
         final CategoryLocalization subCategoryLocalization = product
                 .getSubCategory()
                 .getSubCategoryLocalizations()
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new BadRequestException("Something went wrong with converter"));
+                .orElseThrow(() -> new BadRequestException("Something went wrong to convert product to product response"));
 
         final CreatedByResponse createdBy = new CreatedByResponse(product.getUser().getId(),
                 product.getUser().getEmail(),

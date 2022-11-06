@@ -33,6 +33,7 @@ import com.afj.solution.buyitapp.service.converters.product.UpdateCharacteristic
 import com.afj.solution.buyitapp.service.localize.TranslatorService;
 import com.afj.solution.buyitapp.service.user.UserServiceImpl;
 
+import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 
 /**
@@ -116,7 +117,7 @@ public class ProductServiceImp implements ProductService {
             log.info("Product {} saved successfully to database", product.getId());
             return productToResponseConverter.convert(product);
         }
-        throw new BadRequestException(String.format(translator
+        throw new BadRequestException(format(translator
                 .toLocale("error.file.unsupported"), file.getOriginalFilename()));
     }
 
@@ -135,7 +136,11 @@ public class ProductServiceImp implements ProductService {
     @Override
     public byte[] getImageByProductId(final UUID id) {
         log.info("Get image to the product {}", id);
-        return this.findById(id).getImage().getPicture();
+        final Image image = this.findById(id).getImage();
+        if (nonNull(image)) {
+            return image.getPicture();
+        }
+        throw new BadRequestException(format(translator.toLocale("error.product.image.not-found"), id));
     }
 
     @Override
@@ -143,7 +148,7 @@ public class ProductServiceImp implements ProductService {
         final Product product = this.productRepository
                 .findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        String.format(translator
+                        format(translator
                                 .toLocale("error.product.not-found"), id)));
         log.info("Find Product {} by id({})", product, id);
         return product;

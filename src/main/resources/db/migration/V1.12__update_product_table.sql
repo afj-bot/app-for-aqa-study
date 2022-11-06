@@ -1,0 +1,5 @@
+ALTER TABLE product
+    MODIFY COLUMN description VARCHAR(128);
+
+ALTER TABLE product
+    MODIFY COLUMN name VARCHAR(64);
