@@ -25,7 +25,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.afj.solution.buyitapp.model.Product;
+import com.afj.solution.buyitapp.model.product.Product;
 
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;

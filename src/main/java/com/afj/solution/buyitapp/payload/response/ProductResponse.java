@@ -49,6 +49,13 @@ public record ProductResponse(
         )
         int quantity,
         @ApiModelProperty(
+                name = "star",
+                dataType = "double",
+                value = "Stars of the product",
+                example = "0.0"
+        )
+        java.math.BigDecimal star,
+        @ApiModelProperty(
                 name = "image",
                 dataType = "Object",
                 value = "Product image",

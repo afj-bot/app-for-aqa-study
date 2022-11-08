@@ -26,6 +26,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.afj.solution.buyitapp.model.product.Product;
+
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 import static javax.persistence.CascadeType.ALL;

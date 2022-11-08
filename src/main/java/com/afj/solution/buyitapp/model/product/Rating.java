@@ -1,4 +1,4 @@
-package com.afj.solution.buyitapp.model;
+package com.afj.solution.buyitapp.model.product;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
@@ -8,11 +8,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.OneToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,23 +22,25 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.afj.solution.buyitapp.model.Order;
+
+import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
 
-
 /**
- * @author Tommash Gombosh
+ * @author Tomash Gombosh
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "image")
-public class Image implements Serializable {
+@Table(name = "rating")
+public class Rating implements Serializable {
 
-    private static final long serialVersionUID = -3971169410727710315L;
+    private static final long serialVersionUID = 4630427148855205084L;
 
     @Id
     @Type(type = "uuid-binary")
@@ -47,16 +49,14 @@ public class Image implements Serializable {
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name = "file_name")
-    private String fileName;
+    @Column(name = "star")
+    private int star;
 
-    @Lob
-    @Column(name = "picture")
-    private byte[] picture;
+    @Column(name = "user_id")
+    private UUID userId;
 
-    @JsonBackReference
-    @OneToOne(fetch = EAGER, cascade = ALL, mappedBy = "image")
-    private Product product;
+    @Column(name = "comment")
+    private String comment;
 
     @Column(name = "created_at", updatable = false, nullable = false)
     @CreationTimestamp
@@ -66,17 +66,21 @@ public class Image implements Serializable {
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
 
-    public Image(final Consumer<Image> builder) {
-        requireNonNull(builder).accept(this);
-    }
+    @JsonManagedReference
+    @ManyToOne(fetch = EAGER, cascade = ALL)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
     @Override
     public String toString() {
-        return String.format("{ \"id\": \"%s\", \"fileName\": \"%s\", \"createdAt\": \"%s\", \"updated_at\": \"%s\" }",
+        return format("{ \"id\": \"%s\", \"product_id\": \"%s\", "
+                        + "\"comment\": \"%s\",}",
                 this.getId(),
-                this.getFileName(),
-                this.getCreatedAt(),
-                this.getUpdatedAt());
+                this.getProduct().getId(),
+                this.getComment());
     }
 
+    public Rating(final Consumer<Rating> builder) {
+        requireNonNull(builder).accept(this);
+    }
 }

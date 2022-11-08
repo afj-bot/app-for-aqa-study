@@ -3,7 +3,7 @@ package com.afj.solution.buyitapp.service.converters.product;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import com.afj.solution.buyitapp.model.Characteristic;
+import com.afj.solution.buyitapp.model.product.Characteristic;
 import com.afj.solution.buyitapp.payload.request.UpdateCharacteristicRequest;
 import com.afj.solution.buyitapp.service.converters.Converter;
 

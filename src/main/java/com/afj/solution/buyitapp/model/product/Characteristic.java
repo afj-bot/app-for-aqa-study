@@ -1,19 +1,17 @@
-package com.afj.solution.buyitapp.model.category;
+package com.afj.solution.buyitapp.model.product;
 
+import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,22 +21,22 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.afj.solution.buyitapp.model.product.Product;
-
+import static java.util.Objects.requireNonNull;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
 
-
 /**
- * @author Tomash Gombosh
+ * @author Tommash Gombosh
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "category")
-public class Category {
+@Table(name = "characteristic")
+public class Characteristic implements Serializable {
+
+    private static final long serialVersionUID = -4683961545022122749L;
 
     @Id
     @Type(type = "uuid-binary")
@@ -47,22 +45,17 @@ public class Category {
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "size")
+    private String size;
 
-    @Column(name = "description")
-    private String description;
+    @Column(name = "color")
+    private String color;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "category", fetch = EAGER, cascade = ALL)
-    private Set<CategoryLocalization> localizations = new HashSet<>();
-
-    @JsonManagedReference
-    @OneToMany(mappedBy = "category", fetch = EAGER, cascade = ALL)
-    private Set<SubCategory> subCategories = new HashSet<>();
+    @Column(name = "additional_params")
+    private String additionalParams;
 
     @JsonBackReference
-    @OneToOne(mappedBy = "category", fetch = EAGER, cascade = ALL)
+    @OneToOne(fetch = EAGER, cascade = ALL, mappedBy = "characteristic")
     private Product product;
 
     @Column(name = "created_at", updatable = false, nullable = false)
@@ -73,16 +66,18 @@ public class Category {
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
 
+    public Characteristic(final Consumer<Characteristic> builder) {
+        requireNonNull(builder).accept(this);
+    }
+
     @Override
     public String toString() {
-        return String.format("{ \"id\": \"%s\", \"name\": \"%s\", \"description\": \"%s\", "
-                        + "\"localization\": \"%s\", \"subCategories\": \"%s\", "
-                        + " \"created_at\": \"%s\", \"updated_at\": \"%s\" }",
+        return String.format("{ \"id\": \"%s\", \"size\": \"%s\", \"color\": \"%s\", \"additionalParams\": \"%s\", "
+                        + "\"createdAt\": \"%s\", \"updatedAt\": \"%s\" }",
                 this.getId(),
-                this.getName(),
-                this.getDescription(),
-                this.getLocalizations(),
-                this.getSubCategories(),
+                this.getSize(),
+                this.getColor(),
+                this.getAdditionalParams(),
                 this.getCreatedAt(),
                 this.getUpdatedAt());
     }

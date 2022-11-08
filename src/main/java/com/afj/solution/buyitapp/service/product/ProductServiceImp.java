@@ -16,8 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.afj.solution.buyitapp.exception.BadRequestException;
 import com.afj.solution.buyitapp.exception.EntityNotFoundException;
-import com.afj.solution.buyitapp.model.Image;
-import com.afj.solution.buyitapp.model.Product;
+import com.afj.solution.buyitapp.model.product.Image;
+import com.afj.solution.buyitapp.model.product.Product;
 import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.model.category.Category;
 import com.afj.solution.buyitapp.model.category.SubCategory;

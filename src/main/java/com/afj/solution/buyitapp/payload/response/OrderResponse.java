@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import com.afj.solution.buyitapp.model.Product;
+import com.afj.solution.buyitapp.model.product.Product;
 import com.afj.solution.buyitapp.model.enums.OrderStatus;
 
 import static java.util.Objects.requireNonNull;

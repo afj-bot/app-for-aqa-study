@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.afj.solution.buyitapp.model.Product;
+import com.afj.solution.buyitapp.model.product.Product;
 import com.afj.solution.buyitapp.payload.request.CreateProductRequest;
 import com.afj.solution.buyitapp.payload.request.UpdateCharacteristicRequest;
 import com.afj.solution.buyitapp.payload.response.ProductResponse;
