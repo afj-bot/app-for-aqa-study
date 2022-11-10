@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -31,11 +32,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.afj.solution.buyitapp.common.Response;
+import com.afj.solution.buyitapp.payload.request.AddRatingRequest;
 import com.afj.solution.buyitapp.payload.request.CreateProductRequest;
 import com.afj.solution.buyitapp.payload.request.UpdateCharacteristicRequest;
 import com.afj.solution.buyitapp.payload.response.ProductResponse;
 import com.afj.solution.buyitapp.security.JwtTokenProvider;
+import com.afj.solution.buyitapp.service.product.ProductRatingService;
 import com.afj.solution.buyitapp.service.product.ProductServiceImp;
+import com.afj.solution.buyitapp.service.product.RatingService;
 
 import static com.afj.solution.buyitapp.constans.Patterns.generateSuccessResponse;
 
@@ -51,11 +55,15 @@ public class ProductController {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    private final RatingService ratingService;
+
     @Autowired
     public ProductController(final ProductServiceImp productService,
-                             final JwtTokenProvider jwtTokenProvider) {
+                             final JwtTokenProvider jwtTokenProvider,
+                             final ProductRatingService ratingService) {
         this.productService = productService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.ratingService = ratingService;
     }
 
     @ApiOperation(value = "Get products", notes = "All Roles", authorizations = {@Authorization("Bearer")})
@@ -66,8 +74,7 @@ public class ProductController {
     @GetMapping
     public @ResponseBody
     Page<ProductResponse> getProducts(final Pageable pageable,
-                                      @RequestHeader(value = "Accept-Language", defaultValue = "gb")
-                                      final String language) {
+                                      @RequestHeader(value = "Accept-Language", defaultValue = "gb") final String language) {
         final UUID userId = jwtTokenProvider.getUuidFromToken(jwtTokenProvider.getToken().substring(7));
         log.info("Get products request for id -> {}", userId);
         log.info("Get products by {}", pageable);
@@ -174,5 +181,36 @@ public class ProductController {
         log.info("Get products request for id -> {}", userId);
         log.info("Get products by {}", pageable);
         return productService.getMyProducts(pageable, userId, title, description);
+    }
+
+    @ApiOperation(value = "Get product by id", notes = "Anonymous, User, Admin Roles", authorizations = {@Authorization("Bearer")})
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Product returned successfully"),
+            @ApiResponse(code = 401, message = "Not Authorized"),
+            @ApiResponse(code = 500, message = "Internal server error"),
+    })
+    @GetMapping("/{id}")
+    public @ResponseBody
+    ProductResponse getProductById(@Valid @NotEmpty @PathVariable final UUID id) {
+        final UUID userId = jwtTokenProvider.getUuidFromToken(jwtTokenProvider.getToken().substring(7));
+        log.info("Get product {} request for user id -> {}", id, userId);
+        return productService.getProductById(id);
+    }
+
+    @ApiOperation(value = "Add rating to product by id", notes = "User Role", authorizations = {@Authorization("Bearer")})
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Product returned successfully"),
+            @ApiResponse(code = 401, message = "Not Authorized"),
+            @ApiResponse(code = 403, message = "Access denied"),
+            @ApiResponse(code = 500, message = "Internal server error"),
+    })
+    @PatchMapping("/{id}/rating")
+    public @ResponseBody
+    Response<String> addRatingToProduct(@Valid @NotEmpty @PathVariable final UUID id,
+                                        @RequestBody final AddRatingRequest request) {
+        final UUID userId = jwtTokenProvider.getUuidFromToken(jwtTokenProvider.getToken().substring(7));
+        log.info("Add rating {} to product request for user id -> {}", request, userId);
+        ratingService.addRating(request.star(), id, userId);
+        return generateSuccessResponse();
     }
 }

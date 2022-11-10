@@ -22,8 +22,6 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.afj.solution.buyitapp.model.Order;
-
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static javax.persistence.CascadeType.ALL;

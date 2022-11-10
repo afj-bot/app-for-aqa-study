@@ -2,7 +2,6 @@ package com.afj.solution.buyitapp.service.converters.product;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.Set;
 
 import lombok.extern.slf4j.Slf4j;
@@ -11,11 +10,11 @@ import org.springframework.stereotype.Component;
 import com.afj.solution.buyitapp.exception.BadRequestException;
 import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.model.category.Category;
+import com.afj.solution.buyitapp.model.category.CategoryLocalization;
 import com.afj.solution.buyitapp.model.category.SubCategory;
 import com.afj.solution.buyitapp.model.product.Characteristic;
 import com.afj.solution.buyitapp.model.product.Image;
 import com.afj.solution.buyitapp.model.product.Product;
-import com.afj.solution.buyitapp.model.category.CategoryLocalization;
 import com.afj.solution.buyitapp.model.product.Rating;
 import com.afj.solution.buyitapp.payload.response.CategoryResponse;
 import com.afj.solution.buyitapp.payload.response.CharacteristicResponse;
@@ -57,7 +56,7 @@ public class ProductToResponseConverter implements Converter<Product, ProductRes
 
     private BigDecimal getStar(final Set<Rating> ratings) {
         return BigDecimal.valueOf(ratings
-                .stream()
+                .parallelStream()
                 .mapToInt(Rating::getStar)
                 .average()
                 .orElse(0.0)).setScale(1, RoundingMode.HALF_UP);
@@ -79,7 +78,7 @@ public class ProductToResponseConverter implements Converter<Product, ProductRes
     private CategoryLocalization getCategoryLocalized(final Category category) {
         return category
                 .getLocalizations()
-                .stream()
+                .parallelStream()
                 .findFirst()
                 .orElseThrow(() -> new BadRequestException("Something went wrong to convert product to product response"));
     }
@@ -87,7 +86,7 @@ public class ProductToResponseConverter implements Converter<Product, ProductRes
     private CategoryLocalization getSubCategoryLocalized(final SubCategory category) {
         return category
                 .getSubCategoryLocalizations()
-                .stream()
+                .parallelStream()
                 .findFirst()
                 .orElseThrow(() -> new BadRequestException("Something went wrong to convert product to product response"));
     }

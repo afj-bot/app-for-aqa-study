@@ -122,8 +122,10 @@ public class SecurityLocalConfig extends WebSecurityConfigurerAdapter {
 
                 //Product controller
                 .antMatchers(HttpMethod.GET, "/api/v1/products").hasAnyRole("ANONYMOUS", "USER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/v1/products/**").hasAnyRole("ANONYMOUS", "USER", "ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/v1/products/**/image").hasAnyRole("ANONYMOUS", "USER", "ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/v1/products").hasAnyRole("USER", "ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/v1/products/**/rating").hasAnyRole("USER")
 
                 //User controller
                 .antMatchers(HttpMethod.POST, "/api/v1/users").hasAnyRole("ANONYMOUS")

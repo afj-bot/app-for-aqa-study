@@ -16,11 +16,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.afj.solution.buyitapp.exception.BadRequestException;
 import com.afj.solution.buyitapp.exception.EntityNotFoundException;
-import com.afj.solution.buyitapp.model.product.Image;
-import com.afj.solution.buyitapp.model.product.Product;
 import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.model.category.Category;
 import com.afj.solution.buyitapp.model.category.SubCategory;
+import com.afj.solution.buyitapp.model.product.Image;
+import com.afj.solution.buyitapp.model.product.Product;
 import com.afj.solution.buyitapp.payload.request.CreateProductRequest;
 import com.afj.solution.buyitapp.payload.request.UpdateCharacteristicRequest;
 import com.afj.solution.buyitapp.payload.response.ProductResponse;
@@ -192,5 +192,10 @@ public class ProductServiceImp implements ProductService {
         final User user = userService.findById(userId);
         return productRepository.findAllByUserAndNameAndDescription(pageable, user, title, description)
                 .map(productToResponseConverter::convert);
+    }
+
+    @Override
+    public ProductResponse getProductById(final UUID id) {
+        return productToResponseConverter.convert(this.findById(id));
     }
 }

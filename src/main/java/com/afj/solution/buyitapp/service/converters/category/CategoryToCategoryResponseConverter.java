@@ -15,6 +15,7 @@ import static java.lang.String.format;
 
 /**
  * @author Tomash Gombosh
+ * TODO Perforamnce issue
  */
 @Component
 @Slf4j
@@ -23,14 +24,14 @@ public class CategoryToCategoryResponseConverter implements Converter<Category, 
     public CategoryResponse convert(final Category category) {
         log.info("Convert the category({}) to response", category);
         final SubCategory subCategory = category.getSubCategories()
-                .stream()
+                .parallelStream()
                 .findFirst()
                 .orElseThrow(() ->
                         new BadRequestException(format(
                                 "Something went wrong. "
                                         + "Enable to get subcategory of the category %s", category.getId())));
         final CategoryLocalization subCategoryLocalization = subCategory.getSubCategoryLocalizations()
-                .stream()
+                .parallelStream()
                 .findFirst()
                 .orElseThrow(() ->
                         new BadRequestException(format(
@@ -38,7 +39,7 @@ public class CategoryToCategoryResponseConverter implements Converter<Category, 
                                         + "Enable to get sub category localization of the category %s", category.getId())));
         final CategoryLocalization categoryLocalization = category
                 .getLocalizations()
-                .stream()
+                .parallelStream()
                 .findFirst()
                 .orElseThrow(() ->
                         new BadRequestException(format(

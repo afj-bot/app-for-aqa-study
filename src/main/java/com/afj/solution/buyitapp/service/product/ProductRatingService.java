@@ -6,10 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.afj.solution.buyitapp.exception.BadRequestException;
 import com.afj.solution.buyitapp.model.product.Product;
 import com.afj.solution.buyitapp.model.product.Rating;
-import com.afj.solution.buyitapp.payload.request.AddRatingRequest;
-import com.afj.solution.buyitapp.repository.RatingRepository;
+import com.afj.solution.buyitapp.service.localize.TranslatorService;
 import com.afj.solution.buyitapp.service.user.UserService;
 import com.afj.solution.buyitapp.service.user.UserServiceImpl;
 
@@ -24,31 +24,39 @@ public class ProductRatingService implements RatingService {
 
     private final UserService userService;
 
-    private final RatingRepository repository;
+    private final TranslatorService translatorService;
 
     @Autowired
     public ProductRatingService(final ProductServiceImp productService,
                                 final UserServiceImpl userService,
-                                final RatingRepository repository) {
+                                final TranslatorService translatorService) {
         this.productService = productService;
         this.userService = userService;
-        this.repository = repository;
+        this.translatorService = translatorService;
     }
 
 
     @Override
-    public void addRating(final AddRatingRequest addRatingRequest,
+    public void addRating(final int stars,
+                          final UUID productId,
                           final UUID userId) {
         userService.findById(userId);
-        final Product product = productService.findById(addRatingRequest.id());
-        product.getRatings().add(new Rating(ratingLambda -> {
-            ratingLambda.setProduct(product);
-            ratingLambda.setStar(addRatingRequest.star());
-            ratingLambda.setUserId(userId);
+        final Product product = productService.findById(productId);
+        if (product
+                .getRatings()
+                .stream()
+                .noneMatch(r -> r.getUserId().equals(userId))) {
+            product.getRatings().add(new Rating(ratingLambda -> {
+                ratingLambda.setProduct(product);
+                ratingLambda.setStar(stars);
+                ratingLambda.setUserId(userId);
+            }
+            ));
+            log.info("Add rating {} to the product {}", stars, productId);
+            productService.save(product);
+        } else {
+            throw new BadRequestException(translatorService.toLocale("error.product.rating.already.added"));
         }
-        ));
-        log.info("Add rating {} to the product {}", addRatingRequest, product.getId());
-        productService.save(product);
     }
 
     @Override
