@@ -195,7 +195,9 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public ProductResponse getProductById(final UUID id) {
+    public ProductResponse getProductById(final UUID id, final String language) {
+        final Product product = this.findById(id);
+        product.setCategory(categoryService.getLocalizedCategory(product.getCategory(), language));
         return productToResponseConverter.convert(this.findById(id));
     }
 }

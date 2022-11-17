@@ -191,10 +191,11 @@ public class ProductController {
     })
     @GetMapping("/{id}")
     public @ResponseBody
-    ProductResponse getProductById(@Valid @NotEmpty @PathVariable final UUID id) {
+    ProductResponse getProductById(@Valid @NotEmpty @PathVariable final UUID id,
+                                   @RequestHeader(value = "Accept-Language", defaultValue = "gb") final String language) {
         final UUID userId = jwtTokenProvider.getUuidFromToken(jwtTokenProvider.getToken().substring(7));
         log.info("Get product {} request for user id -> {}", id, userId);
-        return productService.getProductById(id);
+        return productService.getProductById(id, language);
     }
 
     @ApiOperation(value = "Add rating to product by id", notes = "User Role", authorizations = {@Authorization("Bearer")})

@@ -64,8 +64,8 @@ public class ProductToResponseConverter implements Converter<Product, ProductRes
 
     private CharacteristicResponse getCharacteristic(final Characteristic characteristic) {
         return nonNull(characteristic)
-                ? new CharacteristicResponse(characteristic.getColor(),
-                characteristic.getSize(), characteristic.getAdditionalParams())
+                ? new CharacteristicResponse(characteristic.getSize(),
+                characteristic.getColor(), characteristic.getAdditionalParams())
                 : null;
     }
 
@@ -107,9 +107,9 @@ public class ProductToResponseConverter implements Converter<Product, ProductRes
 
     private CreatedByResponse getCreatedByResponse(final User user) {
         return new CreatedByResponse(user.getId(),
-                user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),
+                user.getEmail(),
                 user.getPhoneNumber(),
                 user.getHomeAddress());
     }

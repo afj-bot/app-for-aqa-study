@@ -43,5 +43,5 @@ public interface ProductService {
 
     Page<ProductResponse> getMyProducts(Pageable pageable, UUID userId, String title, String description);
 
-    ProductResponse getProductById(UUID id);
+    ProductResponse getProductById(UUID id, String language);
 }
