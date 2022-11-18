@@ -6,6 +6,8 @@ import javax.validation.constraints.Size;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import static com.afj.solution.buyitapp.constans.Patterns.GSON;
+
 /**
  * @author Tomash Gombosh
  */
@@ -52,4 +54,8 @@ public record UpdateUserRequest(
         @Size(max = 255)
         String homeAddress
 ) {
+    @Override
+    public String toString() {
+        return GSON.toJson(this);
+    }
 }

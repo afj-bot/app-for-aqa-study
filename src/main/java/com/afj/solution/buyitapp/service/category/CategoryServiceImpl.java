@@ -84,7 +84,7 @@ public class CategoryServiceImpl implements CategoryService {
         final Set<SubCategory> subCategoryLocalization =
                 category
                         .getSubCategories()
-                        .stream()
+                        .parallelStream()
                         .peek(s -> s.setSubCategoryLocalizations(s.getSubCategoryLocalizations()
                                 .stream()
                                 .filter(l -> l.getLocale().getLanguage().equals(language))
@@ -92,7 +92,7 @@ public class CategoryServiceImpl implements CategoryService {
                         .collect(Collectors.toSet());
         category.setLocalizations(category
                 .getLocalizations()
-                .stream()
+                .parallelStream()
                 .filter(l -> l.getLocale().getLanguage().equals(language))
                 .collect(Collectors.toSet()));
         category.setSubCategories(subCategoryLocalization);

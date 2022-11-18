@@ -16,11 +16,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.afj.solution.buyitapp.exception.BadRequestException;
 import com.afj.solution.buyitapp.exception.EntityNotFoundException;
-import com.afj.solution.buyitapp.model.Image;
-import com.afj.solution.buyitapp.model.Product;
 import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.model.category.Category;
 import com.afj.solution.buyitapp.model.category.SubCategory;
+import com.afj.solution.buyitapp.model.product.Image;
+import com.afj.solution.buyitapp.model.product.Product;
 import com.afj.solution.buyitapp.payload.request.CreateProductRequest;
 import com.afj.solution.buyitapp.payload.request.UpdateCharacteristicRequest;
 import com.afj.solution.buyitapp.payload.response.ProductResponse;
@@ -33,6 +33,7 @@ import com.afj.solution.buyitapp.service.converters.product.UpdateCharacteristic
 import com.afj.solution.buyitapp.service.localize.TranslatorService;
 import com.afj.solution.buyitapp.service.user.UserServiceImpl;
 
+import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 
 /**
@@ -116,7 +117,7 @@ public class ProductServiceImp implements ProductService {
             log.info("Product {} saved successfully to database", product.getId());
             return productToResponseConverter.convert(product);
         }
-        throw new BadRequestException(String.format(translator
+        throw new BadRequestException(format(translator
                 .toLocale("error.file.unsupported"), file.getOriginalFilename()));
     }
 
@@ -135,7 +136,11 @@ public class ProductServiceImp implements ProductService {
     @Override
     public byte[] getImageByProductId(final UUID id) {
         log.info("Get image to the product {}", id);
-        return this.findById(id).getImage().getPicture();
+        final Image image = this.findById(id).getImage();
+        if (nonNull(image)) {
+            return image.getPicture();
+        }
+        throw new BadRequestException(format(translator.toLocale("error.product.image.not-found"), id));
     }
 
     @Override
@@ -143,7 +148,7 @@ public class ProductServiceImp implements ProductService {
         final Product product = this.productRepository
                 .findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        String.format(translator
+                        format(translator
                                 .toLocale("error.product.not-found"), id)));
         log.info("Find Product {} by id({})", product, id);
         return product;
@@ -187,5 +192,12 @@ public class ProductServiceImp implements ProductService {
         final User user = userService.findById(userId);
         return productRepository.findAllByUserAndNameAndDescription(pageable, user, title, description)
                 .map(productToResponseConverter::convert);
+    }
+
+    @Override
+    public ProductResponse getProductById(final UUID id, final String language) {
+        final Product product = this.findById(id);
+        product.setCategory(categoryService.getLocalizedCategory(product.getCategory(), language));
+        return productToResponseConverter.convert(this.findById(id));
     }
 }

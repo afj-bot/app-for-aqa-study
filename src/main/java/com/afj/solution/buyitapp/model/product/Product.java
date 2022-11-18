@@ -1,7 +1,9 @@
-package com.afj.solution.buyitapp.model;
+package com.afj.solution.buyitapp.model.product;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import javax.persistence.Column;
@@ -12,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -25,6 +28,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.afj.solution.buyitapp.model.User;
 import com.afj.solution.buyitapp.model.category.Category;
 import com.afj.solution.buyitapp.model.category.SubCategory;
 import com.afj.solution.buyitapp.model.enums.Currency;
@@ -101,6 +105,9 @@ public class Product implements Serializable {
     @OneToOne(fetch = EAGER, cascade = ALL)
     @JoinColumn(name = "sub_category_id", nullable = false)
     private SubCategory subCategory;
+
+    @OneToMany(mappedBy = "product", fetch = EAGER, cascade = ALL)
+    private Set<Rating> ratings = new HashSet<>();
 
     public Product(final Consumer<Product> builder) {
         requireNonNull(builder).accept(this);
