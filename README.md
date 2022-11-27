@@ -1,4 +1,4 @@
-# Buy IT API 
+# Buy IT API <a href="https://codeclimate.com/github/afj-bot/buy-it-api/maintainability"><img src="https://api.codeclimate.com/v1/badges/63e8737533dbce667ba1/maintainability" /></a>
 
 ## Table of contents
 * For developers
