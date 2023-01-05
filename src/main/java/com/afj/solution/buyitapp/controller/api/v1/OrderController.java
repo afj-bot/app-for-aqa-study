@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,6 +58,7 @@ public class OrderController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
+    @PreAuthorize("hasRole('ANONYMOUS') or hasRole('USER') or hasRole('ADMIN')")
     public @ResponseBody
     OrderResponse createOrder(@Valid @RequestBody final CreateOrderRequest createOrderRequest) {
         final UUID userId = jwtTokenProvider.getUuidFromToken(jwtTokenProvider.getToken().substring(7));
@@ -71,6 +73,7 @@ public class OrderController {
             @ApiResponse(code = 500, message = "Internal server error"),
     })
     @GetMapping("/my")
+    @PreAuthorize("hasRole('ANONYMOUS') or hasRole('USER') or hasRole('ADMIN')")
     public @ResponseBody
     Page<OrderResponse> getMyOrders(final Pageable pageable) {
         final UUID userId = jwtTokenProvider.getUuidFromToken(jwtTokenProvider.getToken().substring(7));
@@ -85,6 +88,7 @@ public class OrderController {
             @ApiResponse(code = 500, message = "Internal server error"),
     })
     @PutMapping("/{id}/cancel")
+    @PreAuthorize("hasRole('ANONYMOUS') or hasRole('USER') or hasRole('ADMIN')")
     public @ResponseBody
     Response<String> cancelOrder(@Valid @NotEmpty @PathVariable final UUID id) {
         final UUID userId = jwtTokenProvider.getUuidFromToken(jwtTokenProvider.getToken().substring(7));

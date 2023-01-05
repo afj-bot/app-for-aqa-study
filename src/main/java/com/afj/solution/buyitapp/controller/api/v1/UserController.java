@@ -10,6 +10,7 @@ import io.swagger.annotations.Authorization;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -54,6 +55,7 @@ public class UserController {
             @ApiResponse(code = 500, message = "Internal server error"),
     })
     @GetMapping("/me")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public @ResponseBody
     UserResponse me() {
         final String token = jwtTokenProvider.getToken().substring(7);
@@ -71,6 +73,7 @@ public class UserController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
+    @PreAuthorize("hasRole('ANONYMOUS')")
     public @ResponseBody
     Response<String> create(@Valid @RequestBody final CreateUserRequest createUserRequest) {
         final String token = jwtTokenProvider.getToken().substring(7);
@@ -88,6 +91,7 @@ public class UserController {
     })
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/me")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public @ResponseBody
     Response<String> updateCurrentUser(@Valid @RequestBody final UpdateUserRequest updateUserRequest) {
         final String token = jwtTokenProvider.getToken().substring(7);

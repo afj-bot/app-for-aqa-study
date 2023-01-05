@@ -72,6 +72,7 @@ public class ProductController {
             @ApiResponse(code = 500, message = "Internal server error"),
     })
     @GetMapping
+    @PreAuthorize("hasRole('ANONYMOUS') or hasRole('USER') or hasRole('ADMIN')")
     public @ResponseBody
     Page<ProductResponse> getProducts(final Pageable pageable,
                                       @RequestHeader(value = "Accept-Language", defaultValue = "gb") final String language) {
@@ -89,6 +90,7 @@ public class ProductController {
             @ApiResponse(code = 500, message = "Internal server error"),
     })
     @GetMapping(value = "/{id}/image", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
+    @PreAuthorize("hasRole('ANONYMOUS') or hasRole('USER') or hasRole('ADMIN')")
     public @ResponseBody
     byte[] getImage(@Valid @NotEmpty @PathVariable final UUID id) {
         final UUID userId = jwtTokenProvider.getUuidFromToken(jwtTokenProvider.getToken().substring(7));
@@ -105,6 +107,7 @@ public class ProductController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public @ResponseBody
     Response<String> createProduct(@Valid @RequestBody final CreateProductRequest createProductRequest) {
         final String username = jwtTokenProvider.getUsernameFromToken(jwtTokenProvider.getToken().substring(7));
@@ -121,6 +124,7 @@ public class ProductController {
             @ApiResponse(code = 500, message = "Internal server error"),
     })
     @PutMapping("/{id}/quantity")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public @ResponseBody
     Response<String> updateProductQuantity(@Valid @NotEmpty @PathVariable final UUID id,
                                            @RequestParam("count") final int count) {
@@ -137,6 +141,7 @@ public class ProductController {
             @ApiResponse(code = 500, message = "Internal server error"),
     })
     @PutMapping("/{id}/characteristic")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public @ResponseBody
     Response<String> updateProductCharacteristic(@Valid @NotEmpty @PathVariable final UUID id,
                                                  @RequestBody final UpdateCharacteristicRequest updateCharacteristicRequest) {
@@ -156,7 +161,7 @@ public class ProductController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     @PutMapping(value = "/{id}/image", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ANONYMOUS') or hasRole('USER') or hasRole('ADMIN')")
     public @ResponseBody
     ProductResponse addImageToProduct(@Valid @NotEmpty @PathVariable final UUID id,
                                       @RequestPart("file") final MultipartFile file) throws IOException {
@@ -173,6 +178,7 @@ public class ProductController {
             @ApiResponse(code = 500, message = "Internal server error"),
     })
     @GetMapping("/me")
+    @PreAuthorize("hasRole('USER')")
     public @ResponseBody
     Page<ProductResponse> getMyProducts(final Pageable pageable,
                                         @RequestParam(value = "title", required = false) final String title,
@@ -190,6 +196,7 @@ public class ProductController {
             @ApiResponse(code = 500, message = "Internal server error"),
     })
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ANONYMOUS') or hasRole('USER') or hasRole('ADMIN')")
     public @ResponseBody
     ProductResponse getProductById(@Valid @NotEmpty @PathVariable final UUID id,
                                    @RequestHeader(value = "Accept-Language", defaultValue = "gb") final String language) {
@@ -206,6 +213,7 @@ public class ProductController {
             @ApiResponse(code = 500, message = "Internal server error"),
     })
     @PatchMapping("/{id}/rating")
+    @PreAuthorize("hasRole('USER')")
     public @ResponseBody
     Response<String> addRatingToProduct(@Valid @NotEmpty @PathVariable final UUID id,
                                         @RequestBody final AddRatingRequest request) {
