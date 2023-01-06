@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,6 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
-
     @ApiOperation(value = "Get all categories", notes = "All Roles", authorizations = {@Authorization("Bearer")})
     @ApiResponses({
             @ApiResponse(code = 200, message = "Category received successfully"),
@@ -36,8 +36,9 @@ public class CategoryController {
             @ApiResponse(code = 500, message = "Internal server error"),
     })
     @GetMapping
+    @PreAuthorize("hasRole('ANONYMOUS') or hasRole('USER') or hasRole('ADMIN')")
     public @ResponseBody
-    Page<CategoryResponse> getMyOrders(final Pageable pageable,
+    Page<CategoryResponse> getCategories(final Pageable pageable,
                                        @RequestHeader(value = "Accept-Language", defaultValue = "gb")
                                        final String language) {
         log.info("Get all products for {} and language {}", pageable, language);

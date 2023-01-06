@@ -111,25 +111,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Login controller
                 .antMatchers(HttpMethod.POST, "/api/v1/login").permitAll()
 
-                //Order controller
-                .antMatchers(HttpMethod.POST, "/api/v1/orders").hasAnyRole("ANONYMOUS", "USER", "ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/v1/orders/**").hasAnyRole("ANONYMOUS", "USER", "ADMIN")
-                .antMatchers(HttpMethod.PUT, "/api/v1/orders/**").hasAnyRole("ANONYMOUS", "USER", "ADMIN")
-
-                //Product controller
-                .antMatchers(HttpMethod.GET, "/api/v1/products").hasAnyRole("ANONYMOUS", "USER", "ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/v1/products/**").hasAnyRole("ANONYMOUS", "USER", "ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/v1/products/**/image").hasAnyRole("ANONYMOUS", "USER", "ADMIN")
-                .antMatchers(HttpMethod.POST, "/api/v1/products").hasAnyRole("USER", "ADMIN")
-                .antMatchers(HttpMethod.PUT, "/api/v1/products/**/rating").hasAnyRole("USER")
-
-                //User controller
-                .antMatchers(HttpMethod.POST, "/api/v1/users").hasAnyRole("ANONYMOUS")
-                .antMatchers(HttpMethod.GET, "/api/v1/users/**").hasAnyRole("USER", "ADMIN")
-
-                //Category controller
-                .antMatchers(HttpMethod.GET, "/api/v1/category").hasAnyRole("ANONYMOUS", "USER", "ADMIN")
-
                 .anyRequest()
                 .authenticated();
 
