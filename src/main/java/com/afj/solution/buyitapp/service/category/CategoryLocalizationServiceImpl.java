@@ -11,7 +11,7 @@ import com.afj.solution.buyitapp.repository.CategoryLocalizationRepository;
 import com.afj.solution.buyitapp.service.converters.category.CategoryToCategoryLocalizationConverter;
 
 /**
- * @author Tomash Gombosh
+ * @author Kristian Gombosh
  */
 @Service
 @Slf4j
@@ -31,7 +31,7 @@ public class CategoryLocalizationServiceImpl implements CategoryLocalizationServ
     public void save(final Category category, final String language) {
         log.info("Save Localization category for {}", category.getId());
         final CategoryLocalization categoryLocalization = converter.convert(category);
-        categoryLocalization.setLocale(Locale.UK.getCountry().toLowerCase(Locale.ROOT));
+        categoryLocalization.setLocale(language);
         repository.save(categoryLocalization);
     }
 

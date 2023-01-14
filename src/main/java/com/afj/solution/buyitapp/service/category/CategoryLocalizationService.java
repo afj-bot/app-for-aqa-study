@@ -3,7 +3,7 @@ package com.afj.solution.buyitapp.service.category;
 import com.afj.solution.buyitapp.model.category.Category;
 
 /**
- * @author Tomash Gombosh
+ * @author Kristian Gombosh
  */
 public interface CategoryLocalizationService {
 
