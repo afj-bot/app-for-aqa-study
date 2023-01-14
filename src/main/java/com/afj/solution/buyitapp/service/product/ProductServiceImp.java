@@ -73,7 +73,8 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public Page<ProductResponse> getProducts(final Pageable pageable, final String language, final UUID category) {
+    public Page<ProductResponse> getProducts(final Pageable pageable, final String language, final UUID category,
+                                             final String title, final String description) {
         if (nonNull(category)) {
             return new PageImpl<>(productRepository.findAll(pageable)
                     .stream()
@@ -81,7 +82,7 @@ public class ProductServiceImp implements ProductService {
                     .peek(p -> p.setCategory(categoryService.getLocalizedCategory(p.getCategory(), language)))
                     .map(productToResponseConverter::convert).toList());
         } else {
-            return productRepository.findAll(pageable)
+            return productRepository.findAllByNameAndDescription(pageable, title, description)
                     .map(p -> {
                         p.setCategory(categoryService.getLocalizedCategory(p.getCategory(), language));
                         return p;

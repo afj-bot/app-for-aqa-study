@@ -19,7 +19,7 @@ import com.afj.solution.buyitapp.payload.response.ProductResponse;
  */
 public interface ProductService {
 
-    Page<ProductResponse> getProducts(Pageable pageable, String language, UUID category);
+    Page<ProductResponse> getProducts(Pageable pageable, String language, UUID category, String title, String description);
 
     Product save(CreateProductRequest createProductRequest, UUID userId);
 
