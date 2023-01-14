@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -72,13 +73,22 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public Page<ProductResponse> getProducts(final Pageable pageable, final String language) {
-        return productRepository.findAll(pageable)
-                .map(p -> {
-                    p.setCategory(categoryService.getLocalizedCategory(p.getCategory(), language));
-                    return p;
-                })
-                .map(productToResponseConverter::convert);
+    public Page<ProductResponse> getProducts(final Pageable pageable, final String language, final UUID category,
+                                             final String title, final String description) {
+        if (nonNull(category)) {
+            return new PageImpl<>(productRepository.findAll(pageable)
+                    .stream()
+                    .filter(product -> product.getCategory().getId().equals(category) | product.getSubCategory().getId().equals(category))
+                    .peek(p -> p.setCategory(categoryService.getLocalizedCategory(p.getCategory(), language)))
+                    .map(productToResponseConverter::convert).toList());
+        } else {
+            return productRepository.findAllByNameAndDescription(pageable, title, description)
+                    .map(p -> {
+                        p.setCategory(categoryService.getLocalizedCategory(p.getCategory(), language));
+                        return p;
+                    })
+                    .map(productToResponseConverter::convert);
+        }
     }
 
     @Override

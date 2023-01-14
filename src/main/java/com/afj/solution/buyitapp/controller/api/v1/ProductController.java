@@ -75,12 +75,15 @@ public class ProductController {
     @PreAuthorize("hasRole('ANONYMOUS') or hasRole('USER') or hasRole('ADMIN')")
     public @ResponseBody
     Page<ProductResponse> getProducts(final Pageable pageable,
+                                      @RequestParam(value = "category", required = false) final UUID categoryUuid,
+                                      @RequestParam(value = "title", required = false) final String title,
+                                      @RequestParam(value = "description", required = false) final String description,
                                       @RequestHeader(value = "Accept-Language", defaultValue = "gb") final String language) {
         final UUID userId = jwtTokenProvider.getUuidFromToken(jwtTokenProvider.getToken().substring(7));
         log.info("Get products request for id -> {}", userId);
         log.info("Get products by {}", pageable);
         log.info("Get products for language {}", language);
-        return productService.getProducts(pageable, language);
+        return productService.getProducts(pageable, language, categoryUuid, title, description);
     }
 
     @ApiOperation(value = "Get product image", notes = "All Roles", authorizations = {@Authorization("Bearer")})
