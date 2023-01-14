@@ -1,7 +1,5 @@
 package com.afj.solution.buyitapp.service.category;
 
-import java.util.Locale;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
