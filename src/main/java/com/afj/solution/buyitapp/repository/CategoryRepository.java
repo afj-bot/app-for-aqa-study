@@ -1,5 +1,6 @@
 package com.afj.solution.buyitapp.repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +13,6 @@ import com.afj.solution.buyitapp.model.category.Category;
  */
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, UUID> {
+
+    Optional<Category> findByName(String categoryName);
 }

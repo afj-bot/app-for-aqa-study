@@ -1,8 +1,8 @@
 package com.afj.solution.buyitapp.model.category;
 
 import java.time.ZonedDateTime;
-import java.util.Locale;
 import java.util.UUID;
+import java.util.function.Consumer;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,6 +21,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import static java.util.Objects.requireNonNull;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
 
@@ -43,7 +44,7 @@ public class CategoryLocalization {
     private UUID id;
 
     @Column(name = "locale")
-    private Locale locale;
+    private String locale;
 
     @Column(name = "name")
     private String name;
@@ -68,6 +69,11 @@ public class CategoryLocalization {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
+
+    public CategoryLocalization(final Consumer<CategoryLocalization> builder) {
+        requireNonNull(builder).accept(this);
+    }
+
 
     @Override
     public String toString() {

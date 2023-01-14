@@ -4,6 +4,7 @@ import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,6 +28,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.afj.solution.buyitapp.model.product.Product;
 
+import static java.util.Objects.requireNonNull;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
 
@@ -73,6 +75,11 @@ public class SubCategory {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private ZonedDateTime updatedAt;
+
+    public SubCategory(final Consumer<SubCategory> builder) {
+        requireNonNull(builder).accept(this);
+    }
+
 
     @Override
     public String toString() {

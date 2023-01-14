@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.afj.solution.buyitapp.model.category.Category;
+import com.afj.solution.buyitapp.payload.request.CreateCategoryRequest;
 import com.afj.solution.buyitapp.payload.response.CategoryResponse;
 
 /**
@@ -14,7 +15,7 @@ import com.afj.solution.buyitapp.payload.response.CategoryResponse;
  */
 public interface CategoryService {
 
-    void save(Category category);
+    void save(CreateCategoryRequest createCategoryRequest, String language);
 
     Page<CategoryResponse> getCategories(Pageable pageable, String language);
 

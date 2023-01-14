@@ -39,4 +39,9 @@ public class SubCategoryServiceImpl implements SubCategoryService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         format(translatorService.toLocale("error.subcategory.not-found"), id)));
     }
+
+    @Override
+    public void save(final SubCategory subCategory) {
+        repository.save(subCategory);
+    }
 }
