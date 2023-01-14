@@ -17,7 +17,6 @@ import com.afj.solution.buyitapp.model.product.Product;
  */
 @Repository
 public interface ProductRepository extends JpaRepository<Product, UUID> {
-    Page<Product> findAllBy(Pageable pageable);
 
     @Query("SELECT c FROM Product c WHERE (c.user = :user) and (:name is null or c.name = :name) and (:description is null"
             + " or c.description = :description)")

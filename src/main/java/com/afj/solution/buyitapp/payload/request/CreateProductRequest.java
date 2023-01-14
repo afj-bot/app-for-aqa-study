@@ -93,8 +93,8 @@ public class CreateProductRequest implements Serializable {
     private UUID categoryId;
 
     @ApiModelProperty(
-            name = "description",
-            dataType = "String",
+            name = "subCategoryId",
+            dataType = "UUID",
             value = "Subcategory id of the product",
             example = "757a9f2e-1c19-4086-91a4-c42c7fba7107"
     )
