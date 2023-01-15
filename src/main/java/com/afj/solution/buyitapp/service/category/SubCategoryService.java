@@ -10,4 +10,6 @@ import com.afj.solution.buyitapp.model.category.SubCategory;
 public interface SubCategoryService {
 
     SubCategory findById(UUID id);
+
+    void save(SubCategory subCategory);
 }
