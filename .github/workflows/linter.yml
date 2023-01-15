@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  hadolint:
+  linter:
     name: Run scanning
     runs-on: ubuntu-latest
     permissions:
@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Prepare javaj
+      - name: Prepare java
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
@@ -28,3 +28,13 @@ jobs:
           cache: 'maven'
       - name: Run Maven linter
         run: mvn clean validate
+  check-branch-name:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: deepakputhraya/action-branch-name@master
+        with:
+          regex: '([a-z])+\/([a-z])+'
+          allowed_prefixes: 'feature,infra,fix,test'
+          ignore: master,develop
+          min_length: 5
+          max_length: 40
