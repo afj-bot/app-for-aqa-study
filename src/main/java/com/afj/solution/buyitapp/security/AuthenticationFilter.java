@@ -72,12 +72,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                                                 final UUID id,
                                                 final UserDetails userDetails) {
         if (roles.stream().anyMatch(r -> "ROLE_ANONYMOUS".equals(r.getAuthority()))) {
-            log.info("User is anonymous");
-            return new AnonymousAuthenticationToken("anonymous",
-                    id,
-                    roles);
+            log.info("User {} is anonymous", id);
         }
-        log.info("User is authenticated");
+        log.info("User {} is authenticated", id);
         return new UsernamePasswordAuthenticationToken(userDetails,
                 id,
                 roles);
