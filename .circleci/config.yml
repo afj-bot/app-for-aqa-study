@@ -57,7 +57,7 @@ jobs:
 
   build:
     environment:
-      IMAGE: 738181112533.dkr.ecr.us-east-2.amazonaws.com/buy-it-api
+      IMAGE: 510517989502.dkr.ecr.us-east-2.amazonaws.com/buy-it-api
     resource_class: medium
     docker:
       - image: cimg/openjdk:17.0.3
@@ -80,7 +80,7 @@ jobs:
           profile-name: default
       - run:
           name: Login to ECR
-          command: aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 738181112533.dkr.ecr.us-east-2.amazonaws.com
+          command: aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 510517989502.dkr.ecr.us-east-2.amazonaws.com
       - run:
           name: Build Docker image
           command: | 
